@@ -1,0 +1,15 @@
+.container {
+    width: 80%;
+    margin: auto;
+    background: lightblue;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      width: 100%;
+      background: lightcoral;
+    }
+  }
+  
