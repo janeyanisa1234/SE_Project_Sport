@@ -1,21 +1,258 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
-
+ 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
 }
-
+ 
+@media (max-width: 768px) {
+  .container,.container2,.container3 {
+    grid-template-columns: repeat(2, 1fr);/* 2 คอลัมน์เมื่อหน้าจอเล็ก */
+  }
+}
+ 
+@media (max-width: 480px) {
+  .container,.container2,.container3 {
+    grid-template-columns: repeat(1, 1fr);/* 1 คอลัมน์เมื่อหน้าจอแคบ */
+  }
+}
+ 
+body, h1, p,button, ul, li, input {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+ 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background-color: rgb(207, 206, 206);
   font-family: Arial, Helvetica, sans-serif;
+  height: 100vh;
+  margin: 0;
+  overflow-y: scroll;
+}
+ 
+ 
+ 
+.iconG {
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+}
+ 
+ 
+.logo {
+  flex-grow: 1;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+ 
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+}
+ 
+.dropdown {
+  color: #999999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ 
+.nav-button {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+ 
+ 
+.nav-button:hover {
+  background-color: #ddd;
+  color: #000;
+}
+ 
+.dropdown {
+  position: relative; /* ใช้ relative เพื่อให้ dropdown อ้างอิงตำแหน่งจาก parent */
+}
+ 
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 1px; /* เพิ่มระยะห่างจากปุ่ม */
+  min-width: 150px; /* กำหนดความกว้างขั้นต่ำ */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 100; /* ทำให้ dropdown อยู่เหนือองค์ประกอบอื่น */
+}
+ 
+.dropdown-item {
+  color: #000;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+ 
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+ 
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+ 
+.search-input {
+  height: 25px;
+  width: 250px;
+  padding: 10px 15px;
+  border-radius: 30px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  flex-shrink: 0;
+  /* ป้องกันการย่อขนาด */
+}
+ 
+.search-input:focus {
+  outline: none;
+  border-color: #000;
+ 
+}
+ 
+.find {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+ 
+.filter-dropdown-group {
+  display: flex;
+  align-items: center; /* ให้อยู่ตรงกลางแนวตั้ง */
+  gap: 10px; /* เพิ่มช่องว่างระหว่าง Filter กับ ปุ่มประเภทกีฬา */
+}
+ 
+.filter {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+ 
+.carousel {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+ 
+.hit {
+  width: 100%;
+  height: auto;
+  object-fit: cover; /* จัดการขนาดภาพให้เหมาะสม */
+  transition: opacity 0.5s ease-in-out;
+}
+ 
+ 
+.promotion-section,
+.popular-section {
+  margin: 40px 20px;
+  text-align: left;
+  position: relative;
+}
+ 
+.promotion-section h3,
+.popular-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #000;
+}
+ 
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  justify-items: stretch;
+}
+ 
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* กระจายเนื้อหาภายในให้สมดุล */
+  align-items: center;
+  /* จัดตรงกลาง */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  max-width: 250px;
+}
+ 
+.grid-item:hover {
+  transform: translateY(-5px);
+}
+ 
+.grid-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+ 
+.grid-title {
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #000;
+}
+ 
+.view-more-button {
+  position: absolute;
+  right: 10px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: #8c8c8c;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+ 
+.view-more-button:hover {
+  background-color: #000000;
+  margin-right: 1%;
+}
+ 
+.dropdown {
+  width: 20px;
+  height: 20px;
 }

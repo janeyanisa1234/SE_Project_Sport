@@ -1,0 +1,83 @@
+.detail-container {
+  margin: 20px;
+  padding: 10px;
+}
+
+.detail-title {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
+.Arrow {
+  width: 30px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.progress-line {
+  flex-grow: 1;
+  height: 3px;
+  background-color: #d1d5db; /* สีเทาอ่อน */
+  position: relative;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.progress-line.filled {
+  background-color: black; /* สีของเส้นเมื่อผ่านแล้ว */
+}
+
+.progress-step {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+  position: relative;
+  z-index: 2;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.progress-step.active {
+  background-color: black;
+  transform: scale(1.2); /* ขยายขนาดเล็กน้อย */
+}
+
+.progress-step.completed {
+  background-color: #6b7280; /* สีเทาเข้ม */
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #6b7280; /* สีเทา */
+  text-align: center;
+  width: 120px;
+  font-weight: normal;
+}
+
+.progress-text.active {
+  color: black;
+  font-weight: bold;
+}

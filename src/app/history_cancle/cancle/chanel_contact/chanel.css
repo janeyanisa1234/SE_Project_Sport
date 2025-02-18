@@ -1,0 +1,121 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: var(--foreground);
+  background-image: url('/background.jpg');
+  background-size: cover; 
+  background-position: center;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100vh;
+  margin: 0; 
+}
+
+/* ปรับให้ปุ่มอยู่บรรทัดเดียวกันเมื่อจอใหญ่ขึ้น */
+@media (min-width: 640px) { 
+  .cancel-btn, .confirm-btn {
+    width: 40%; /* ปรับขนาดปุ่มบนจอใหญ่ */
+  }
+}
+
+.container {
+  background-color: white;
+  display: grid;
+  margin: 90px auto 0;
+  justify-content: center;
+  width: 70vw;
+  height: 70vh;
+  border-radius: 20px;
+  
+}
+
+.form-box {
+  background-color: white;
+  width: 400px;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.chanel {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px 0;
+}
+
+.input-group label {
+  font-size: 16px;
+  min-width: 120px; /* เพิ่มขนาดเพื่อให้ label มีระยะพอดี */
+  text-align: left;
+}
+
+.input-group input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: 0.3s ease-in-out;
+}
+
+.input-group input:focus {
+  border-color: black; /* สีเขียวเมื่อโฟกัส */
+  
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap; /* ให้ปุ่มเรียงกันบนจอเล็ก */
+  justify-content: center;
+  gap: 15px; /* ระยะห่างระหว่างปุ่ม */
+  width: 100%;
+  margin-top: 20px;
+}
+
+.cancel-btn, .confirm-btn {
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  min-width: 120px; /* ป้องกันปุ่มเล็กเกินไป */
+  width: 100%; /* ให้เต็มความกว้างบนจอเล็ก */
+  max-width: 150px; /* จำกัดขนาดปุ่มบนจอใหญ่ */
+}
+
+
+/* สีและเอฟเฟกต์ของปุ่ม */
+.cancel-btn {
+  background-color: #ccc;
+  color: black;
+}
+
+.cancel-btn:hover {
+  background-color: #e34848;
+  transform: scale(1.05);
+}
+
+.confirm-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background-color: #72d572;
+  transform: scale(1.05);
+}
