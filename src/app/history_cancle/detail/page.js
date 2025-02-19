@@ -59,6 +59,25 @@ export default function Detail() {
                         </div>
                     ))}
                 </div>
+
+                {/* กล่องแสดงรายละเอียดการคืนเงิน */}
+                <div className="refund-box">
+                    <h2 className="refund-title">AVOCACO </h2>
+                    <hr/>
+                    <br/>
+                    
+                    <div className="refund-details">
+                        <p>จำนวนเงินคืน </p>
+                        <br/>
+                        <p>คืนเงินไปยัง </p>
+                        <br/>
+                        <p>ผู้ยื่นคำขอ </p>
+                        <br/>
+                        <p>ยื่นคำขอเมื่อ</p>
+                        <br/>
+                        <p>เหตุผล </p>
+                    </div>
+                </div>
             </div>
         </>
     );

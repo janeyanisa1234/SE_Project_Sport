@@ -1,9 +1,7 @@
 "use client";
  
 import { useState, useEffect } from "react";
- 
 import Tabbar from "../app/history_cancle/Tab/tab"
- 
 import "./globals.css";
  
  

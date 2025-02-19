@@ -5,11 +5,19 @@ import { useState } from "react";
 import Tabbar from "../../Tab/tab";
 import Link from "next/link";
 
-
 export default function ChanelContact() {
     const [nameInput, setNameInput] = useState("");
     const [bankInput, setBankInput] = useState("");
     const [accountInput, setAccountInput] = useState("");
+    const [bookImage, setBookImage] = useState(null); // เก็บไฟล์รูปภาพที่อัปโหลด
+
+    // ฟังก์ชันสำหรับอัปโหลดรูปภาพ
+    const handleImageUpload = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setBookImage(URL.createObjectURL(file)); // แสดงตัวอย่างรูป
+        }
+    };
 
     return (
         <>
@@ -49,17 +57,33 @@ export default function ChanelContact() {
                         />
                     </div>
 
-                    <div className="button-group">
-                    <Link href="/history_cancle/cancle" passHref>
-                        <button className="cancel-btn">ยกเลิก</button>
-                    </Link>
+                    {/* ส่วนอัปโหลดรูปหน้าสมุดบัญชี */}
+                    <div className="book">
+                        <label>หน้าสมุดบัญชี</label>
+                        <div className="upload-box">
+                            <input type="file" accept="image/*" id="upload" onChange={handleImageUpload} hidden />
+                            <label htmlFor="upload" className="upload-label">
+                                {bookImage ? (
+                                    <img src={bookImage} alt="Preview" className="preview-image" />
+                                ) : (
+                                    <span className="plus-icon">+</span>
+                                )}
+                            </label>
+                        </div>
+                    </div>
 
-                    <Link href="/history_cancle/Bank_user" passHref>
-                        <button className="confirm-btn">ยืนยัน</button>
-                    </Link>
+                    <div className="button-group">
+                        <Link href="/history_cancle/cancle" passHref>
+                            <button className="cancel-btn">ยกเลิก</button>
+                        </Link>
+
+                        <Link href="/history_cancle/detail" passHref>
+                            <button className="confirm-btn">ยืนยัน</button>
+                        </Link>
                     </div>
                 </div>
             </div>
+
         </>
     );
 }
