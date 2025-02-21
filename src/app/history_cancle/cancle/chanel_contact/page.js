@@ -9,13 +9,15 @@ export default function ChanelContact() {
     const [nameInput, setNameInput] = useState("");
     const [bankInput, setBankInput] = useState("");
     const [accountInput, setAccountInput] = useState("");
-    const [bookImage, setBookImage] = useState(null); // เก็บไฟล์รูปภาพที่อัปโหลด
+    const [fileName, setFileName] = useState(""); // เก็บชื่อไฟล์ที่เลือก
+    const [isFileUploaded, setIsFileUploaded] = useState(false); // เช็คว่าไฟล์ถูกอัปโหลดแล้วหรือไม่
 
     // ฟังก์ชันสำหรับอัปโหลดรูปภาพ
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setBookImage(URL.createObjectURL(file)); // แสดงตัวอย่างรูป
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0]; 
+        if (selectedFile) {
+            setFileName(selectedFile.name);
+            setIsFileUploaded(true);
         }
     };
 
@@ -58,18 +60,27 @@ export default function ChanelContact() {
                     </div>
 
                     {/* ส่วนอัปโหลดรูปหน้าสมุดบัญชี */}
-                    <div className="book">
-                        <label>หน้าสมุดบัญชี</label>
-                        <div className="upload-box">
-                            <input type="file" accept="image/*" id="upload" onChange={handleImageUpload} hidden />
-                            <label htmlFor="upload" className="upload-label">
-                                {bookImage ? (
-                                    <img src={bookImage} alt="Preview" className="preview-image" />
-                                ) : (
-                                    <span className="plus-icon">+</span>
-                                )}
-                            </label>
+                    <div className="form-group">
+                        <label className="upload-label"></label>
+                        <div 
+                            className="upload-box"
+                            onClick={() => document.getElementById("fileInput").click()}
+                        >
+                            <input
+                                id="fileInput"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                style={{ display: 'none' }}
+                            />
+                            <span className="upload-icon">+</span>
+                            <p style ={{fontSize : 15, color:"#ccc"}}className="upload-text">{fileName || "เพิ่มไฟล์หน้าสมุดบัญชี"}</p> {/* แสดงชื่อไฟล์ที่เลือก */}
                         </div>
+                        {isFileUploaded && (
+                            <p className="upload-success-text" style={{ color: "green", fontSize: "14px", marginTop: "8px" }}>
+                                อัปโหลดรูปสำเร็จ: {fileName}
+                            </p>
+                        )}
                     </div>
 
                     <div className="button-group">
@@ -77,13 +88,12 @@ export default function ChanelContact() {
                             <button className="cancel-btn">ยกเลิก</button>
                         </Link>
 
-                        <Link href="/history_cancle/detail" passHref>
+                        <Link href="/history_cancle/cancle/detail" passHref>
                             <button className="confirm-btn">ยืนยัน</button>
                         </Link>
                     </div>
                 </div>
             </div>
-
         </>
     );
 }

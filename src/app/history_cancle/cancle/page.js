@@ -38,7 +38,7 @@ export default function Page() {
  
       <br />
       <div className="de">
-        <Link href="/history_cancle/detail" passHref>
+        <Link href="/history_cancle/cancle/detail" passHref>
           รายละเอียดการเงิน
         </Link>
       </div>
