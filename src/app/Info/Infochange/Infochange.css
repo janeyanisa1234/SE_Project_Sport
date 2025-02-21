@@ -1,0 +1,71 @@
+.infochange-container {
+    height: 100vh;
+    background: url('/pictureice/stadium-bg.png') center/cover no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .overlay {
+  position: absolute;
+  
+  inset: 0;
+
+  background-color: rgba(240, 224, 224, 0.507);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+  }
+  
+  .content-box {
+    background: rgb(255, 255, 255);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 24rem;
+    color: rgb(0, 0, 0);
+  }
+  
+  .profile-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-icon .icon {
+    font-size: 4rem;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+    margin-bottom: 1.75rem;
+  }
+  
+  .subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .change-btn {
+    width: 100%;
+    background: #a3a3a3;
+    color: black;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    transition: background 0.3s;
+  }
+  
+  .change-btn:hover {
+    background: #e0e0e0;
+  }
+  

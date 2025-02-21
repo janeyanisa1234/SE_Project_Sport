@@ -1,0 +1,105 @@
+/* ตั้งค่าพื้นหลัง */
+.registration-container {
+  height: 100vh;
+  background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* เพิ่ม overlay */
+.registration-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(240, 224, 224, 0.507);
+  display: flex;
+  align-items: flex-start; /* ขยับกล่องขึ้นข้างบน */
+  justify-content: center;
+  padding-top: 3rem; /* ลดระยะห่างด้านบนให้น้อยลงเพื่อขยับกล่องขึ้น */
+}
+
+/* ไอคอนผู้ใช้ */
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.user-icon {
+  font-size: 3rem; /* ลดขนาดไอคอน */
+  margin-bottom: 1rem;
+}
+
+/* กล่องแบบฟอร์ม */
+.registration-box {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 1.5rem; /* ลดขนาด padding */
+  border-radius: 10px;
+  color: white;
+  width: 400px; /* ลดความกว้างลง */
+  height: auto; /* ให้ฟอร์มปรับขนาดอัตโนมัติ */
+  max-height: 980px; /* กำหนดความสูงสูงสุด */
+  text-align: center;
+  margin-top: -20px; /* ขยับกล่องสีดำขึ้น */
+}
+
+/* กล่องอินพุต */
+.input-container {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.input-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem; /* ลดขนาดตัวหนังสือ */
+}
+
+.input-container input {
+  width: 100%;
+  padding: 0.5rem; /* ลดความสูงของช่องอินพุต */
+  border: none;
+  border-radius: 5px;
+  background: #f0f0f0;
+  color: black;
+  font-size: 0.9rem; /* ลดขนาดตัวอักษร */
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-container input:focus {
+  border: 2px solid #34d399;
+}
+
+/* ช่องเช็กบ็อกซ์ */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox-container input {
+  width: 16px;
+  height: 16px;
+}
+
+/* ปุ่มกด */
+.submit-button {
+  width: 100%;
+  background: #34d399;
+  color: white;
+  padding: 0.6rem; /* ลดขนาดปุ่ม */
+  font-size: 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.submit-button:hover {
+  background: #2d8a66;
+}

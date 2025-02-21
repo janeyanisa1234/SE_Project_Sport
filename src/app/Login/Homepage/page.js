@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
-import Headfunction from "./Headfunction/page.js";
-import Tabbar from "./tabbar-nologin/tab.js";
-import "./globals.css";
+import Headfunction from "../../Headfunction/page";
+import Tabbar from "../../Tab/tab";
+import "./Home.css";
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -45,7 +46,9 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <Link href="/Login/Homepage/PromotionPlace">
           <button className="view-more-button">ดูเพิ่มเติม</button>
+          </Link>
         </section>
 
         {/* อันดับสนามกีฬายอดนิยม */}
@@ -64,7 +67,9 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <Link href="Login/Homepage/HitPlace">
           <button className="view-more-button">ดูเพิ่มเติม</button>
+          </Link>
         </section>
       </main>
     </>

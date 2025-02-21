@@ -1,0 +1,86 @@
+.otp-container {
+    min-height: 100vh;
+    background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+  
+.overlay {
+  position: absolute;
+  
+  inset: 0;
+
+  background-color: rgba(240, 224, 224, 0.507);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+  }
+  
+  .otp-box {
+    background: rgb(255, 255, 255);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    color: rgb(0, 0, 0);
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .icon-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  .icon {
+    color: rgb(151, 151, 151);
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .otp-input-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .otp-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    border: 2px solid gray;
+    border-radius: 5px;
+    color: black;
+  }
+  
+  .otp-input:focus {
+    border-color: #22c55e;
+    outline: none;
+  }
+  
+  .otp-button {
+    width: 100%;
+    background: #22c55e;
+    color: white;
+    padding: 0.7rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .otp-button:hover {
+    background: #16a34a;
+  }
+  

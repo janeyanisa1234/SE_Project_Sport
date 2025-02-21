@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  font-family: 'Prompt', sans-serif;
+  color: #797777;
+  background-color: rgb(207, 206, 206);
+  height: 100vh;
+  margin: 0;
+}
+
+/* Responsive Grid */
+@media (max-width: 768px) {
+  .container, .container2, .container3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .container, .container2, .container3 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+/* สไตล์สำหรับกล่อง */
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1350px;
+  margin: 30px auto 0;
+
+}
+
+.container3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1350px;
+  margin: 30px auto 0;
+}
+
+.container2 {
+  display: grid;
+  gap: 30px;
+  grid-template-columns: repeat(1, 1fr);
+  max-width: 1350px;
+  margin: 30px auto 0;
+}
+
+.box, .box2 {
+  background-color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* หัวข้อ */
+.history-title,
+.card-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: black; /* หัวข้อสีดำ */
+}
+
+/* หัวข้อของแต่ละหมวดหมู่ */
+.label {
+  font-size: 18px;
+  font-weight: bold;
+  color: black; /* ทำให้สีดำ */
+}
+
+/* การจัดตำแหน่งและขนาดตัวหนังสือ */
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+/* ไอคอน */
+.iconG {
+  width: 50px;
+  height: 50px;
+  background-color: black;
+  border-radius: 10%;
+  margin-left: 25px;
+}
+
+.icon-eye {
+  width: 24px;
+  height: 24px;
+  color: #797777;
+}
+
+/* ปรับแต่งกล่องรายการ */
+.card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  color: black;
+}
+
+.card p {
+  margin: 5px 0;
+  color: #797777;
+}
