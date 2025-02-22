@@ -37,25 +37,45 @@ body {
 .summary {
   display: flex;
   align-items: center;
+  justify-content: flex-start; /* ให้ข้อความอยู่ทางซ้ายในขนาดหน้าจอปกติ */
   gap: 10px;
   font-size: 30px;
   font-weight: bold;
   margin-top: 60px;
+  flex-wrap: wrap; /* รองรับการแยกบรรทัดถ้าจำเป็น */
 }
 
+/* Responsive adjustments for .summary */
+@media (max-width: 768px) {
+  .summary {
+    justify-content: center; /* จัดข้อความให้อยู่กลางสำหรับหน้าจอขนาดกลาง */
+    font-size: 24px; /* ปรับขนาดข้อความให้เล็กลง */
+  }
+}
+
+@media (max-width: 480px) {
+  .summary {
+    justify-content: center; /* จัดข้อความให้อยู่กลางสำหรับหน้าจอขนาดเล็ก */
+    font-size: 20px; /* ปรับขนาดข้อความให้เล็กลง */
+  }
+}
+
+/* Base styles for containers */
 .container, .container2, .container3 {
   width: 95%;
   max-width: 1350px;
   margin: 30px auto;
 }
 
+/* Grid Layout for multiple columns */
 .container, .container3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
 }
 
-.box {
+/* Box styles */
+.box, .box2 {
   background-color: white;
   padding: 20px;
   text-align: center;
@@ -65,23 +85,16 @@ body {
 }
 
 .box2 {
-  background-color: white;
   padding: 25px;
-  text-align: center;
-  border-radius: 10px;
-  font-size: 20px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
   min-height: 500px;
-  box-sizing: border-box;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for medium screens */
   }
-  
+
   .box2 {
     min-height: 400px;
   }
@@ -89,9 +102,9 @@ body {
 
 @media (max-width: 480px) {
   .container {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Single column for small screens */
   }
-  
+
   .box2 {
     min-height: 350px;
   }

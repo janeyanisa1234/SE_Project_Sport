@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 body {
   color: var(--foreground);
   background-color: rgb(207, 206, 206);
@@ -10,14 +6,58 @@ body {
   margin: 0;
 }
 
-/* ปรับขนาดตัวอักษรและช่องกรอง */
+.tabbar {
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+}
+
+.iconG {
+  width: 50px; /* เปลี่ยนขนาดเป็น 50px */
+  height: 50px; /* เปลี่ยนขนาดเป็น 50px */
+  background-color: black;
+  border-radius: 10%;
+  margin-left: 25px;
+}
+
+.hamburgur {
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+}
+
+.home {
+  width: 40px;
+  height: 40px;
+  margin-right: 5px;
+}
+
 .summary {
   display: flex;
   align-items: center;
+  justify-content: flex-start; /* ให้ข้อความอยู่ทางซ้ายในขนาดหน้าจอปกติ */
   gap: 10px;
-  font-size: 34px; /* ใหญ่ขึ้น */
+  font-size: 30px;
   font-weight: bold;
   margin-top: 60px;
+  flex-wrap: wrap; /* รองรับการแยกบรรทัดถ้าจำเป็น */
+}
+
+/* Responsive adjustments for .summary */
+@media (max-width: 768px) {
+  .summary {
+    justify-content: center; /* จัดข้อความให้อยู่กลางสำหรับหน้าจอขนาดกลาง */
+    font-size: 24px; /* ปรับขนาดข้อความให้เล็กลง */
+  }
+}
+
+@media (max-width: 480px) {
+  .summary {
+    justify-content: center; /* จัดข้อความให้อยู่กลางสำหรับหน้าจอขนาดเล็ก */
+    font-size: 20px; /* ปรับขนาดข้อความให้เล็กลง */
+  }
 }
 
 .image-cell {
@@ -104,11 +144,6 @@ tr:nth-child(even) {
   height: 25px;
 }
 
-.delete-btn img {
-  width: 30px;
-  height: 30px;
-}
-
 /* การโฮเวอร์ของตัวเลือก */
 .people select:hover {
   background-color: #807f7f;
@@ -157,7 +192,6 @@ tr:nth-child(even) {
   }
 }
 
-
 .status {
   display: flex;
   align-items: center;
@@ -166,12 +200,10 @@ tr:nth-child(even) {
   font-weight: bold;
 }
 
-
 .status.approved {
   color: green;
   white-space: nowrap; 
 }
-
 
 .status.pending {
   color: rgb(12, 12, 12);
@@ -185,8 +217,8 @@ tr:nth-child(even) {
 }
 
 .iconG {
-  width: 25px;
-  height: 25px;
+  width: 50px; /* ปรับขนาดเป็น 50px */
+  height: 50px; /* ปรับขนาดเป็น 50px */
   display: inline-block;
   vertical-align: middle; 
 }
@@ -195,4 +227,3 @@ tr:nth-child(even) {
   background-color: #807f7f; 
   color: white;               
 }
-

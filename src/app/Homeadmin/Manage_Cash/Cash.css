@@ -10,12 +10,11 @@ body {
   margin: 0;
 }
 
-/* ปรับขนาดตัวอักษรและช่องกรอง */
 .summary {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 34px; /* ใหญ่ขึ้น */
+  font-size: 30px;
   font-weight: bold;
   margin-top: 60px;
 }
@@ -29,6 +28,15 @@ body {
   font-size: 14px;
 }
 
+/* แก้ไขขนาดของ .iconG ที่ถูกซ้ำซ้อน */
+.iconG {
+  width: 50px;  /* กำหนดขนาดใหม่เป็น 50px */
+  height: 50px; /* กำหนดขนาดใหม่เป็น 50px */
+  background-color: black;
+  border-radius: 10%;
+  margin-left: 25px;
+}
+
 /* ขยายช่องค้นหาและดรอปดาวน์ */
 .filter-container {
   display: grid;
@@ -38,7 +46,6 @@ body {
   margin: 0 auto;
   max-width: 1200px; /* ปรับขนาด */
 }
-
 
 .filter-container select,
 .filter-container input {
@@ -103,11 +110,6 @@ tr:nth-child(even) {
 }
 
 .delete-btn img {
-  width: 25px;
-  height: 25px;
-}
-
-.delete-btn img {
   width: 30px;
   height: 30px;
 }
@@ -146,7 +148,6 @@ tr:nth-child(even) {
   th, td {
     padding: 8px;
     gap: 8px;
-   
   }
 
   .profile-pic {
@@ -157,10 +158,8 @@ tr:nth-child(even) {
   .delete-btn img {
     width: 25px;
     height: 25px;
-    align-items: center;
   }
 }
-
 
 .status {
   display: flex;
@@ -170,12 +169,10 @@ tr:nth-child(even) {
   font-weight: bold;
 }
 
-
 .status.approved {
   color: green;
   white-space: nowrap; 
 }
-
 
 .status.pending {
   color: rgb(12, 12, 12);
@@ -187,16 +184,7 @@ tr:nth-child(even) {
   height: 20px;
 }
 
-
-.iconG {
-  width: 25px;
-  height: 25px;
-  display: inline-block;
-  vertical-align: middle; 
-}
-
 .sport select:hover {
   background-color: #807f7f; 
   color: white;               
 }
-

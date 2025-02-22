@@ -1,7 +1,7 @@
 "use client";
 import "./home.css";
 import "./Dashboard/slidebar.css";
-import React, { useState } from "react"; 
+import React, { useState, useEffect } from "react"; 
 import Sidebar from "./Dashboard/slidebar.js"; 
 import Tab from "./Tabbar/page";
 import { Bar } from "react-chartjs-2";  
@@ -33,7 +33,7 @@ export default function Dashboard() {
 
   const options = {
     responsive: true,  
-    maintainAspectRatio: false, 
+    maintainAspectRatio: false,  // กำหนดให้สามารถขยาย/ย่อได้ตามขนาดหน้าจอ
     plugins: {
       legend: {
         position: 'top',
@@ -45,12 +45,23 @@ export default function Dashboard() {
     },
   };
 
+  // Hook เพื่อจัดการกับการ resize ของหน้าจอ
+  useEffect(() => {
+    const handleResize = () => {
+      // เมื่อขนาดหน้าจอเปลี่ยนแปลงจะบังคับให้ chart.js รีเฟรชกราฟ
+      window.dispatchEvent(new Event("resize"));
+    };
+    
+    window.addEventListener("resize", handleResize);
+    
+    // Cleanup event listener เมื่อ component ถูกลบออกจาก DOM
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
   return (
     <>
     <Tab/>
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-      
-      
       
       <br />
       <p className="summary">

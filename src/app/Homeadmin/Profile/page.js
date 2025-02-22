@@ -9,37 +9,72 @@ import Sidebar from "../Dashboard/slidebar.js";
 
 export default function Admin() {
   const [showPassword, setShowPassword] = useState(false);
-
-  // รหัสผ่านที่ต้องการแสดง
   const password = "jane1234";
 
   return (
-    <>
+    <div className="relative min-h-screen">
       <Tab />
       <Sidebar />
-      <div className="admin-container" style={{ backgroundImage: "url('/pictureAdmin/stadium-bg.jpg')" }}>
+      
+      <div 
+        className="admin-container" 
+        style={{ backgroundImage: "url('/pictureAdmin/stadium-bg.jpg')" }}
+      >
         <div className="admin-overlay">
           <div className="admin-card">
             <div className="admin-user-icon">
-              <Image src="/pictureAdmin/Admin.svg" alt="Admin Icon" width={50} height={50} />
+              <Image 
+                src="/pictureAdmin/Admin.svg" 
+                alt="Admin Icon" 
+                width={50} 
+                height={50}
+                priority
+              />
             </div>
 
-            <h2 className="text-2xl font-semibold mb-4 text-center">ผู้ดูแลระบบ</h2>
-            <p className="admin-text"><strong>ชื่อ : </strong></p>
-            <p className="admin-text"><strong>อีเมล : </strong></p>
-            <p className="admin-text"><strong>เบอร์โทร : </strong></p>
+            <h2 className="admin-heading">ผู้ดูแลระบบ</h2>
 
-            <div className="profile-password">
-              <p className="mr-2"><strong>รหัสผ่าน : </strong> {showPassword ? password : "********"}</p>
-              <button onClick={() => setShowPassword(!showPassword)} className="toggle-btn">
-                {showPassword ? <EyeOff size={24} className="icon" /> : <Eye size={24} className="icon" />}
-              </button>
+            <div className="admin-info">
+              <p className="admin-text">
+                <strong>ชื่อ : </strong>
+                <span>-</span>
+              </p>
+              
+              <p className="admin-text">
+                <strong>อีเมล : </strong>
+                <span>-</span>
+              </p>
+              
+              <p className="admin-text">
+                <strong>เบอร์โทร : </strong>
+                <span>-</span>
+              </p>
+
+              <div className="profile-password">
+                <p>
+                  <strong>รหัสผ่าน : </strong>
+                  <span>{showPassword ? password : "********"}</span>
+                </p>
+                <button 
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="password-toggle"
+                  aria-label={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+              </div>
             </div>
 
-            <button className="admin-button">เปลี่ยนรหัสผ่าน</button>
+            <button className="admin-button">
+              เปลี่ยนรหัสผ่าน
+            </button>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
