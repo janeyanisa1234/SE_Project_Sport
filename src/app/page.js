@@ -20,10 +20,10 @@ export default function Home() {
 
   return (
     <>
-    <Tabbar /> 
-    <Headfunction/>
+      <Tabbar /> 
+      <Headfunction />
 
-    <main className="content">
+      <main className="content">
         {/* Carousel */}
         <div className="carousel">
           <img src={carouselImages[currentImageIndex]} alt="Carousel" className="hit" />

@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: var(--foreground);
+  background-color: rgb(207, 206, 206);
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100vh;
+  margin: 0;
+}
+
+/* ปรับขนาดตัวอักษรและช่องกรอง */
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 34px; /* ใหญ่ขึ้น */
+  font-weight: bold;
+}
+
+.image-cell {
+  display: flex;
+  flex-direction: column; /* จัดให้รูปภาพและข้อความอยู่ในแนวตั้ง */
+  align-items: center;    /* จัดให้อยู่ตรงกลางในแนวนอน */
+  justify-content: center; /* จัดให้อยู่ตรงกลางในแนวตั้ง */
+  text-align: center;     /* จัดให้ข้อความอยู่ตรงกลาง */
+  font-size: 14px;
+}
+
+/* ขยายช่องค้นหาและดรอปดาวน์ */
+.filter-container {
+  display: grid;
+  grid-template-columns: 5fr 5fr 6fr;
+  gap: 50px;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 1200px; /* ปรับขนาด */
+}
+
+.filter-container select,
+.filter-container input {
+  padding: 14px; /* เพิ่มขนาด */
+  font-size: 18px; /* ใหญ่ขึ้น */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  height: 50px; /* เพิ่มความสูง */
+}
+
+/* ขยายขนาดไอคอนค้นหา */
+.search-icon {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+/* ปรับขนาดตาราง */
+.table-container {
+  margin: 20px auto;
+  max-width: 1200px;  /* ขยายตาราง */
+  max-height: 1200px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 1.2rem; /* ขยายตัวอักษร */
+}
+
+/* ปรับขนาดเซลล์ */
+th, td {
+  padding: 16px; /* เพิ่ม padding */
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+th {
+  background-color: black;
+  color: white;
+  font-size: 1.3rem; 
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* ปุ่มลบ */
+.delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* ปรับระยะห่างระหว่างไอคอน */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn img {
+  width: 25px;
+  height: 25px;
+}
+
+.delete-btn img {
+  width: 30px;
+  height: 30px;
+}
+
+/* การโฮเวอร์ของตัวเลือก */
+.people select:hover {
+  background-color: #807f7f;
+}
+
+/* รูปสามเหลี่ยม */
+.triangle-down {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid white;
+  margin-left: 5px;
+}
+
+@media (max-width: 600px) {
+  .filter-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .search-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+  }
+
+  .delete-btn img {
+    width: 25px;
+    height: 25px;
+    align-items: center;
+  }
+}
+
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: black;
+  font-weight: bold;
+}
+
+
+.status.approved {
+  color: green;
+  white-space: nowrap; 
+}
+
+
+.status.pending {
+  color: rgb(12, 12, 12);
+  font-size: 18px;
+  white-space: nowrap; 
+}
+
+.status img {
+  width: 20px;
+  height: 20px;
+}
+
+.iconG {
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  vertical-align: middle; 
+}
+
+.sport select:hover {
+  background-color: #807f7f; 
+  color: white;               
+}
+
