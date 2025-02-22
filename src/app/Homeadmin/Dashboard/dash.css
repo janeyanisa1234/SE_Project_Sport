@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 body {
   color: var(--foreground);
   background-color: rgb(207, 206, 206);
@@ -10,12 +6,12 @@ body {
   margin: 0;
 }
 
-.summary {
+.tabbar {
+  background-color: black;
+  color: white;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 30px;
-  font-weight: bold;
+  font-size: 24px;
 }
 
 .iconG {
@@ -26,83 +22,77 @@ body {
   margin-left: 25px;
 }
 
-/* ปรับ Container ให้ใช้ Flex แทน Grid */
+.hamburgur {
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+}
+
+.home {
+  width: 40px;
+  height: 40px;
+  margin-right: 5px;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 60px;
+}
+
+.container, .container2, .container3 {
+  width: 95%;
+  max-width: 1350px;
+  margin: 30px auto;
+}
+
 .container, .container3 {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 25px;
-  width: 95%;
-  max-width: 1400px;
-  margin: 30px auto;
-  padding: 0 15px;
 }
 
-.container2 {
-  display: flex;
-  justify-content: center;
-  width: 95%;
-  max-width: 1400px;
-  margin: 30px auto;
-  padding: 0 15px;
-}
-
-/* กำหนดขนาดกล่องให้แน่นอน */
 .box {
-  flex: 1;
   background-color: white;
-  padding: 25px;
+  padding: 20px;
   text-align: center;
-  border-radius: 15px;
+  border-radius: 10px;
   font-size: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  min-height: 180px;
-  width: calc(33.333% - 17px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .box2 {
   background-color: white;
   padding: 25px;
   text-align: center;
-  border-radius: 15px;
+  border-radius: 10px;
   font-size: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  min-height: 400px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  min-height: 500px;
+  box-sizing: border-box;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .container, .container3 {
-    flex-wrap: wrap;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .box {
-    width: calc(50% - 13px);
-    min-height: 160px;
+  .box2 {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    grid-template-columns: 1fr;
   }
   
   .box2 {
     min-height: 350px;
-  }
-}
-
-@media (max-width: 768px) {
-  .container, .container3 {
-    flex-direction: column;
-  }
-  
-  .box {
-    width: 100%;
-    min-height: 140px;
-  }
-  
-  .box2 {
-    min-height: 300px;
   }
 }

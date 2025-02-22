@@ -7,12 +7,10 @@ import Link from 'next/link';
 
 export default function Tabbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [category, setCategory] = useState(""); // ค่าเริ่มต้นเพื่อป้องกัน hydration error
-  const [amount, setAmount] = useState("");
-  const [search, setSearch] = useState("");
 
-  const closeSidebar = () => {
-    setIsSidebarOpen(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
   };
 
   return (
@@ -24,7 +22,7 @@ export default function Tabbar() {
           src="/pictureAdmin/Hamburger.svg"
           alt="Hamburger"
           className="hamburgur"
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={toggleSidebar} 
         />
         <Link href="/Homeadmin" passHref>
           <img src="/pictureAdmin/Home.svg" alt="Home" className="home" />

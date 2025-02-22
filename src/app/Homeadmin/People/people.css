@@ -17,6 +17,7 @@ body {
   gap: 10px;
   font-size: 34px; /* ใหญ่ขึ้น */
   font-weight: bold;
+  margin-top: 60px;
 }
 
 /* ขยายช่องค้นหาและดรอปดาวน์ */
