@@ -10,57 +10,60 @@ body {
   margin: 0;
 }
 
-/* ปรับขนาดตัวอักษรและช่องกรอง */
 .summary {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 34px; /* ใหญ่ขึ้น */
+  font-size: 30px;
   font-weight: bold;
   margin-top: 60px;
 }
 
+.iconG {
+  width: 50px; /* เปลี่ยนเป็น 50px */
+  height: 50px; /* เปลี่ยนเป็น 50px */
+  background-color: black;
+  border-radius: 10%;
+  margin-left: 25px;
+}
+
 .image-cell {
   display: flex;
-  flex-direction: column; /* จัดให้รูปภาพและข้อความอยู่ในแนวตั้ง */
-  align-items: center;    /* จัดให้อยู่ตรงกลางในแนวนอน */
-  justify-content: center; /* จัดให้อยู่ตรงกลางในแนวตั้ง */
-  text-align: center;     /* จัดให้ข้อความอยู่ตรงกลาง */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   font-size: 14px;
 }
 
-/* ขยายช่องค้นหาและดรอปดาวน์ */
 .filter-container {
   display: grid;
   grid-template-columns: 5fr 5fr 6fr;
   gap: 50px;
   align-items: center;
   margin: 0 auto;
-  max-width: 1200px; /* ปรับขนาด */
+  max-width: 1200px;
 }
-
 
 .filter-container select,
 .filter-container input {
-  padding: 14px; /* เพิ่มขนาด */
-  font-size: 18px; /* ใหญ่ขึ้น */
+  padding: 14px;
+  font-size: 18px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100%;
-  height: 50px; /* เพิ่มความสูง */
+  height: 50px;
 }
 
-/* ขยายขนาดไอคอนค้นหา */
 .search-icon {
   width: 50px;
   height: 50px;
   cursor: pointer;
 }
 
-/* ปรับขนาดตาราง */
 .table-container {
   margin: 20px auto;
-  max-width: 1200px;  /* ขยายตาราง */
+  max-width: 1200px;
   max-height: 1200px;
 }
 
@@ -70,41 +73,34 @@ table {
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
-  font-size: 16px; /* ขยายตัวอักษร */
+  font-size: 16px;
 }
 
-/* ปรับขนาดเซลล์ */
 th, td {
-  padding: 16px; /* เพิ่ม padding */
+  padding: 16px;
   text-align: center;
   border: 1px solid #ccc;
-  vertical-align: middle; 
+  vertical-align: middle;
 }
 
 th {
   background-color: black;
   color: white;
-  font-size: 18px; 
-  vertical-align: middle; 
+  font-size: 18px;
+  vertical-align: middle;
 }
 
 tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-/* ปุ่มลบ */
 .delete-btn {
   display: flex;
   align-items: center;
-  gap: 8px; /* ปรับระยะห่างระหว่างไอคอน */
+  gap: 8px;
   background: none;
   border: none;
   cursor: pointer;
-}
-
-.delete-btn img {
-  width: 25px;
-  height: 25px;
 }
 
 .delete-btn img {
@@ -112,20 +108,48 @@ tr:nth-child(even) {
   height: 30px;
 }
 
-/* การโฮเวอร์ของตัวเลือก */
-.people select:hover {
-  background-color: #807f7f;
+.delete-btn img {
+  width: 30px;
+  height: 30px;
 }
 
-/* รูปสามเหลี่ยม */
-.triangle-down {
+.status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: black;
+  font-weight: bold;
+}
+
+.status.approved {
+  color: green;
+  white-space: nowrap;
+}
+
+.status.pending {
+  color: rgb(12, 12, 12);
+  white-space: nowrap;
+}
+
+.status img {
+  width: 20px;
+  height: 20px;
+}
+
+.iconG {
+  width: 50px; /* ใช้ขนาด 50px */
+  height: 50px; /* ใช้ขนาด 50px */
   display: inline-block;
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid white;
-  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.sport select:hover {
+  background-color: #807f7f;
+  color: white;
+}
+
+.rejected {
+  color: red;
 }
 
 @media (max-width: 600px) {
@@ -146,7 +170,6 @@ tr:nth-child(even) {
   th, td {
     padding: 8px;
     gap: 8px;
-   
   }
 
   .profile-pic {
@@ -160,47 +183,3 @@ tr:nth-child(even) {
     align-items: center;
   }
 }
-
-
-.status {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: black;
-  font-weight: bold;
-}
-
-
-.status.approved {
-  color: green;
-  white-space: nowrap; 
-}
-
-
-.status.pending {
-  color: rgb(12, 12, 12);
-  white-space: nowrap; 
-}
-
-.status img {
-  width: 20px;
-  height: 20px;
-}
-
-
-.iconG {
-  width: 25px;
-  height: 25px;
-  display: inline-block;
-  vertical-align: middle; 
-}
-
-.sport select:hover {
-  background-color: #807f7f; 
-  color: white;               
-}
-.rejected {
-  color: red;
-}
-
-
