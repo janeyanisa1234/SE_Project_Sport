@@ -1,0 +1,59 @@
+.places-list {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 70px;
+    margin-left: 30px;
+  }
+  
+  .place-card {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+  }
+  
+  .place-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 16px;
+  }
+  
+  .place-info {
+    flex: 1;
+  }
+  
+  .place-name {
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .place-address {
+    font-size: 14px;
+    color: #6B6767;
+  }
+  
+  /* Responsive: ปรับ Layout เมื่อหน้าจอเล็กลง */
+  @media (max-width: 600px) {
+    .place-card {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+  
+    .place-image {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+  }
+  

@@ -1,0 +1,66 @@
+/* EmailInput.css */
+.email-container {
+    min-height: 100vh;
+    background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .email-overlay {
+    position: absolute;
+  
+    inset: 0;
+  
+    background-color: rgba(240, 224, 224, 0.507);
+  
+    display: flex;
+  
+    align-items: center;
+  
+    justify-content: center;
+  }
+  
+  .email-box {
+    background: rgb(255, 255, 255);
+    padding: 3rem;
+    border-radius: 10px;
+    text-align: center;
+    color: rgb(0, 0, 0);
+    width: 500px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .email-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    color: black;
+  }
+  
+  .email-warning {
+    color: red;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+  
+  .email-button {
+    margin-top: 20px;
+    width: 100%;
+    background: #22c55e;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .email-button:hover {
+    background: #16a34a;
+  }
+  

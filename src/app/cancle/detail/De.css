@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: var(--foreground);
+  background-image: url('/picturepalm/background.jpg');
+  background-size: cover; 
+  background-position: center;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100vh;
+  margin: 0; 
+}
+
+/* ปรับให้ปุ่มอยู่บรรทัดเดียวกันเมื่อจอใหญ่ขึ้น */
+@media (min-width: 640px) { 
+  .cancel-btn, .confirm-btn {
+    width: 40%;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+  .Box {
+    padding: 20px;
+  }
+}
+
+@media (min-width: 640px) {
+  .button-group {
+    flex-direction: row;
+  }
+  .cancel-btn, .confirm-btn {
+    width: 40%;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: 90vw;
+    height: auto;
+    padding: 15px;
+  }
+}
+
+.detail {
+  margin-top: 10px;
+  margin-left: 30px;
+  display: flex;
+  color: #0a0a0a;
+  font-size: 24px;
+  gap: 0;
+}
+
+.Arrow {
+  margin-top: 10px;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  margin-right: 10px;
+}
+
+/* แถบแสดงสถานะ */
+.process-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  max-width: 500px;
+  margin: 30px auto;
+  position: relative;
+}
+
+.process-bar::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 480px;
+  height: 3px;
+  background-color: white;
+  z-index: 0;
+}
+
+.process-step {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(185, 183, 183);
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+
+.process-step.active {
+  background-color: black;
+}
+
+
+
+/* ข้อความสถานะ */
+.process-text {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  max-width: 500px;
+  margin: 10px auto;
+  font-size: 16px;
+}
+
+
+.container {
+  background-color: rgb(231, 229, 229);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 50px auto 0;
+  padding: 20px;
+  padding-left: 40px;
+  width: 90vw;
+  max-width: 600px;
+  height: auto;
+  border-radius: 15px;
+}
+
+.name-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid black;
+}
+
+.name {
+  font-size: 24px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.sport-type {
+  font-size: 24px;
+  text-align: right;
+}
+
+.refund-details p {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: left;
+}

@@ -1,0 +1,92 @@
+
+.sidebar {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 280px;
+  height: 100%;
+  background: black;
+  color: white;
+  text-align: center;
+  transition: left 0.3s ease;
+  flex-direction: column;
+  transform: translateX(-100%);
+  padding: 10px;
+  z-index: 1000;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.logo {
+ background-color: black;  
+ color: white;  
+ display: flex;  
+ text-align: center;
+ font-size: 24px;
+ margin-left: 50px;
+ 
+  
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid gray;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.sidebar li img {
+  width: 20px;
+  margin-right: 10px;
+}
+.sidebar li {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid gray;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+
+
+.sidebar li:hover {
+  background-color: #807f7f;  
+}
+
+
+.sidebar li:hover img {
+  filter: grayscale(100%);  
+}
+
+
+.sidebar-link {
+  text-decoration: none;
+  color: inherit; /* คงสีตามปกติ */
+}
+
+
+
+.logout {
+  width: 100%;
+  background: white;
+  color: black;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 20px;
+  margin-top: 340px;
+}

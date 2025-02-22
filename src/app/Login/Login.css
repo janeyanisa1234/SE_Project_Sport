@@ -1,0 +1,103 @@
+/* Login.css */
+.login-container {
+  min-height: 100vh;
+  background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background-color: rgba(240, 224, 224, 0.507);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.login-box {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  width: 350px;
+}
+.profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.profile-icon .icon {
+  font-size: 4rem;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.input-field {
+  width: 100%;
+  color: rgb(0, 0, 0);
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  gap: 5px;
+}
+
+.forgot-password {
+  color: #ffffff;
+  text-decoration: none;
+  margin-left: auto;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.button-group {
+  display: flex;
+  gap: 3rem;
+ 
+}
+
+.btn {
+  flex: 1;
+  background: white;
+  color: black;
+  padding: 0.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 150px;
+}
+
+.btn:hover {
+  background: #f1f1f1;
+}

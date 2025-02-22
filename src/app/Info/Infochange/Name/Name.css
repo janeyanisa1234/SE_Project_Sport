@@ -1,0 +1,70 @@
+.name-container {
+    height: 100vh;
+    background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .overlay {
+    position: absolute;
+  
+    inset: 0;
+  
+    background-color: rgba(240, 224, 224, 0.507);
+  
+    display: flex;
+  
+    align-items: center;
+  
+    justify-content: center;
+  }
+  
+  .name-box {
+    background: rgb(252, 251, 251);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    color: rgb(0, 0, 0);
+    width: 450px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .input-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid rgb(0, 0, 0);
+    color: black;
+  }
+  
+  .save-btn {
+    width: 100%;
+    background: #22c55e;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .save-btn:hover {
+    background: #16a34a;
+  }
+  
