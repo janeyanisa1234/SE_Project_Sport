@@ -132,7 +132,7 @@ export default function Dashboard() {
       {showBlockPopup && (
         <div className="popup-overlay">
           <div className="popup-content">
-          <img src="/Block.svg"/>
+          <img src="/pictureAdmin/Block.svg"/>
             <h2>ระงับบัญชี</h2>
             <p>คุณต้องการระงับบัญชีของ {selectedUser?.name} หรือไม่?</p>
             <p>หากยืนยันบัญชีนี้จะถูกระงับการใช้งาน 7 วัน</p>
@@ -161,7 +161,7 @@ export default function Dashboard() {
       {showDeletePopup && (
         <div className="popup-overlay">
           <div className="popup-content">
-            <img src="/delete.svg"/>
+            <img src="/pictureAdmin/delete.svg"/>
             <h2>ลบบัญชี</h2>
             <p>คุณต้องการลบบัญชีของ {selectedUser?.name} หรือไม่?</p>
             <p>หากกดยืนยันแล้วจะไม่สามารถยกเลิกได้</p>
