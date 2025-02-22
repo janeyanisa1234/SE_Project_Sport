@@ -1,22 +1,22 @@
 "use client";
-
-
 import { Eye, EyeOff } from "lucide-react";
-import Image from "next/image"; // เพิ่มการ import นี้
-import "./profile.css"; 
+import Image from "next/image";
+import "./profile.css";
 import Tab from "../Tabbar/page.js";
 import "../Dashboard/slidebar.css";
 import React, { useState } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
 
-
 export default function Admin() {
   const [showPassword, setShowPassword] = useState(false);
+
+  // รหัสผ่านที่ต้องการแสดง
+  const password = "jane1234";
 
   return (
     <>
       <Tab />
-      <Sidebar/>
+      <Sidebar />
       <div className="admin-container" style={{ backgroundImage: "url('/pictureAdmin/stadium-bg.jpg')" }}>
         <div className="admin-overlay">
           <div className="admin-card">
@@ -29,15 +29,10 @@ export default function Admin() {
             <p className="admin-text"><strong>อีเมล : </strong></p>
             <p className="admin-text"><strong>เบอร์โทร : </strong></p>
 
-            <div className="admin-password-container">
-              <p><strong>รหัสผ่าน : </strong> {showPassword ? "" : "********"}</p>
-              <button onClick={() => setShowPassword(!showPassword)}>
-                {/* เพิ่มคลาส text-black เพื่อเปลี่ยนสีไอคอนเป็นสีดำ */}
-                {showPassword ? (
-                  <EyeOff size={24} className="text-black" />
-                ) : (
-                  <Eye size={24} className="text-black" />
-                )}
+            <div className="profile-password">
+              <p className="mr-2"><strong>รหัสผ่าน : </strong> {showPassword ? password : "********"}</p>
+              <button onClick={() => setShowPassword(!showPassword)} className="toggle-btn">
+                {showPassword ? <EyeOff size={24} className="icon" /> : <Eye size={24} className="icon" />}
               </button>
             </div>
 

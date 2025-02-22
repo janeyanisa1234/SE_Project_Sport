@@ -1,88 +1,92 @@
 
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: -300px; /* ซ่อน sidebar ไว้ก่อน */
-    width: 300px;
-    height: 100vh;
-    background: black;
-    z-index: 1000; 
-    overflow-y: auto;
-    color: white;
-    transition: left 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-  }
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 280px;
+  height: 100%;
+  background: black;
+  color: white;
+  text-align: center;
+  transition: left 0.3s ease;
+  flex-direction: column;
+  transform: translateX(-100%);
+  padding: 10px;
+  z-index: 1000;
+}
 
-  .sidebar.open {
-    left: 0;
-  }
-  
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.logo {
+ background-color: black;  
+ color: white;  
+ display: flex;  
+ text-align: center;
+ font-size: 24px;
+ margin-left: 50px;
  
+  
+}
 
-  .logo {
-   background-color: black;  
-   color: white;  
-   display: flex;  
-   align-items: center;
-   text-align: center;
-   font-size: 24px;
-   margin-left: 50px;
-   
-    
-  }
+.sidebar-link {
+  text-decoration: none;
+  color: inherit; /* คงสีตามปกติ */
+}
 
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar li {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid gray;
-    cursor: pointer;
-    font-size: 20px;
-  }
-  
-  .sidebar li img {
-    width: 20px;
-    margin-right: 10px;
-  }
-  .sidebar li {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid gray;
-    cursor: pointer;
-    font-size: 20px;
-    transition: background-color 0.3s ease;
-  }
-  
-  
-  .sidebar li:hover {
-    background-color: #807f7f;  
-  }
-  
-  
-  .sidebar li:hover img {
-    filter: grayscale(100%);  
-  }
-  
 
-  .logout {
-    background: white;
-    color: black;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: auto;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 20px;
-  }
-  
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid gray;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.sidebar li img {
+  width: 20px;
+  margin-right: 10px;
+}
+.sidebar li {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid gray;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+
+
+.sidebar li:hover {
+  background-color: #807f7f;  
+}
+
+
+.sidebar li:hover img {
+  filter: grayscale(100%);  
+}
+
+
+.logout {
+  width: 94%;
+  background: white;
+  color: black;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 20px;
+  position: fixed; /* หรือใช้ absolute ก็ได้ */
+  bottom: 30px;
+}
