@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: var(--foreground);
+  background-color: rgb(207, 206, 206);
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100vh;
+  margin: 0;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.iconG {
+  width: 50px;
+  height: 50px;
+  background-color: black;
+  border-radius: 10%;
+  margin-left: 25px;
+}
+
+/* ปรับ Container ให้ใช้ Flex แทน Grid */
+.container, .container3 {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  width: 95%;
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 0 15px;
+}
+
+.container2 {
+  display: flex;
+  justify-content: center;
+  width: 95%;
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 0 15px;
+}
+
+/* กำหนดขนาดกล่องให้แน่นอน */
+.box {
+  flex: 1;
+  background-color: white;
+  padding: 25px;
+  text-align: center;
+  border-radius: 15px;
+  font-size: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 180px;
+  width: calc(33.333% - 17px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.box2 {
+  background-color: white;
+  padding: 25px;
+  text-align: center;
+  border-radius: 15px;
+  font-size: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .container, .container3 {
+    flex-wrap: wrap;
+  }
+  
+  .box {
+    width: calc(50% - 13px);
+    min-height: 160px;
+  }
+  
+  .box2 {
+    min-height: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container, .container3 {
+    flex-direction: column;
+  }
+  
+  .box {
+    width: 100%;
+    min-height: 140px;
+  }
+  
+  .box2 {
+    min-height: 300px;
+  }
+}
