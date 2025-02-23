@@ -1,0 +1,149 @@
+/* ตั้งค่าพื้นหลัง */
+.background {
+    background-image: url('/pictureowner/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+  }
+  
+  /* ปรับหัวข้อ */
+  .header-title {
+    position: relative;
+    top: 55px; /* ขยับลง 50px */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 60px;
+    width: 100%;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+  .header-title h1 {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* ปรับการแสดงผลในส่วนของรายละเอียด */
+  .container {
+    position: relative;
+    top: 75px; /* ขยับลง 50px */
+    margin: 40px auto;
+    background-color: white;
+    max-width: 1200px; /* เพิ่มขนาดสูงสุดให้กรอบ */
+    min-height: 350px;
+    border-radius: 12px; /* เพิ่มความโค้งมน */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* ปรับเงาให้ดูนุ่มนวล */
+    padding: 30px;
+  }
+  
+  /* เพิ่มการจัดการของข้อความ */
+  .section-title {
+    padding: 0;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* จัดการการแสดงผลข้อมูล */
+  .promo-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 2px solid #ddd; /* เพิ่มขอบที่ชัดเจน */
+  }
+  
+  .info-row {
+    display: flex;
+    align-items: center;
+  }
+  
+  .info-row h3 {
+    margin-right: 20px;
+    color: #333;
+    font-size: 18px; /* เพิ่มขนาดฟอนต์ */
+    font-weight: 600;
+  }
+  
+  .highlight-text {
+    font-size: 16px;
+    color: #1B9FEC;
+    font-weight: bold;
+  }
+  
+  /* ปรับปรุงตารางโปรโมชั่น */
+  .promo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px; /* เพิ่มขนาดตัวอักษร */
+    margin-top: 20px;
+  }
+  
+  .promo-table th {
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f1f1f1;
+    border: 1px solid #B4B1B1;
+    text-align: left;
+  }
+  
+  .promo-table td {
+    border: 1px solid #B4B1B1;
+    height: 50px;
+    padding: 12px; /* เพิ่ม padding ให้เซลล์ดูสะดวกตา */
+    text-align: center;
+  }
+  
+  .table-center {
+    text-align: center;
+  }
+  
+  .sport-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .sport-icon {
+    width: 50px;
+    margin-right: 10px;
+  }
+  
+  /* เพิ่มฟังก์ชันปุ่ม */
+  .button-container {
+    margin: 40px 0;
+    display: flex;
+    justify-content: center; /* จัดปุ่มให้กึ่งกลาง */
+  }
+  
+  .back-button {
+    position: relative;
+    top: 75px; /* ขยับลง 50px */
+    width: 300px; /* ลดขนาดให้เหมาะสม */
+    height: 50px;
+    margin-top: 20px;
+    border-radius: 25px;
+    font-size: 18px;
+    background-color: #48FF48;
+    padding: 12px 20px;
+    color: black;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* เพิ่มเงา */
+    transition: background-color 0.3s, box-shadow 0.3s; /* เพิ่มการเปลี่ยนแปลง */
+  }
+  
+  .back-button:hover {
+    background-color: #3eeb3e;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* เปลี่ยนเงาเมื่อ hover */
+  }
+  
