@@ -1,149 +1,347 @@
 /* ตั้งค่าพื้นหลัง */
 .background {
-    background-image: url('/pictureowner/bg.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    width: 100%;
-    position: relative;
-  }
-  
-  /* ปรับหัวข้อ */
-  .header-title {
-    position: relative;
-    top: 55px; /* ขยับลง 50px */
-    margin-top: 20px;
-    margin-bottom: 20px;
-    height: 60px;
-    width: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background-image: url('/pictureowner/bg.png'); /* ตรวจสอบว่าไฟล์อยู่ใน public/pictureowner/bg.png */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
 }
-  
-  .header-title h1 {
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
+
+/* ปรับหัวข้อ */
+.header-title {
+  position: relative;
+  top: 55px;           /* ขยับลง */
+  margin-top: 20px;
+  margin-bottom: 20px;
+  height: 60px;
+  width: 100%;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-title h1 {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Container สำหรับเนื้อหา */
+.container {
+  position: relative;
+  top: 75px; /* ขยับลง 50px */
+  margin: 40px auto;
+  background-color: white;
+  max-width: 1200px; /* เพิ่มขนาดสูงสุดให้กรอบ */
+  min-height: 350px;
+  border-radius: 12px; /* เพิ่มความโค้งมน */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* ปรับเงาให้ดูนุ่มนวล */
+  padding: 30px;
+}
+
+.container:hover {
+  transform: translateY(-10px);
+}
+
+/* ส่วนหัวข้อของ section (ถ้ามี) */
+.section-title {
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* จัดการข้อมูลโปรโมชั่น (ถ้าใช้ตาราง) */
+.promo-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 2px solid #ddd;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+}
+
+.info-row h3 {
+  margin-right: 20px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.highlight-text {
+  font-size: 16px;
+  color: #1B9FEC;
+  font-weight: bold;
+}
+
+.promo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.promo-table th {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #f1f1f1;
+  border: 1px solid #B4B1B1;
+  text-align: left;
+}
+
+.promo-table td {
+  border: 1px solid #B4B1B1;
+  height: 50px;
+  padding: 12px;
+  text-align: center;
+}
+
+.table-center {
+  text-align: center;
+}
+
+.sport-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sport-icon {
+  width: 50px;
+  margin-right: 10px;
+}
+
+/* ฟอร์ม */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.form-title {
+  width: 250px;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.input-field {
+  width: 50%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #1B9FEC;
+}
+
+.date-time-group {
+  display: flex;
+  gap: 10px;
+  width: 70%;
+}
+
+/* ปุ่ม */
+.add-button {
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #f4f4f4;
+  transition: background-color 0.2s ease-in-out, transform 0.1s;
+}
+
+.add-button:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.add-button .plusIcon {
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 5px;
+}
+
+.add-button span {
+  font-size: 16px;
+  color: black;
+}
+
+.button-group,
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.cancel-button,
+.confirm-button {
+  padding: 12px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 200px;
+  border: none;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.cancel-button {
+  background-color: #F8F8FF;
+  color: #333;
+}
+
+.confirm-button {
+  background-color: #48FF48;
+  color: #333;
+}
+
+.cancel-button:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.confirm-button:hover {
+  background-color: #3eeb3e;
+  transform: scale(1.05);
+}
+
+/* ปุ่มกลับ (Back Button) */
+.back-button {
+  position: relative;
+  top: 75px;
+  width: 300px;
+  height: 50px;
+  margin-top: 20px;
+  border-radius: 25px;
+  font-size: 18px;
+  background-color: #48FF48;
+  padding: 12px 20px;
+  color: black;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.back-button:hover {
+  background-color: #3eeb3e;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  background-color: white;
+  padding: 40px 60px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 90%;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  /* ปรับการแสดงผลในส่วนของรายละเอียด */
-  .container {
-    position: relative;
-    top: 75px; /* ขยับลง 50px */
-    margin: 40px auto;
-    background-color: white;
-    max-width: 1200px; /* เพิ่มขนาดสูงสุดให้กรอบ */
-    min-height: 350px;
-    border-radius: 12px; /* เพิ่มความโค้งมน */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* ปรับเงาให้ดูนุ่มนวล */
-    padding: 30px;
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* เพิ่มการจัดการของข้อความ */
-  .section-title {
-    padding: 0;
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  /* จัดการการแสดงผลข้อมูล */
-  .promo-info {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 2px solid #ddd; /* เพิ่มขอบที่ชัดเจน */
-  }
-  
-  .info-row {
-    display: flex;
-    align-items: center;
-  }
-  
-  .info-row h3 {
-    margin-right: 20px;
-    color: #333;
-    font-size: 18px; /* เพิ่มขนาดฟอนต์ */
-    font-weight: 600;
-  }
-  
-  .highlight-text {
-    font-size: 16px;
-    color: #1B9FEC;
-    font-weight: bold;
-  }
-  
-  /* ปรับปรุงตารางโปรโมชั่น */
-  .promo-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px; /* เพิ่มขนาดตัวอักษร */
-    margin-top: 20px;
-  }
-  
-  .promo-table th {
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #f1f1f1;
-    border: 1px solid #B4B1B1;
-    text-align: left;
-  }
-  
-  .promo-table td {
-    border: 1px solid #B4B1B1;
-    height: 50px;
-    padding: 12px; /* เพิ่ม padding ให้เซลล์ดูสะดวกตา */
-    text-align: center;
-  }
-  
-  .table-center {
-    text-align: center;
-  }
-  
-  .sport-info {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .sport-icon {
-    width: 50px;
-    margin-right: 10px;
-  }
-  
-  /* เพิ่มฟังก์ชันปุ่ม */
-  .button-container {
-    margin: 40px 0;
-    display: flex;
-    justify-content: center; /* จัดปุ่มให้กึ่งกลาง */
-  }
-  
-  .back-button {
-    position: relative;
-    top: 75px; /* ขยับลง 50px */
-    width: 300px; /* ลดขนาดให้เหมาะสม */
-    height: 50px;
-    margin-top: 20px;
-    border-radius: 25px;
-    font-size: 18px;
-    background-color: #48FF48;
-    padding: 12px 20px;
-    color: black;
-    cursor: pointer;
-    border: none;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* เพิ่มเงา */
-    transition: background-color 0.3s, box-shadow 0.3s; /* เพิ่มการเปลี่ยนแปลง */
-  }
-  
-  .back-button:hover {
-    background-color: #3eeb3e;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* เปลี่ยนเงาเมื่อ hover */
-  }
-  
+}
+
+.modal-box .icon,
+.modal-icon {
+  background-color: #48FF48;
+  border-radius: 50%;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.modal-box .icon img {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-box h2 {
+  font-size: 24px;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.modal-box p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.modal-button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.modal-button,
+.modal-button-alt {
+  padding: 12px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 250px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-button {
+  background-color: #48FF48;
+  color: black;
+}
+
+.modal-button-alt {
+  background-color: #ccc;
+  color: black;
+}
+
+.modal-button:hover,
+.modal-button-alt:hover {
+  transform: scale(1.05);
+}

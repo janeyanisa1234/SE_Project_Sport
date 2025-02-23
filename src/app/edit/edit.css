@@ -1,39 +1,38 @@
 /* ตั้งค่าพื้นหลัง */
-.background {
-  color: var(--foreground);
+body {
   background-image: url('/pictureowner/bg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   min-height: 100vh;
   width: 100%;
-  position: relative;
 }
 
 /* ปรับหัวข้อ */
 .header-title {
-    position: relative;
-    top: 55px; /* ขยับลง 50px */
-    margin-bottom: 20px;
-    height: 60px;
-    width: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  position: relative;
+  top: 55px; /* จาก group แรก */
+  margin-top: 20px; /* จาก group ที่สอง */
+  margin-bottom: 20px;
+  height: 60px;
+  width: 100%;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .header-title h1 {
-  font-size: 24px;
-  font-weight: bold;
   text-align: center;
+  font-size: 20px; /* ใช้ขนาดจาก group แรก */
+  font-weight: bold;
 }
 
 /* ปรับการแสดงผลในส่วนของรายละเอียด */
 .container {
   position: relative;
-  top: 80px;
+  top: 60px;
   margin: 40px auto;
   background-color: white;
   max-width: 600px;
@@ -45,7 +44,7 @@
 }
 
 .container:hover {
-  transform: translateY(-10px); /* ทำให้กรอบลอยขึ้นเล็กน้อยเมื่อ hover */
+  transform: translateY(-10px);
 }
 
 /* จัดการข้อความในฟอร์ม */
@@ -67,35 +66,52 @@
 .input-field {
   width: 50%;
   padding: 12px;
-  border-radius: 10px; /* เพิ่มความโค้งมนให้กับฟิลด์ */
+  border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 16px;
-  transition: border-color 0.3s ease; /* เพิ่มการเปลี่ยนแปลงของสีเมื่อ focus */
+  transition: border-color 0.3s ease;
 }
 
 .input-field:focus {
-  border-color: #1B9FEC; /* เมื่อมีการคลิกที่ฟิลด์ให้มีสีฟ้า */
+  border-color: #1B9FEC;
+}
+
+.date-time-group {
+  display: flex;
+  gap: 10px;
+  width: 70%;
 }
 
 /* ปรับปุ่ม */
 .add-button {
   width: 150px;
-  height: 150px;
-  border-radius: 15px;
+  height: 50px; /* ใช้จาก group ที่สอง */
+  border-radius: 10px;
   border: 2px solid #ccc;
   font-size: 16px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: background-color 0.3s, border-color 0.3s;
+  background-color: #f4f4f4;
+  transition: background-color 0.2s ease-in-out, transform 0.1s;
 }
 
 .add-button:hover {
-  background-color: #1B9FEC;
-  border-color: #1B9FEC; /* เปลี่ยนสีเมื่อ hover */
-  color: white;
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.add-button .plusIcon {
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 5px;
+}
+
+.add-button span {
+  font-size: 16px;
+  color: black;
 }
 
 /* กลุ่มปุ่ม */
@@ -106,6 +122,7 @@
   margin-top: 30px;
 }
 
+/* ปุ่มยกเลิกและยืนยัน */
 .cancel-button,
 .confirm-button {
   padding: 12px 20px;
@@ -155,16 +172,15 @@
 /* modal box */
 .modal-box {
   background-color: white;
-  padding: 40px 60px;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
-  max-width: 600px;
-  width: 90%;
-  animation: fadeIn 0.3s ease-in-out; /* เพิ่มการแอนิเมชั่นให้โมดัล */
+      padding: 30px 50px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      max-width: 650px;
+      width: 90%;
+      animation: fadeIn 0.3s ease-in-out;
 }
 
-/* แอนิเมชั่น fade-in */
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -176,13 +192,16 @@
   }
 }
 
-/* เพิ่มสัญลักษณ์การสำเร็จ */
-.modal-box .icon {
+/* สัญลักษณ์และข้อความใน modal */
+.modal-box .icon,
+.modal-icon {
   background-color: #48FF48;
-  border-radius: 50%;
-  padding: 20px;
+  border-radius: 100%;
+  padding: 0px;
   margin-bottom: 20px;
   display: inline-block;
+  width: 80px;
+  height: 80px;
 }
 
 .modal-box .icon img {
@@ -190,7 +209,6 @@
   height: 20px;
 }
 
-/* เพิ่มข้อความในโมดัล */
 .modal-box h2 {
   font-size: 24px;
   color: #333;
@@ -203,201 +221,37 @@
   color: #555;
   margin-bottom: 30px;
 }
-.background {
-    background-image: url('/bg.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    width: 100%;
-  }
-  
-  .header-title {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    height: 60px;
-    width: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+/* ปุ่มใน modal */
+.modal-button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
-  
-  .header-title h1 {
-    text-align: center;
-    font-size: 20px; /* ขนาดข้อความ */
-    font-weight: 600; /* เพิ่มความหนาของฟอนต์ */
-  }
-  
-  .container {
-    margin: 20px auto;
-    background-color: white;
-    border-radius: 15px;
-    padding: 30px;
-    max-width: 600px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ container */
-  }
-  
-  .form-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .form-title {
-    width: 250px;
-    font-size: 18px;
-    color: #333;
-    font-weight: 500;
-  }
-  
-  .input-field {
-    width: 50%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-  }
-  
-  .date-time-group {
-    display: flex;
-    gap: 10px;
-    width: 70%;
-  }
-  
-  .add-button {
-    width: 150px;
-    height: 50px;
-    border-radius: 10px;
-    border: 2px solid #ccc;
-    font-size: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: #f4f4f4;
-    transition: background-color 0.2s ease-in-out, transform 0.1s;
-  }
-  
-  .add-button:hover {
-    background-color: #e0e0e0;
-    transform: scale(1.05);
-  }
-  
-  .add-button .plusIcon {
-    font-size: 30px;
-    font-weight: bold;
-    color: black;
-    margin-bottom: 5px;
-  }
-  
-  .add-button span {
-    font-size: 16px;
-    color: black;
-  }
-  
-  .button-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 30px;
-  }
-  
-  .cancel-button,
-  .confirm-button {
-    padding: 12px 20px;
-    font-size: 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 200px;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .cancel-button {
-    background-color: #F8F8FF;
-    color: black;
-  }
-  
-  .confirm-button {
-    background-color: #48FF48;
-    color: black;
-  }
-  
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  
-  .modal-box {
-    background-color: white;
-    padding: 30px 50px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
-    width: 90%;
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .modal-icon {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 20px;
-  }
-  
-  /* ปรับปุ่มใน modal */
-  .modal-button-group {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .modal-button,
-  .modal-button-alt {
-    padding: 12px 20px;
-    font-size: 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 250px;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
-  
-  .modal-button {
-    background-color: #48FF48;
-    color: black;
-  }
-  
-  .modal-button-alt {
-    background-color: #ccc;
-    color: black;
-  }
-  
-   .modal-button:hover,
-  .modal-button-alt:hover {
-    transform: scale(1.05);
-  } 
+
+.modal-button,
+.modal-button-alt {
+  padding: 12px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 250px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-button {
+  background-color: #48FF48;
+  color: black;
+}
+
+.modal-button-alt {
+  background-color: #ccc;
+  color: black;
+}
+
+.modal-button:hover,
+.modal-button-alt:hover {
+  transform: scale(1.05);
+}

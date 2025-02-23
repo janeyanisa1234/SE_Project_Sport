@@ -18,6 +18,7 @@ export default function Promotion() {
   useEffect(() => {
     window.scrollTo(0, 0); // เมื่อหน้าโหลดใหม่จะไปที่ด้านบนสุด
   }, []);
+
   // กำหนดค่า promotions ให้เป็นข้อมูลเริ่มต้น
   const [promotions, setPromotions] = useState([
     {
@@ -35,6 +36,7 @@ export default function Promotion() {
       duration: "20-12-2024 00:00 - 25-12-2024 23:59",
     },
   ]);
+
   const router = useRouter();
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -77,6 +79,7 @@ export default function Promotion() {
   useEffect(() => {
     window.scrollTo(0, 0); // ทุกครั้งที่หน้า Promotion โหลดใหม่
   }, []);
+
   return (
     <div
       style={{
@@ -104,7 +107,7 @@ export default function Promotion() {
           alignItems: "center",
         }}
       >
-        <h1 style={{ textAlign: "center", color: "white", fontSize: "20px", }}>
+        <h1 style={{ textAlign: "center", color: "white", fontSize: "20px" }}>
           รายการโปรโมชั่นส่วนลด
         </h1>
       </div>
@@ -122,7 +125,10 @@ export default function Promotion() {
         }}
       >
         <div>
+          {/* เพิ่ม id และ name ให้กับ select element */}
           <select
+            id="promotion-select"
+            name="promotionSelect"
             className="nav-button"
             style={{
               backgroundColor: "#D9D9D9",
@@ -149,8 +155,11 @@ export default function Promotion() {
             <h4 style={{ color: "#1B9FEC" }}>สร้างโปรโมชั่นส่วนลด</h4>
           </a>
           <h4 style={{ marginLeft: "20px" }}>ชื่อโปรโมชั่น :</h4>
+          {/* เพิ่ม id และ name ให้กับ input element */}
           <input
             type="text"
+            id="search-input"
+            name="search"
             className="search-input"
             placeholder="ค้นหาโปรโมชั่น..."
             style={{
@@ -392,8 +401,8 @@ export default function Promotion() {
                   borderRadius: "12px",
                   textAlign: "center",
                   boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
-                  maxWidth: "500px",
-                  width: "90%",
+                  maxWidth: "600px", // ปรับให้กล่องกว้างขึ้น
+                  width: "95%", // ใช้เปอร์เซ็นต์ที่มากขึ้น
                   transition: "transform 0.3s ease, opacity 0.3s ease",
                 }}
               >
@@ -461,12 +470,14 @@ export default function Promotion() {
                 {showSuccessModal && (
                   <>
                     <img
-                      src="/pictureadmin/correct.png"
+                      src="/pictureowner/correct.png"
                       alt="Success Icon"
                       style={{
                         width: "60px",
                         height: "60px",
-                        marginBottom: "10px",
+                        marginBottom: "20px",
+                        display: "block",
+                        margin: "0 auto",
                       }}
                     />
                     <h2

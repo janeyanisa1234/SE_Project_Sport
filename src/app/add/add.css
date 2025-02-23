@@ -8,17 +8,17 @@ body {
   margin: 0;
 }
   
-  .header-title {
-    margin-top: 75px;
-    margin-bottom: 20px;
-    height: 60px;
-    width: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.header-title {
+  margin-top: 75px;
+  margin-bottom: 20px;
+  height: 60px;
+  width: 100%;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
   
   .header-title h1 {
     text-align: center;
