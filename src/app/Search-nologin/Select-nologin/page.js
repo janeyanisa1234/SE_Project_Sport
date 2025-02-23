@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import "./Select.css";
+import "./Select-nologin.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Tabbar from "../../tabbar-nologin/tab";
 import Headfunction from "../../Headfunction/page";
-import { Link } from "lucide-react";
+import Link from "next/link";  // ใช้ Link จาก next/link
 
-const SelectPlace = () => {
+const SelectPlacenologin = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [activeCategory, setActiveCategory] = useState("ยอดนิยม");
   const [selectedSlot, setSelectedSlot] = useState({});
@@ -110,24 +110,24 @@ const SelectPlace = () => {
     ],
   };
 
-  const isLoggedIn = false; // เปลี่ยนเป็นตัวแปรที่ใช้เช็คว่าผู้ใช้ล็อกอินหรือยัง
 
-const handleVenueSelect = (venue) => {
-  if (!isLoggedIn) {
-    
-        alert("กรุณาเข้าสู่ระบบก่อนทำการจอง");
-   
-    
-    
-    return;
-  }
+  const isLoggedIn = false;
 
-  if (selectedVenue?.title === venue.title) {
-    return;
-  }
-  setSelectedVenue(venue);
-  setSelectedSlot({});
-};
+  const handleVenueSelect = (venue) => {
+    if (!isLoggedIn) {
+      setShowModal(true);
+      return;
+    }
+    if (selectedVenue?.title === venue.title) {
+      return;
+    }
+    setSelectedVenue(venue);
+    setSelectedSlot({});
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -149,7 +149,6 @@ const handleVenueSelect = (venue) => {
           </div>
         </div>
 
-        {/* Categories Navigation */}
         <nav className="category-nav">
           {categories.map((category) => (
             <button
@@ -162,17 +161,17 @@ const handleVenueSelect = (venue) => {
           ))}
         </nav>
 
-        {/* Legend for available/unavailable times */}
-        <div className="legend-container">
-          <div className="legend-item">
-            <span className="legend-color available"></span>
-            <span>ว่าง</span>
-            <span className="legend-color unavailable"></span>
-            <span>ไม่ว่าง</span>
+        {activeCategory !== "ยอดนิยม" && (
+          <div className="legend-container">
+            <div className="legend-item">
+              <span className="legend-color available"></span>
+              <span>ว่าง</span>
+              <span className="legend-color unavailable"></span>
+              <span>ไม่ว่าง</span>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Popular Venues Section */}
         {activeCategory === "ยอดนิยม" && (
           <div className="popular-venues">
             {popularVenues.map((venue, index) => (
@@ -192,7 +191,6 @@ const handleVenueSelect = (venue) => {
           </div>
         )}
 
-        {/* Venue List */}
         {activeCategory !== "ยอดนิยม" && venues[activeCategory]?.map((venue, index) => (
           <div
             className={`venue-card ${selectedVenue?.title === venue.title ? "selected" : ""}`}
@@ -222,8 +220,20 @@ const handleVenueSelect = (venue) => {
           </div>
         ))}
       </div>
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-btn" onClick={handleCloseModal}>×</button>
+            <h2>กรุณาเข้าสู่ระบบก่อนทำการจอง</h2>
+            <Link href="/Login">
+              <button className="login-btn">เข้าสู่ระบบ</button>
+            </Link>
+          </div>
+        </div>
+      )}
     </>
   );
 };
 
-export default SelectPlace;
+export default SelectPlacenologin;

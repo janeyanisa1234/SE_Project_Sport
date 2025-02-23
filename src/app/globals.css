@@ -40,6 +40,7 @@ body {
 }
 /* Carousel Styles */
 .carousel {
+  padding-top: 50px;
   position: relative;
   width: 100%;  
   height: 300px;
@@ -57,7 +58,8 @@ body {
 /* Promotion and Popular Sections */
 .promotion-section,
 .popular-section {
-  margin: 40px 20px;
+  margin-left: 4%;
+  margin-right: 3%;
   text-align: left;
   position: relative;
 }

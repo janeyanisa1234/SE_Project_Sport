@@ -59,7 +59,7 @@ export default function Login() {
                   <button className="btn">ลงทะเบียน</button>
                 </Link>
 
-                <Link href={"/Login/Homepage"}>
+                <Link href={"/Homepage"}>
                   <button className="btn">เข้าสู่ระบบ</button>
                 </Link>
               </div>

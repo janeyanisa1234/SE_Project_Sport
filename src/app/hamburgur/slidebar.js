@@ -32,7 +32,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       </Link>
 
         
-      <Link href="/Login/Homepage/Search/Select/payment-qr/payment-confirm/history" className="sidebar-link">
+      <Link href="/Homepage/Search/Select/payment-qr/payment-confirm/history" className="sidebar-link">
         <li>
         <img src="/picturepalm/history.svg" alt="iconhistory" />
         ประวัติการจอง
@@ -40,27 +40,27 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       </Link>
         
 
-      <Link href="/cancle" className="sidebar-link">
+      <Link href="/cancle" className="sidebar-link" >
         <li>
           <img src="/picturepalm/cancle.svg" alt="iconbin" />
            ยกเลิกการจองสนาม
         </li>
       </Link>
-        
 
-        <Link href={"/about"}>
-          <li>
-            <img src="/picturepalm/aboutme.svg" alt="iconabout" />
-            เกี่ยวกับเรา
-          </li>
-        </Link>
-        
+      <Link href="/about" className="sidebar-link" >
+        <li>
+          <img src="/picturepalm/aboutme.svg" alt="iconabout" />
+          เกี่ยวกับเรา
+        </li>
+      </Link>
       </ul>
 
       {/* ปุ่มออกจากระบบ */}
-      <button className="logout">
-        <img src="/picturepalm/logout.svg" alt="logout" /> ออกจากระบบ
-      </button>
+      <Link href="/" passHref> {/* Add passHref to make it work well with buttons */}
+        <button className="logout">
+          <img src="/pictureAdmin/logout.svg" alt="logout" /> ออกจากระบบ
+        </button>
+      </Link>
     </div>
   );
 }

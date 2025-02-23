@@ -1,12 +1,12 @@
 // Search.js
 "use client";
 
-import "./Search.css";
+import "./Search-nologin.css";
 import Link from "next/link";
 import Tabbar from "../tabbar-nologin/tab";
 import Headfunction from "../Headfunction/page";
 
-export default function PromotionPlace() {
+export default function SearchPlacenologin() {
   const places = [
     {
       name: "AVOCADO",
