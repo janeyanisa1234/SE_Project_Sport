@@ -31,7 +31,7 @@ export default function Tab() {
           />
 
           {/* ปุ่มกลับหน้าแรก */}
-          <Link href="/Login/Homepage">
+          <Link href="/Homepage">
             <img src="/picturepalm/home.jpg" alt="Home" className="home" />
           </Link>
 

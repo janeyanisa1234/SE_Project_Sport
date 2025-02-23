@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import Headfunction from "./Headfunction/page.js";
 import Tabbar from "./tabbar-nologin/tab.js";
+import Link from "next/link";
 import "./globals.css";
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const carouselImages = ["/picturemild/Hit1.svg", "/picturemild/Promotion1.png", "/picturemild/Promotion2.png"];
+  const carouselImages = ["/picturemild/Hit.png", "/picturemild/Avocado.svg", "/picturemild/Mareenont.svg"];
 
   // Change image every 5 seconds
   useEffect(() => {
@@ -45,7 +46,9 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <Link href="/PromotionPlace-no-login">
           <button className="view-more-button">ดูเพิ่มเติม</button>
+          </Link>
         </section>
 
         {/* อันดับสนามกีฬายอดนิยม */}
@@ -64,7 +67,9 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <Link href="/HitPlace-no-login">
           <button className="view-more-button">ดูเพิ่มเติม</button>
+          </Link>
         </section>
       </main>
     </>

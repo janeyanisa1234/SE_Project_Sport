@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Headfunction from "../../../Headfunction/page";
-import Tabbar from "../../../Tab/tab";
+import Headfunction from "../../Headfunction/page";
+import Tabbar from "../../Tab/tab";
 import "./Promotion.css";
 
 export default function PromotionPlace() {
-  const [displayCount, setDisplayCount] = useState("5");
-  const [duration, setDuration] = useState("1");
+  const [displayCount, setDisplayCount] = useState("");
+  const [duration, setDuration] = useState("");
 
   const places = [
     {
@@ -51,7 +51,9 @@ export default function PromotionPlace() {
             value={displayCount}
             onChange={(e) => setDisplayCount(e.target.value)}
           >
-            <option value="" disabled>จำนวนในการแสดง</option>
+            <option value="" disabled hidden>
+              จำนวนในการแสดง
+            </option>
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="15">15</option>
@@ -64,7 +66,9 @@ export default function PromotionPlace() {
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
           >
-            <option value="" disabled>ระยะเวลา</option>
+            <option value="" disabled hidden>
+              ระยะเวลา
+            </option>
             <option value="1">1 เดือน</option>
             <option value="3">3 เดือน</option>
             <option value="6">6 เดือน</option>

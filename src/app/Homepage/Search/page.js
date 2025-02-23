@@ -3,8 +3,8 @@
 
 import "./Search.css";
 import Link from "next/link";
-import Tabbar from "../../../Tab/tab";
-import Headfunction from "../../../Headfunction/page";
+import Tabbar from "../../Tab/tab";
+import Headfunction from "../../Headfunction/page";
 
 export default function PromotionPlace() {
   const places = [

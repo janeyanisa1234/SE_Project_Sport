@@ -19,8 +19,8 @@ const Page = () => {
       <Tabbar/>
 
       {/*  Main Content */}
-      <main className="max-w-4xl mx-auto p-6 flex-grow">
-        <h1 className="text-3xl font-bold mb-4 text-black">เกี่ยวกับเรา</h1>
+      <main className="max-w-4xl mx-auto p-6 flex-grow mt-20 ">
+        <h1 className="text-3xl font-bold mb-4 text-black mt-30">เกี่ยวกับเรา</h1>
         <hr className="border-b-4 border-gray-800 mb-4 w-full" />
         <p className="mb-4 leading-relaxed">
         SportFlow  เราเข้าใจว่ากีฬาเป็นมากกว่ากิจกรรมเพื่อสุขภาพ แต่ยังเป็นช่วงเวลาแห่งความสุขที่ทำให้เราได้เชื่อมโยงและเพลิดเพลินไปกับบุคคล

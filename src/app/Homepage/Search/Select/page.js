@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import "./Select.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Tabbar from "../../../../Tab/tab";
+import Tabbar from "../../../Tab/tab";
 import Headfunction from "@/app/Headfunction/page";
 
 const SelectPlace = () => {
@@ -269,7 +269,7 @@ const SelectPlace = () => {
                   แก้ไขการจอง
                 </button>
 
-                <Link href={"/Login/Homepage/Search/Select/payment-qr"}>
+                <Link href={"/Homepage/Search/Select/payment-qr"}>
                   <button 
                     className="confirm-button" 
                     onClick={handleCloseModal}>

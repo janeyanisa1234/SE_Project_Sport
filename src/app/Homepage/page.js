@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
-import Headfunction from "../../Headfunction/page";
-import Tabbar from "../../Tab/tab";
-import "./Home.css";
+import Headfunction from "../Headfunction/page.js";
+import Tabbar from "../Tab/tab";
+import Link from "next/link";
+import "./Homepage.css";
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const carouselImages = ["/picturemild/Hit1.svg", "/picturemild/Promotion1.png", "/picturemild/Promotion2.png"];
+  const carouselImages = ["/picturemild/Hit.png", "/picturemild/Avocado.svg", "/picturemild/Mareenont.svg"];
 
   // Change image every 5 seconds
   useEffect(() => {
@@ -21,10 +21,10 @@ export default function Home() {
 
   return (
     <>
-    <Tabbar /> 
-    <Headfunction/>
+      <Tabbar /> 
+      <Headfunction />
 
-    <main className="content">
+      <main className="content">
         {/* Carousel */}
         <div className="carousel">
           <img src={carouselImages[currentImageIndex]} alt="Carousel" className="hit" />
@@ -46,7 +46,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <Link href="/Login/Homepage/PromotionPlace">
+          <Link href="/Homepage/PromotionPlace">
           <button className="view-more-button">ดูเพิ่มเติม</button>
           </Link>
         </section>
@@ -67,7 +67,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <Link href="Login/Homepage/HitPlace">
+          <Link href="/Homepage/HitPlace">
           <button className="view-more-button">ดูเพิ่มเติม</button>
           </Link>
         </section>
