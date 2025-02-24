@@ -9,24 +9,26 @@ body {
 }
   
   /* ปรับหัวข้อ */
-  .header-title {
-    position: relative;
-    top: 55px; /* ขยับลง 50px */
-    margin-bottom: 20px;
-    height: 60px;
-    width: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .header-title h1 {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-  }
+.header-title {
+  position: relative;
+  top: 55px; /* จาก group แรก */
+  margin-top: 20px; /* จาก group ที่สอง */
+  margin-bottom: 20px;
+  height: 60px;
+  width: 100%;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-title h1 {
+  text-align: center;
+  font-size: 24px; /* ใช้ขนาดจาก group แรก */
+  font-weight: bold;
+}
+
   
   /* ปรับการแสดงผลในส่วนของรายละเอียด */
   .container {
@@ -201,14 +203,8 @@ body {
     color: #555;
     margin-bottom: 30px;
   }
-  .background {
-      background-image: url('/bg.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      min-height: 100vh;
-      width: 100%;
-    }
+
+ 
     
     .header-title {
         margin-top: 20px;
@@ -344,7 +340,7 @@ body {
       border-radius: 20px;
       text-align: center;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      max-width: 600px;
+      max-width: 650px;
       width: 90%;
       animation: fadeIn 0.3s ease-in-out;
     }
@@ -361,9 +357,13 @@ body {
     }
     
     .modal-icon {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 20px;
+    background-color: #48FF48;
+  border-radius: 100%;
+  padding: 0px;
+  margin-bottom: 20px;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
     }
     
     /* ปรับปุ่มใน modal */

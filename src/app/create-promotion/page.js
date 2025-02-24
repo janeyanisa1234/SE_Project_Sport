@@ -94,7 +94,7 @@ export default function EditPromotion() {
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-box">
-            <img src="/correct.png" alt="Success Icon" className="modal-icon" />
+            <img src="/pictureowner/correct.png" alt="Success Icon" className="modal-icon" />
             <h2>สร้างโปรโมชั่นสำเร็จ</h2>
             <p>โปรโมชั่นส่วนลดนี้จะเริ่มเวลา 23-01-2025 14:00 และสิ้นสุดเวลา 30-01-2025 15:00</p>
             <div className="modal-button-group">

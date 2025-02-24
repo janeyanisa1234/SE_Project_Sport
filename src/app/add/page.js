@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div>
       {/* Header */}
-      <Tabbar/>
+      <Tabbar />
 
       <div className="header-title">
         <h1>เพิ่มกีฬา</h1>
@@ -75,7 +75,12 @@ export default function Home() {
               ].map((sport, index) => (
                 <tr key={index}>
                   <td>
-                    <input type="checkbox" onChange={handleCheckboxChange} />
+                    <input
+                      type="checkbox"
+                      id={`checkbox-${index}`} // เพิ่ม id ให้แต่ละ checkbox
+                      name={`checkbox-${index}`} // เพิ่ม name ให้แต่ละ checkbox
+                      onChange={handleCheckboxChange}
+                    />
                   </td>
                   <td className="sport-cell">
                     <img
