@@ -2,14 +2,14 @@
 import Link from "next/link";
 import "./RegistrationForm1.css";
 import Image from "next/image"; 
-import Tab from "../../../ice/Tabbar/Tabbar";
+import Tabbar from "../../../tabbar-nologin/tab.js";
 import "../../../ice/Admin/slidebar";
 import Sidebar from "../../../ice/Admin/slidebar.js";
 
 const RegistrationForm1 = () => {
   return (
        <>
-          <Tab />
+          <Tabbar />
           <Sidebar />
     <div className="registration-container">
       <div className="registration-overlay">

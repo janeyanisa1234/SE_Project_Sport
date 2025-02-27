@@ -13,9 +13,9 @@
   inset: 0;
   background-color: rgba(240, 224, 224, 0.507);
   display: flex;
-  align-items: flex-start; /* ขยับกล่องขึ้นข้างบน */
+  align-items: center; /* เปลี่ยนจาก flex-start เป็น center */
   justify-content: center;
-  padding-top: 3rem; /* ลดระยะห่างด้านบนให้น้อยลงเพื่อขยับกล่องขึ้น */
+  padding-top: 1rem; /* ปรับเพิ่มระยะห่างจากขอบบน */
 }
 
 /* ไอคอนผู้ใช้ */
@@ -25,12 +25,12 @@
   align-items: center;
   justify-content: center; 
   width: 100%;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .user-icon {
   font-size: 3rem; /* ลดขนาดไอคอน */
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 /* กล่องแบบฟอร์ม */
@@ -41,9 +41,9 @@
   color: white;
   width: 400px; /* ลดความกว้างลง */
   height: auto; /* ให้ฟอร์มปรับขนาดอัตโนมัติ */
-  max-height: 980px; /* กำหนดความสูงสูงสุด */
+  max-height: 900px; /* กำหนดความสูงสูงสุด */
   text-align: center;
-  margin-top: -20px; /* ขยับกล่องสีดำขึ้น */
+  margin-top: 2rem; /* เพิ่มระยะห่างจากขอบบน */
 }
 
 /* กล่องอินพุต */
