@@ -17,6 +17,7 @@ export default function Tab() {
   return (
     <>
       {/* Sidebar */}
+      {/*slidebarOpen*/}
       <Slidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
       {/* Tabbar (แท็บด้านบน) */}
