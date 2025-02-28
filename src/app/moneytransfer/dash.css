@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+body {
+  font-family: 'Prompt', sans-serif;
+  color: #797777;
+  background-color: rgb(207, 206, 206);
+  height: 100vh;
+  margin: 0;
+}
+
+/*  Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: black;
+  color: white;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/*  กล่องเนื้อหา */
+.container, .container2, .container3 {
+  display: grid;
+  gap: 30px;
+  max-width: 1350px;
+  margin: 30px auto 0;
+}
+
+.container { grid-template-columns: repeat(3, 1fr); }
+.container3 { grid-template-columns: repeat(3, 1fr); }
+.container2 { grid-template-columns: repeat(1, 1fr); }
+
+.box, .box2 {
+  background-color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/*  ตารางข้อมูล */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  border: 1px solid #333;
+  padding: 10px;
+  text-align: center;
+}
+
+/*  หัวข้อและตัวหนังสือ */
+.history-title, .card-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
+.label {
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+/*  ไอคอน */
+.iconG {
+  width: 50px;
+  height: 50px;
+  background-color: black;
+  border-radius: 10%;
+  margin-left: 25px;
+}
+
+.icon-eye {
+  width: 24px;
+  height: 24px;
+  color: #797777;
+}
+
+/* ปรับแต่ง Card */
+.card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  color: black;
+}
+
+.card p {
+  margin: 5px 0;
+  color: #797777;
+}
+
+/*  Responsive */
+@media (max-width: 768px) {
+  .container, .container2, .container3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .navbar {
+    padding: 10px;
+  }
+  
+  .logo-container {
+    font-size: 16px;
+  }
+
+  .table th, .table td {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .content {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container, .container2, .container3 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

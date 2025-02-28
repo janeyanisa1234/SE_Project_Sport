@@ -16,14 +16,12 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex flex-col font-inter">
-      <Tabbar/>
+      <Tabbar />
 
       {/* Content */}
       <main className="w-full mx-auto p-8 flex-grow">
-      <br>
-      </br>
-      <br>
-      </br>
+        <br />
+        <br />
         <h1 className="text-2xl font-bold mb-4">สรุปยอดประจำเดือนธันวาคม 2567</h1>
         <table className="w-full border-collapse border border-gray-800">
           <thead>
@@ -50,8 +48,7 @@ const Page = () => {
 
         {/* ✅ เพิ่มข้อความหมายเหตุสีแดง */}
         <p className="text-red-500 font-bold mt-2">
-          หมายเหตุ: ระบบจะทำการโอนเงินหลังจากหักค่าบริการหลังการขาย ภายในวันที่ 1-15 ของทุกเดือน 
-          โดยระบบจะทำการโอนเงินเข้าบัญชีธนาคารของท่านที่ได้ลงทะเบียนไว้ในระบบเท่านั้น
+          หมายเหตุ: ระบบจะทำการโอนเงินหลังจากหักค่าบริการหลังการขาย ภายในวันที่ 1-15 ของทุกเดือน โดยระบบจะทำการโอนเงินเข้าบัญชีธนาคารของท่านที่ได้ลงทะเบียนไว้ในระบบเท่านั้น
         </p>
 
         <h2 className="text-xl font-bold mt-6">ติดตามสถานะการโอนเงิน</h2>
@@ -78,6 +75,16 @@ const Page = () => {
           </tbody>
         </table>
       </main>
+
+      {/* ✅ ปุ่มหลักฐานการโอนเงินที่เลื่อนตามขนาดหน้าจอ */}
+      <div className="w-full flex justify-end p-4 fixed bottom-0 bg-white">
+        <button
+          onClick={() => router.push("/moneytransfer")}
+          className="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition"
+        >
+          หลักฐานการโอนเงิน
+        </button>
+      </div>
     </div>
   );
 };
