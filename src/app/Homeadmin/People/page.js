@@ -1,9 +1,10 @@
 "use client";
 import "./people.css";
 import "../Dashboard/slidebar.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
 import Tab from "../Tabbar/page.js";
+import axios from "axios";
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -11,38 +12,93 @@ export default function Dashboard() {
   const [amount, setAmount] = useState("");
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
-  const [showBlockPopup, setShowBlockPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const [users, setUsers] = useState([
-    { id: 1, name: "ภูรินันทร์ สิงห์เขา", phone: "0812345678", email: "phurinan@gmail.com", role: "ผู้ประกอบการ", status: "active" },
-    { id: 2, name: "สมชาย รุ่งเจริญ", phone: "0823456789", email: "somchai@gmail.com", role: "ผู้ใช้งาน", status: "active" },
-    { id: 3, name: "สมหญิง ขุนเดช", phone: "0834567890", email: "somying@gmail.com", role: "ผู้ประกอบการ", status: "active" },
-    { id: 4, name: "สมหมาย เมืองพล", phone: "0845678901", email: "sommai@gmail.com", role: "ผู้ใช้งาน", status: "active" },
-    { id: 5, name: "สมบอน ปิงมา", phone: "0856789012", email: "sombon@gmail.com", role: "ผู้ประกอบการ", status: "active" },
-    { id: 6, name: "สมศรี สิงขนุกร", phone: "0867890123", email: "somsri@gmail.com", role: "ผู้ประกอบการ", status: "active" },
-  ]);
-
-  const handleBlock = () => {
-    setUsers(users.map(user => 
-      user.id === selectedUser?.id 
-        ? { ...user, status: "blocked" }
-        : user
-    ));
-    setShowBlockPopup(false);
-    setSelectedUser(null);
+  // ฟังก์ชันดึงข้อมูลผู้ใช้ทั้งหมด
+  const fetchAllUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('http://localhost:5000/api/users');
+      setUsers(response.data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      setError('ไม่สามารถโหลดข้อมูลผู้ใช้ได้');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = () => {
-    setUsers(users.filter(user => user.id !== selectedUser?.id));
-    setShowDeletePopup(false);
-    setSelectedUser(null);
+  // ฟังก์ชันดึงข้อมูลตามประเภทผู้ใช้
+  const fetchUsersByCategory = async (category) => {
+    setLoading(true);
+    try {
+      let endpoint = 'http://localhost:5000/api/users';
+      
+      if (category === 'ผู้ใช้งาน') {
+        endpoint = 'http://localhost:5000/api/users/regular';
+      } else if (category === 'ผู้ประกอบการ') {
+        endpoint = 'http://localhost:5000/api/users/owners';
+      }
+      
+      const response = await axios.get(endpoint);
+      setUsers(response.data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching users by category:', err);
+      setError('ไม่สามารถโหลดข้อมูลผู้ใช้ได้');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // ดึงข้อมูลเมื่อคอมโพเนนท์ถูกโหลด
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
+
+  // ดึงข้อมูลใหม่เมื่อมีการเปลี่ยนแปลงหมวดหมู่
+  useEffect(() => {
+    if (category) {
+      fetchUsersByCategory(category);
+    } else {
+      fetchAllUsers();
+    }
+  }, [category]);
+
+  const handleDelete = async () => {
+    if (!selectedUser) return;
+    
+    setIsDeleting(true);
+    try {
+      // เรียกใช้ API เพื่อลบผู้ใช้
+      await axios.delete(`http://localhost:5000/api/users/${selectedUser.id}`);
+      
+      // อัปเดต state เพื่อแสดงผลการลบ
+      setUsers(users.filter(user => user.id !== selectedUser.id));
+      
+      // ปิด popup
+      setShowDeletePopup(false);
+      setSelectedUser(null);
+    } catch (err) {
+      console.error('Error deleting user:', err);
+      setError('ไม่สามารถลบผู้ใช้ได้: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // กรองข้อมูลตามคำค้นหา
   const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(search.toLowerCase()) &&
-    (category === "" || user.role === category)
+    (user.name || '').toLowerCase().includes(search.toLowerCase())
   );
+
+  // จำกัดจำนวนรายการที่แสดง
+  const limitedUsers = amount ? filteredUsers.slice(0, parseInt(amount)) : filteredUsers;
 
   return (
     <>
@@ -76,86 +132,60 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>ลำดับ</th>
-              <th>สถานะ</th>
-              <th>ชื่อ-นามสกุล</th>
-              <th>เบอร์โทร</th>
-              <th>อีเมล</th>
-              <th>จัดการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map((user, index) => (
-              <tr key={user.id}>
-                <td>{index + 1}</td>
-                <td>{user.role}</td>
-                <td>{user.name}</td>
-                <td>{user.phone}</td>
-                <td>{user.email}</td>
-                <td>
-                  {user.status === "blocked" ? (
-                    <span className="blocked-status">ถูกระงับการใช้งาน</span>
-                  ) : (
-                    <button className="delete-btn">
-                      <img 
-                        src="/pictureAdmin/Block.svg" 
-                        alt="Block User" 
-                        className="icon"
-                        onClick={() => {
-                          setSelectedUser(user);
-                          setShowBlockPopup(true);
-                        }}
-                      />
-                      <img 
-                        src="/pictureAdmin/Delete.svg" 
-                        alt="Delete" 
-                        className="icon"
-                        onClick={() => {
-                          setSelectedUser(user);
-                          setShowDeletePopup(true);
-                        }}
-                      />
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {error && <p className="error-message">{error}</p>}
 
-      {/* Block Popup */}
-      {showBlockPopup && (
-        <div className="popup-overlay">
-          <div className="popup-content">
-          <img src="/pictureAdmin/Block.svg"/>
-            <h2>ระงับบัญชี</h2>
-            <p>คุณต้องการระงับบัญชีของ {selectedUser?.name} หรือไม่?</p>
-            <p>หากยืนยันบัญชีนี้จะถูกระงับการใช้งาน 7 วัน</p>
-            <div className="popup-buttons">
-              <button 
-                className="cancel-btn"
-                onClick={() => {
-                  setShowBlockPopup(false);
-                  setSelectedUser(null);
-                }}
-              >
-                ยกเลิก
-              </button>
-              <button 
-                className="confirm-btn"
-                onClick={handleBlock}
-              >
-                ยืนยัน
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="table-container">
+        {loading ? (
+          <p>กำลังโหลดข้อมูล...</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>ลำดับ</th>
+                <th>สถานะ</th>
+                <th>ชื่อ-นามสกุล</th>
+                <th>เบอร์โทร</th>
+                <th>อีเมล</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {limitedUsers.length > 0 ? (
+                limitedUsers.map((user, index) => (
+                  <tr key={user.id}>
+                    <td>{index + 1}</td>
+                    <td>{user.role}</td>
+                    <td>{user.name || 'ไม่ระบุ'}</td>
+                    <td>{user.phone || 'ไม่ระบุ'}</td>
+                    <td>{user.email || 'ไม่ระบุ'}</td>
+                    <td>
+                      {user.status === "blocked" ? (
+                        <span className="blocked-status">ถูกระงับการใช้งาน</span>
+                      ) : (
+                        <button className="delete-btn">
+                          <img 
+                            src="/pictureAdmin/Delete.svg" 
+                            alt="Delete" 
+                            className="icon"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setShowDeletePopup(true);
+                            }}
+                          />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center" }}>ไม่พบข้อมูลผู้ใช้</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
 
       {/* Delete Popup */}
       {showDeletePopup && (
@@ -172,14 +202,16 @@ export default function Dashboard() {
                   setShowDeletePopup(false);
                   setSelectedUser(null);
                 }}
+                disabled={isDeleting}
               >
                 ยกเลิก
               </button>
               <button 
                 className="confirm-btn"
                 onClick={handleDelete}
+                disabled={isDeleting}
               >
-                ยืนยัน
+                {isDeleting ? 'กำลังลบ...' : 'ยืนยัน'}
               </button>
             </div>
           </div>
@@ -187,4 +219,4 @@ export default function Dashboard() {
       )}
     </>
   );
-} 
+}
