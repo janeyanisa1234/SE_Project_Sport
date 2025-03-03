@@ -6,6 +6,7 @@ import Tab from "../Tabbar/page.js";
 import "../Dashboard/slidebar.css";
 import React, { useState } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
+import Link from 'next/link';
 
 export default function Admin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -69,9 +70,11 @@ export default function Admin() {
               </div>
             </div>
 
+            <Link href="/Homeadmin/Profile/changpass" passHref>
             <button className="admin-button">
               เปลี่ยนรหัสผ่าน
             </button>
+            </Link>
           </div>
         </div>
       </div>

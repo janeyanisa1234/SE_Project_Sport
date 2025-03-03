@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "axios": "^1.8.1",
     "chart.js": "^4.4.7",
     "lucide-react": "^0.475.0",
     "next": "^15.2.0",
