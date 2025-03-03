@@ -12,8 +12,7 @@ export default function Name() {
 
   return (
         <>
-          <Tab />
-          <Sidebar />
+          <Tabbar />
     <div className="name-container">
       <div className="overlay">
         <div className="name-box">

@@ -1,4 +1,7 @@
-import { Geist, Geist_Mono } from "next/font/google";
+// app/layout.js
+import { Suspense } from 'react'
+import AuthLayout from './components/AuthLayout';
+import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -22,7 +25,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Suspense fallback={<div>Loading...</div>}>
+          <AuthLayout>{children}</AuthLayout>
+        </Suspense>
       </body>
     </html>
   );

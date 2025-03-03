@@ -1,10 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./slidebarsoc.css";
 import Link from "next/link";
+import { AuthService } from "../utils/auth";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   // ฟังก์ชันเพื่อปิด sidebar
   const closeSidebar = () => setIsOpen(false);
+
+  // Get user data from localStorage
+  const [userName, setUserName] = useState("ผู้ใช้งาน"); // Default name
+
+  // Load user data when component mounts
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    if (user && user.name) {
+      setUserName(user.name);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    AuthService.logout();
+  };
 
   return (
     <>
@@ -24,7 +40,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
               href="/Info"
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              ไกรวิชญ์ ไพรศาร
+              {userName || "ผู้ใช้งาน"}
             </Link>
             <br />
           </li>
@@ -101,15 +117,9 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         </ul>
 
       {/* ปุ่มออกจากระบบ */}
-        <Link
-          href="/"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <button className="logout">
+          <button className="logout" onClick={handleLogout}>
             <img src="/pictureowner/logout.svg" alt="logout" /> ออกจากระบบ
           </button>
-              
-        </Link>
     </div>
     </>
   );
