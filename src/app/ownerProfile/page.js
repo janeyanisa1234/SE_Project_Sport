@@ -3,18 +3,16 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react"; 
 import Image from "next/image"; // ✅ Import Image จาก Next.js
-import "./Profile.css"; 
-import Tab from "../Tabbar/Tabbar"; 
-import "../Admin/slidebar.css"; 
-import Sidebar from "../Admin/slidebar.js"; 
+import "./ownerProfile.css"; 
+import Tabbar from "../components/tab";
 
 export default function Profile() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <>
-      <Tab />
-      <Sidebar />
+      <Tabbar />
+
       
       <div className="profile-container">
         <div className="profile-overlay">

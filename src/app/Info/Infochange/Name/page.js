@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import "./Name.css"; 
-import Tabbar from "../../../Tab/tab"; 
+import Tab from "../../../Tab/tab"; 
  
 import { Link } from 'lucide-react';
 
@@ -13,7 +13,7 @@ export default function Name() {
   return (
         <>
           <Tab />
-          <Sidebar />
+     
     <div className="name-container">
       <div className="overlay">
         <div className="name-box">
@@ -39,15 +39,11 @@ export default function Name() {
               onChange={(e) => setNewName(e.target.value)}
               required
             />
-          </div>
-
+         <button type="submit" className="save-btn"></button>
           <Link href="/Info">
-            <button type="submit" className="save-btn">
-              บันทึกการเปลี่ยนแปลง
-            </button>
+          <button className="save-btn">บันทึกการเปลี่ยนแปลง</button>
           </Link>
-          
-
+          </div>
         </div>
       </div>
     </div>

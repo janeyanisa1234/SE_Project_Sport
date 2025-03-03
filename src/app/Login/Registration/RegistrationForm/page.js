@@ -4,14 +4,13 @@ import React from "react";
 import Image from "next/image"; // ✅ นำเข้า Image จาก Next.js
 import "./RegistrationForm.css";
 import Tabbar from "../../../tabbar-nologin/tab.js";
-import "../../../ice/Admin/slidebar";
-import Sidebar from "../../../ice/Admin/slidebar.js";
+
 
 const RegistrationForm = () => {
   return (
     <>
       <Tabbar />
-      <Sidebar />
+
       <div className="registration-container">
         <div className="registration-overlay">
           <div className="registration-box">
