@@ -135,56 +135,54 @@ export default function Dashboard() {
       {error && <p className="error-message">{error}</p>}
 
       <div className="table-container">
-        {loading ? (
-          <p>กำลังโหลดข้อมูล...</p>
-        ) : (
-          <table>
-            <thead>
+        <table>
+          <thead>
+            <tr>
+              <th>ลำดับ</th>
+              <th>สถานะ</th>
+              <th>ชื่อ-นามสกุล</th>
+              <th>เบอร์โทร</th>
+              <th>อีเมล</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* ตอนนี้จะแสดงแค่หัวตารางขณะที่กำลังโหลด ไม่มีข้อความ "กำลังโหลดข้อมูล..." */}
+            {!loading && limitedUsers.length === 0 && (
               <tr>
-                <th>ลำดับ</th>
-                <th>สถานะ</th>
-                <th>ชื่อ-นามสกุล</th>
-                <th>เบอร์โทร</th>
-                <th>อีเมล</th>
-                <th>จัดการ</th>
+                <td colSpan="6" style={{ textAlign: "center" }}>ไม่พบข้อมูลผู้ใช้</td>
               </tr>
-            </thead>
-            <tbody>
-              {limitedUsers.length > 0 ? (
-                limitedUsers.map((user, index) => (
-                  <tr key={user.id}>
-                    <td>{index + 1}</td>
-                    <td>{user.role}</td>
-                    <td>{user.name || 'ไม่ระบุ'}</td>
-                    <td>{user.phone || 'ไม่ระบุ'}</td>
-                    <td>{user.email || 'ไม่ระบุ'}</td>
-                    <td>
-                      {user.status === "blocked" ? (
-                        <span className="blocked-status">ถูกระงับการใช้งาน</span>
-                      ) : (
-                        <button className="delete-btn">
-                          <img 
-                            src="/pictureAdmin/Delete.svg" 
-                            alt="Delete" 
-                            className="icon"
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setShowDeletePopup(true);
-                            }}
-                          />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" style={{ textAlign: "center" }}>ไม่พบข้อมูลผู้ใช้</td>
+            )}
+            {limitedUsers.length > 0 && !loading && (
+              limitedUsers.map((user, index) => (
+                <tr key={user.id}>
+                  <td>{index + 1}</td>
+                  <td>{user.role}</td>
+                  <td>{user.name || 'ไม่ระบุ'}</td>
+                  <td>{user.phone || 'ไม่ระบุ'}</td>
+                  <td>{user.email || 'ไม่ระบุ'}</td>
+                  <td>
+                    {user.status === "blocked" ? (
+                      <span className="blocked-status">ถูกระงับการใช้งาน</span>
+                    ) : (
+                      <button className="delete-btn">
+                        <img 
+                          src="/pictureAdmin/Delete.svg" 
+                          alt="Delete" 
+                          className="icon"
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setShowDeletePopup(true);
+                          }}
+                        />
+                      </button>
+                    )}
+                  </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        )}
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
       {/* Delete Popup */}
