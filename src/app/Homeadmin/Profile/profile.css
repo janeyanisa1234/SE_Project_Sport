@@ -1,120 +1,104 @@
-/* Container Styles */
 .admin-container {
-  min-height: 100vh;
+  height: 100vh;
+  background-image: url("/pictureice/stadium-bg.png");
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.admin-overlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(240, 224, 224, 0.507);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Card Styles */
-.admin-card {
-  position: relative;
-  z-index: 1;
-  background-color: rgba(252, 251, 251, 0.979);
-  padding: 2.5rem;
-  border-radius: 0.5rem;
-  width: 100%;
-  max-width: 600px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 1rem;
-}
-
-/* Icon Styles */
-.admin-user-icon {
-  width: 6rem;
-  height: 6rem;
-  background-color: rgb(229, 231, 235);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1.5rem;
-}
-
-/* Text Styles */
-.admin-heading {
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-
-.admin-text {
-  text-align: center;
-  font-size: 1.125rem;
-  margin-bottom: 0.75rem;
-}
-
-/* Password Field Styles */
-.profile-password {
-  display: flex;
-  font-size: 1.125rem;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.75rem;
-  gap: 0.5rem;
-}
-
-.password-toggle {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 50%;
-  transition: background-color 0.2s;
-}
-
-.password-toggle:hover {
-  background-color: rgb(243, 244, 246);
-}
-
-/* Button Styles */
-.admin-button {
-  margin-top: 1.5rem;
-  background-color: rgb(34, 197, 94);
-  color: rgb(0, 0, 0);
-  font-size: 1.125rem;
-  padding: 0.75rem 1.5rem;
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.admin-button:hover {
-  background-color: rgb(22, 163, 74);
-}
-
-/* Responsive Styles */
-@media (max-width: 640px) {
+  
+  }
+   
+  .admin-overlay {
+  
+    position: absolute;
+  
+    inset: 0;
+  
+    background-color: rgba(240, 224, 224, 0.507);
+  
+    display: flex;
+  
+    align-items: center;
+  
+    justify-content: center;
+  
+  }
+   
   .admin-card {
-    padding: 1.5rem;
-    margin: 0.5rem;
+    background-color: rgb(255, 255, 255);
+    padding: 2.5rem;
+    border-radius: 10px;
+    color: rgb(0, 0, 0);
+    width: 600px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  
   }
-
+   
   .admin-user-icon {
-    width: 4rem;
-    height: 4rem;
+    width: 6rem;
+    height: 6rem;
+    background-color: rgb(187, 187, 187);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+  
   }
-
+  .icon {
+    font-size: 2.5rem;
+  }
+  .admin-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
   .admin-text {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
   }
-}
+   
+  .admin-password-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  
+  }
+   
+  .admin-button {
+  
+    margin-top: 1.5rem;
+  
+    background-color: rgb(34, 197, 94);
+  
+    color: rgb(255, 255, 255);
+  
+    font-size: 1.125rem;
+  
+    padding: 0.75rem 1.5rem;
+  
+    display: flex;
+  
+    margin-left: auto;
+  
+    margin-right: auto;
+  
+    border-radius: 0.5rem;
+  
+    transition: background-color 0.3s;
+  
+  }
+   
+  .admin-button:hover {
+    background-color: rgb(34, 197, 94);
+  
+  }
+  
+  .toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgb(0, 0, 0);
+  }

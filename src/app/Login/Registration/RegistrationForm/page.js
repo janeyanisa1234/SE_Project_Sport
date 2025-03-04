@@ -9,6 +9,7 @@ import Sidebar from "../../../ice/Admin/slidebar.js";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -122,7 +123,7 @@ const RegistrationForm = () => {
   return (
     <>
       <Tabbar />
-      <Sidebar />
+
       <div className="registration-container">
         <div className="registration-overlay">
           <div className="registration-box">

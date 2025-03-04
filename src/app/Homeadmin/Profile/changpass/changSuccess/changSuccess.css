@@ -1,0 +1,79 @@
+.success-container {
+    height: 100vh;
+    background: url('/pictureice/stadium-bg.png') center/cover no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .overlay {
+    position: absolute;
+    
+    inset: 0;
+  
+    background-color: rgba(240, 224, 224, 0.507);
+  
+    display: flex;
+  
+    align-items: center;
+  
+    justify-content: center;
+  }
+  
+  .content-box {
+    background: rgb(255, 255, 255);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    color: rgb(0, 0, 0);
+  }
+  
+  .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  .check-icon {
+    background: #22c55e;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon {
+    width: 40px;
+    height: 40px;
+    color: white;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .message {
+    margin-bottom: 1.5rem;
+  }
+  
+  .confirm-btn {
+    background: #22c55e;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    border: none;
+  }
+  
+  .confirm-btn:hover {
+    background: #16a34a;
+  }
+  
