@@ -13,63 +13,33 @@ export default function Admin() {
   const password = "jane1234";
 
   return (
-    <div className="relative min-h-screen">
+    <>
       <Tab />
-      <Sidebar />
-      
-      <div 
-        className="admin-container" 
-        style={{ backgroundImage: "url('/pictureAdmin/stadium-bg.jpg')" }}
-      >
+      <Sidebar/>
+      <div className="admin-container" style={{ backgroundImage: "url('/pictureice/stadium-bg.png')" }}>
         <div className="admin-overlay">
           <div className="admin-card">
             <div className="admin-user-icon">
-              <Image 
-                src="/pictureAdmin/Admin.svg" 
-                alt="Admin Icon" 
-                width={50} 
-                height={50}
-                priority
-              />
+              <Image src="/pictureice/Admin.svg" alt="Admin Icon" width={70} height={50} />
             </div>
 
-            <h2 className="admin-heading">ผู้ดูแลระบบ</h2>
+            <h2 className="admin-title">ผู้ดูแลระบบ</h2>
+            <p className="admin-text"><strong>ชื่อ : </strong></p>
+            <p className="admin-text"><strong>อีเมล : </strong></p>
+            <p className="admin-text"><strong>เบอร์โทร : </strong></p>
 
-            <div className="admin-info">
-              <p className="admin-text">
-                <strong>ชื่อ : </strong>
-                <span>-</span>
-              </p>
-              
-              <p className="admin-text">
-                <strong>อีเมล : </strong>
-                <span>-</span>
-              </p>
-              
-              <p className="admin-text">
-                <strong>เบอร์โทร : </strong>
-                <span>-</span>
-              </p>
-
-              <div className="profile-password">
-                <p>
-                  <strong>รหัสผ่าน : </strong>
-                  <span>{showPassword ? password : "********"}</span>
-                </p>
-                <button 
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="password-toggle"
-                  aria-label={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
-                >
-                  {showPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
-                </button>
-              </div>
+            <div className="admin-password-container">
+            <p className="admin-text">
+            <strong>รหัสผ่าน : </strong> {showPassword ? "" : "********"}</p>
+            <button onClick={() => setShowPassword(!showPassword)} className="toggle-btn">
+            
+                {showPassword ? (
+                  <EyeOff size={24} className="text-black" />
+                ) : (
+                  <Eye size={24} className="text-black" />
+                )}
+              </button>
             </div>
-
             <Link href="/Homeadmin/Profile/changpass" passHref>
             <button className="admin-button">
               เปลี่ยนรหัสผ่าน
@@ -78,6 +48,6 @@ export default function Admin() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
