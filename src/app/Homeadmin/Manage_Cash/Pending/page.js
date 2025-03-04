@@ -34,6 +34,7 @@ export default function TransferForm() {
   return (
     <>
       <Tab />
+      <Sidebar/>
       <div className="Container">
         <div className="Box">
           <h2 className="title">ดำเนินการโอนเงิน</h2>
