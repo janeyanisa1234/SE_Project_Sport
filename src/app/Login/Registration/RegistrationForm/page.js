@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import "./RegistrationForm.css";
 import Tabbar from "../../../tabbar-nologin/tab.js";
-import "../../../ice/Admin/slidebar";
-import Sidebar from "../../../ice/Admin/slidebar.js";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -24,7 +22,7 @@ const RegistrationForm = () => {
   const router = useRouter();
 
   // Base URL for your API
-  const API_URL = "http://localhost:5000/api/kony";
+  const API_URL = "http://localhost:5000/api/kong";
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

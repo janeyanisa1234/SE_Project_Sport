@@ -19,7 +19,7 @@ export default function Login() {
   const router = useRouter();
 
   // Base URL for your API
-  const API_URL = "http://localhost:5000/api/kony";
+  const API_URL = "http://localhost:5000/api/kong";
 
   const handleLogin = async (e) => {
     e.preventDefault();
