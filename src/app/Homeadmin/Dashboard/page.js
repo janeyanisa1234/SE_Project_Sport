@@ -1,16 +1,39 @@
 "use client";
 import "./dash.css";
 import "./slidebar.css";
-import React, { useState } from "react"; 
+import React, { useState, useEffect } from "react"; 
 import Sidebar from "./slidebar.js"; 
 import Tab from "../Tabbar/page.js";
 import { Pie } from "react-chartjs-2"; 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"; 
+import axios from "axios"; // ใช้ axios
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Dashboard() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [statistics, setStatistics] = useState({
+    totalCount: 0,
+    ownerCount: 0,
+    regularCount: 0,
+    ownerPercentage: 0,
+    regularPercentage: 0,
+    totalPercentage :0
+  });
+
+  // ฟังก์ชันดึงข้อมูลสถิติ
+  const fetchStatistics = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users/statistics'); // ดึงข้อมูลจาก API
+      setStatistics(response.data); // ตั้งค่า state ด้วยข้อมูลที่ได้รับ
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการดึงข้อมูลสถิติ: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStatistics(); // เรียกฟังก์ชันเมื่อ component โหลด
+  }, []);
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);
@@ -36,7 +59,6 @@ export default function Dashboard() {
         position: 'top',
       },
     },
-    // กำหนดขนาดของกราฟ
     layout: {
       padding: {
         left: 20,
@@ -50,9 +72,7 @@ export default function Dashboard() {
   return (
     <>
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-      
-      <Tab/>
-      
+      <Tab />
       <br />
       <p className="summary">
         <img src="/pictureAdmin/iconG.svg" className="iconG" alt="icon" />
@@ -61,18 +81,18 @@ export default function Dashboard() {
 
       <div className="container3">
         <div className="box">
-          <p style={{ color: "blue", fontWeight: "bold" }}>XXXX</p>
-          <p style={{ color: "red" }}>XX%</p>
+          <p style={{ color: "blue", fontWeight: "bold" }}>{statistics.totalCount}</p>
+          <p style={{ color: "red" }}>{statistics.totalPercentage.toFixed(2)}%</p>
           จำนวนผู้ใช้งานทั้งหมด
         </div>
         <div className="box">
-          <p style={{ color: "#1B9FEC", fontWeight: "bold" }}>XXXX</p>
-          <p style={{ color: "red" }}>XX%</p>
+          <p style={{ color: "#1B9FEC", fontWeight: "bold" }}>{statistics.ownerCount}</p>
+          <p style={{ color: "red" }}>{statistics.ownerPercentage.toFixed(2)}%</p>
           จำนวนผู้ประกอบการ
         </div>
         <div className="box">
-          <p style={{ color: "#86FAC2", fontWeight: "bold" }}>XXXX</p>
-          <p style={{ color: "red" }}>XX%</p>
+          <p style={{ color: "#86FAC2", fontWeight: "bold" }}>{statistics.regularCount}</p>
+          <p style={{ color: "red" }}>{statistics.regularPercentage.toFixed(2)}%</p>
           จำนวนผู้ใช้
         </div>
       </div>
