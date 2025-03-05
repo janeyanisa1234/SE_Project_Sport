@@ -1,5 +1,5 @@
 "use client";
-
+import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import "./pending.css";
@@ -7,6 +7,17 @@ import Tab from "../../Tabbar/page.js";
 import "../../Dashboard/slidebar.css";
 import React, { useState } from "react";
 import Sidebar from "../../Dashboard/slidebar.js";
+
+
+function fetchData(){
+ axios.get('http://localhost:5000/api/jane')
+ .then(response => {
+  console.log('Response data:', response.data);
+})
+.catch(error => {
+  console.error('Error:', error);
+});
+}
 
 export default function TransferForm() {
   const [file, setFile] = useState(null);
@@ -23,6 +34,7 @@ export default function TransferForm() {
   return (
     <>
       <Tab />
+      <Sidebar/>
       <div className="Container">
         <div className="Box">
           <h2 className="title">ดำเนินการโอนเงิน</h2>

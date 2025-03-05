@@ -3,7 +3,7 @@
 import "./tabbar.css";
 import React, { useState } from "react";
 import "../hamburgur/slidebar.css";
-import Slidebar from "../hamburgur/slidebar";
+import Slidebar from "../hamburgur/user-slidebar";
 import Link from "next/link";
 
 export default function Tab() {

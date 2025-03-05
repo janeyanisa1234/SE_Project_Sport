@@ -29,14 +29,14 @@ const AddSportsField = () => {
   };
 
   return (
-    <div className="relative w-full h-screen bg-cover bg-center flex flex-col" 
+    <div className="relative w-full h-screen bg-cover bg-center flex flex-col pb-20" 
     style={{ backgroundImage: "url('/pictureowner/bg.png')" }}
     >
       <Tabbar/>
-
+      <br></br><br></br><br></br>
       <div className="flex flex-col items-center justify-center flex-grow px-4">
         <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full">
-          <div className="bg-black text-white text-lg font-bold px-6 py-3 text-center rounded-t-lg">
+          <div className="bg-black text-white text-lg font-bold px-6 py-3 text-center rounded-t-lg relative z-10">
             เพิ่มสนามกีฬา
           </div>
 

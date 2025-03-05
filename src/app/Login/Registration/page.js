@@ -4,7 +4,6 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 import "./Registration.css";  
-import Sidebar from "../../ice/Admin/slidebar.js"; 
 import Tabbar from "@/app/Homeadmin/Tabbar/page";
 
 
@@ -12,7 +11,7 @@ const Registration = () => {
   return (
     <>
       <Tabbar />
-      <Sidebar />
+
       <div className="registration-container">
         <div className="registration-overlay">
           <div className="registration-box">

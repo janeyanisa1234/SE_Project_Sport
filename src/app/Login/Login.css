@@ -95,9 +95,37 @@
   padding: 0.5rem;
   border-radius: 5px;
   cursor: pointer;
-  width: 150px;
+  width: 125px;
 }
 
 .btn:hover {
   background: #f1f1f1;
+}
+
+/* Add this to your Login.css and RegistrationForm.css files */
+
+.error-message {
+  background-color: #ffecec;
+  color: #e74c3c;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #e74c3c;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
 }

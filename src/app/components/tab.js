@@ -3,7 +3,7 @@
 import "./tab.css";
 import React, { useState } from "react";
 import "../components/slidebarsoc.css";
-import Slidebar from "../components/slidebar";
+import Slidebar from "./owner-slidebar";
 import Link from "next/link";
 
 export default function Tab() {
