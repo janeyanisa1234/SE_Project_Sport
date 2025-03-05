@@ -1,24 +1,57 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Tabbar from "../components/tab";
+import axios from "axios";
 import "./addedit.css";
 
-export default function Home() {
+export default function AddEdit() {
   const [selectedCount, setSelectedCount] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const [sports, setSports] = useState([]);
+  const [discount, setDiscount] = useState(0); // รับส่วนลดจาก query
 
-  const handleCheckboxChange = (event) => {
+  useEffect(() => {
+    // ดึงข้อมูลกีฬาจาก API (สมมติว่ามี endpoint /api/sports)
+    const fetchSports = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/sports");
+        setSports(response.data);
+      } catch (error) {
+        console.error("Error fetching sports:", error);
+        alert("เกิดข้อผิดพลาดในการดึงข้อมูลกีฬา");
+      }
+    };
+
+    // รับ discount จาก query
+    const discountParam = parseFloat(searchParams.get("discount")) || 0;
+    setDiscount(discountParam);
+
+    fetchSports();
+  }, [searchParams]);
+
+  const handleCheckboxChange = (event, index) => {
     setSelectedCount((prevCount) =>
       event.target.checked ? prevCount + 1 : prevCount - 1
     );
   };
 
   const handleConfirm = () => {
-    router.push("/edit");
+    const checkedSports = sports
+      .filter((_, index) => document.getElementById(`checkbox-${index}`).checked)
+      .map((sport) => ({
+        name: sport.name,
+        price: sport.price,
+        discountPrice: Math.round(sport.price * (1 - discount / 100)),
+        stadiumName: sport.stadiumName,
+        image: `/pictureowner/${sport.name.toLowerCase().replace(" ", "")}.png`, // ตรวจสอบ path
+      }));
+  
+    const query = `?promotionName=${encodeURIComponent(searchParams.get("promotionName") || "")}&startDate=${encodeURIComponent(searchParams.get("startDate") || "")}&startTime=${encodeURIComponent(searchParams.get("startTime") || "")}&endDate=${encodeURIComponent(searchParams.get("endDate") || "")}&endTime=${encodeURIComponent(searchParams.get("endTime") || "")}&discount=${encodeURIComponent(discount)}&discountLimit=${encodeURIComponent(searchParams.get("discountLimit") || "")}&location=${encodeURIComponent(searchParams.get("location") || "")}&sports=${encodeURIComponent(JSON.stringify(checkedSports))}`;
+    router.push(`/edit${query}`);
   };
 
   const toggleSidebar = () => {
@@ -28,11 +61,9 @@ export default function Home() {
   return (
     <div>
       <Tabbar />
-
       <div className="header-title">
         <h1>เพิ่มกีฬา</h1>
       </div>
-
       <div className="container">
         <div className="table-wrapper">
           <table>
@@ -45,57 +76,37 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {[
-                {
-                  name: "แบดมินตัน",
-                  price: 150,
-                  discountPrice: 135,
-                  image: "/pictureowner/badminton.png",
-                },
-                {
-                  name: "ปิงปอง",
-                  price: 120,
-                  discountPrice: 108,
-                  image: "/pictureowner/pingpong.png",
-                },
-                {
-                  name: "ฟุตซอล",
-                  price: 300,
-                  discountPrice: 270,
-                  image: "/pictureowner/futsal.png",
-                },
-                {
-                  name: "ฟุตบอล",
-                  price: 1300,
-                  discountPrice: 1170,
-                  image: "/pictureowner/football.png",
-                },
-              ].map((sport, index) => (
-                <tr key={index}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      id={`checkbox-${index}`} // เพิ่ม id ให้แต่ละ checkbox
-                      name={`checkbox-${index}`} // เพิ่ม name ให้แต่ละ checkbox
-                      onChange={handleCheckboxChange}
-                    />
-                  </td>
-                  <td className="sport-cell">
-                    <img
-                      src={sport.image}
-                      alt={sport.name}
-                      className="sport-icon"
-                    />
-                    <span>{sport.name}</span>
-                  </td>
-                  <td>฿{sport.price}</td>
-                  <td>฿{sport.discountPrice}</td>
+              {sports.length > 0 ? (
+                sports.map((sport, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        id={`checkbox-${index}`}
+                        name={`checkbox-${index}`}
+                        onChange={(e) => handleCheckboxChange(e, index)}
+                      />
+                    </td>
+                    <td className="sport-cell">
+                      <img
+                        src={sport.image || "/pictureowner/default.png"}
+                        alt={sport.name}
+                        className="sport-icon"
+                      />
+                      <span>{sport.name}</span>
+                    </td>
+                    <td>฿{sport.price}</td>
+                    <td>฿{Math.round(sport.price * (1 - discount / 100))}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4">กำลังโหลดข้อมูลกีฬา...</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
-
         <div className="bottom-bar">
           <p>{selectedCount} เลือกแล้ว</p>
           <button className="confirm-button" onClick={handleConfirm}>
