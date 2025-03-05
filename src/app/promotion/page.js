@@ -1,84 +1,237 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaChevronDown, FaEdit, FaTrash } from "react-icons/fa";
-import { useRouter } from "next/navigation"; // เพิ่มการ import useRouter
+import { FaChevronDown, FaEdit, FaTrash, FaCalendarAlt } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 import Tabbar from "../components/tab";
+import axios from "axios";
 
 export default function Promotion() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("ทั้งหมด");
-  const [showModal, setShowModal] = useState(false);
+  const [promotions, setPromotions] = useState([]);
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("ทั้งหมด");
+  const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false);
+  const [selectedDateOption, setSelectedDateOption] = useState("ทั้งหมด");
+  const [customDateRange, setCustomDateRange] = useState({ start: "", end: "" });
+  const [showCustomInputs, setShowCustomInputs] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // เพิ่ม state สำหรับช่องค้นหา
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [promoToDelete, setPromoToDelete] = useState(null);
+  const [promoIdToDelete, setPromoIdToDelete] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    window.scrollTo(0, 0); // เมื่อหน้าโหลดใหม่จะไปที่ด้านบนสุด
-  }, []);
-
-  // กำหนดค่า promotions ให้เป็นข้อมูลเริ่มต้น
-  const [promotions, setPromotions] = useState([
-    {
-      name: "ลด 11% ตีสนุก ทุกแมตช์ 11.11",
-      status: "หมดอายุแล้ว",
-      sport: "แบดมินตัน",
-      sportIcon: "/pictureowner/93.png",
-      duration: "11-11-2024 00:00 - 12-11-2024 23:59",
-    },
-    {
-      name: "ส่วนลดพิเศษ ฟุตบอล",
-      status: "กำลังดำเนินการ",
-      sport: "ฟุตบอล",
-      sportIcon: "/pictureowner/93.png",
-      duration: "20-12-2024 00:00 - 25-12-2024 23:59",
-    },
-  ]);
 
   const router = useRouter();
-  const handleDropdownToggle = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
-    setIsDropdownOpen(false);
-  };
-  const handleDetailClick = () => {
-    router.push("/detail");
-  };
-  const handleEditClick = () => {
-    router.push("/edit");
-  };
-  const handleCloseModal = () => {
-    setShowModal(false);
-    if (deleteSuccess) {
-      router.push("/promotion");
+
+  const fetchPromotions = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/promotions");
+      const currentDate = new Date("2025-03-06"); // วันที่ปัจจุบัน (ตามการตั้งค่า)
+      const promotionsData = response.data.map((promo) => {
+        let sport = "Unknown";
+        let stadiumName = "ไม่ระบุ";
+        let sportIcon = "/pictureowner/93.png";
+        let price = "฿150";
+        let discountPrice = "฿135";
+
+        if (promo.sports) {
+          const sportsArray = JSON.parse(promo.sports);
+          if (sportsArray.length > 0) {
+            sport = sportsArray[0].name || "Unknown";
+            stadiumName = sportsArray[0].stadiumName || "ไม่ระบุ";
+            price = `฿${sportsArray[0].price || 150}`;
+            discountPrice = `฿${Math.round((sportsArray[0].price || 150) * (1 - (promo.discount_percentage || 0) / 100))}`;
+          }
+        }
+
+        // คำนวณสถานะจาก end_datetime และเปลี่ยน "active" เป็น "กำลังดำเนินการ"
+        const endDate = new Date(promo.end_datetime);
+        const status = endDate < currentDate ? "หมดอายุแล้ว" : promo.promotion_status === "active" ? "กำลังดำเนินการ" : promo.promotion_status || "กำลังดำเนินการ";
+
+        return {
+          id: promo.id,
+          name: promo.promotion_name,
+          status: status,
+          sport,
+          stadiumName,
+          sportIcon,
+          duration: `${promo.start_datetime} - ${promo.end_datetime}`,
+          price,
+          discountPrice,
+          startDate: new Date(promo.start_datetime),
+          endDate: endDate,
+        };
+      });
+      setPromotions(promotionsData);
+      console.log("Fetched promotions:", promotionsData);
+    } catch (error) {
+      console.error("Error fetching promotions:", error);
     }
   };
-  const handleDeleteClick = (promoName) => {
+
+  useEffect(() => {
+    fetchPromotions();
+    window.scrollTo(0, 0);
+  }, []);
+
+  // ฟังก์ชันกรองโปรโมชั่นตาม selectedStatus, selectedDateOption, และ searchQuery
+  const filterPromotions = () => {
+    let filtered = [...promotions];
+
+    // กรองตามสถานะ
+    if (selectedStatus !== "ทั้งหมด") {
+      filtered = filtered.filter((promo) => promo.status === selectedStatus);
+    }
+
+    // กรองตามช่วงวันที่
+    if (selectedDateOption === "วันนี้") {
+      const today = new Date("2025-03-06");
+      filtered = filtered.filter((promo) => {
+        const promoStart = promo.startDate;
+        const promoEnd = promo.endDate;
+        return promoStart <= today && promoEnd >= today;
+      });
+    } else if (selectedDateOption === "สัปดาห์นี้") {
+      const today = new Date("2025-03-06");
+      const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+      const endOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+      filtered = filtered.filter((promo) => {
+        const promoStart = promo.startDate;
+        const promoEnd = promo.endDate;
+        return promoStart <= endOfWeek && promoEnd >= startOfWeek;
+      });
+    } else if (selectedDateOption === "กำหนดเอง" && customDateRange.start && customDateRange.end) {
+      const startDate = new Date(customDateRange.start);
+      const endDate = new Date(customDateRange.end);
+      filtered = filtered.filter((promo) => {
+        const promoStart = promo.startDate;
+        const promoEnd = promo.endDate;
+        return promoStart >= startDate && promoEnd <= endDate;
+      });
+    }
+
+    // กรองตามชื่อโปรโมชั่น
+    if (searchQuery.trim()) {
+      filtered = filtered.filter((promo) =>
+        promo.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    return filtered;
+  };
+
+  const handleStatusDropdownToggle = () => {
+    setIsStatusDropdownOpen(!isStatusDropdownOpen);
+  };
+
+  const handleStatusOptionSelect = (option) => {
+    setSelectedStatus(option);
+    setIsStatusDropdownOpen(false);
+  };
+
+  const handleDateDropdownToggle = () => {
+    setIsDateDropdownOpen(!isDateDropdownOpen);
+  };
+
+  const handleDateOptionSelect = (option) => {
+    setSelectedDateOption(option);
+    setShowCustomInputs(option === "กำหนดเอง");
+    setIsDateDropdownOpen(false);
+  };
+
+  const handleDetailClick = (id) => {
+    console.log("Navigating to detail with id:", id);
+    if (!id) {
+      console.error("ID is undefined, cannot navigate to detail");
+      alert("ไม่พบข้อมูลโปรโมชั่นที่เลือก");
+      return;
+    }
+    router.push(`/detail?id=${id}`);
+  };
+
+const handleEditClick = (id, status) => {
+  if (!id) {
+    console.error("ID is undefined, cannot navigate to edit");
+    alert("ไม่พบข้อมูลโปรโมชั่นที่เลือก");
+    return;
+  }
+  if (status === "หมดอายุแล้ว") {
+    alert("ไม่สามารถแก้ไขโปรโมชั่นที่หมดอายุแล้ว");
+    return;
+  }
+  router.push(`/edit?id=${id}`);
+};
+
+// ฟังก์ชันรีเฟรชข้อมูลหลังจากอัปเดต
+const refreshPromotions = () => {
+  fetchPromotions();
+};
+
+  const handleCloseModal = () => {
+    setShowConfirmModal(false);
+    setShowSuccessModal(false);
+    if (showSuccessModal) router.push("/promotion");
+  };
+
+  const handleDeleteClick = (promoName, promoId) => {
     setPromoToDelete(promoName);
+    setPromoIdToDelete(promoId);
     setShowConfirmModal(true);
   };
-  const handleConfirmDelete = () => {
-    setPromotions(promotions.filter((promo) => promo.name !== promoToDelete));
-    setShowConfirmModal(false);
-    setShowSuccessModal(true);
+
+  const handleConfirmDelete = async () => {
+    if (!promoIdToDelete) {
+      console.error("No promo ID to delete");
+      alert("ไม่พบ ID ของโปรโมชั่นที่เลือก");
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:5000/api/promotions/${promoIdToDelete}`);
+      setPromotions(promotions.filter((promo) => promo.id !== promoIdToDelete));
+      setShowConfirmModal(false);
+      setShowSuccessModal(true);
+      console.log(`Deleted promotion with id: ${promoIdToDelete}`);
+    } catch (error) {
+      console.error("Error deleting promotion:", error);
+      alert("เกิดข้อผิดพลาดในการลบโปรโมชั่น: " + (error.response?.data?.error || error.message));
+    }
   };
+
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
     router.push("/promotion");
-    window.scrollTo(0, 0); // ย้ายหน้าไปที่ตำแหน่งด้านบนสุดหลังจากกลับไปที่หน้า /promotion
+    window.scrollTo(0, 0);
   };
-  // Toggle sidebar
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0); // ทุกครั้งที่หน้า Promotion โหลดใหม่
-  }, []);
+  // สไตล์ปุ่มมาตรฐาน
+  const buttonStyle = {
+    backgroundColor: "#1B9FEC",
+    color: "white",
+    border: "none",
+    padding: "8px 15px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    fontSize: "14px",
+    width: "100px",
+    justifyContent: "center",
+    textAlign: "center",
+  };
+
+  const deleteButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: "#ff4d4d",
+    width: "100px",
+  };
+
+  const filteredPromotions = filterPromotions();
 
   return (
     <div
@@ -125,7 +278,6 @@ export default function Promotion() {
         }}
       >
         <div>
-          {/* เพิ่ม id และ name ให้กับ select element */}
           <select
             id="promotion-select"
             name="promotionSelect"
@@ -140,28 +292,32 @@ export default function Promotion() {
               border: "none",
               outline: "none",
             }}
-            value={selectedOption}
-            onChange={(e) => setSelectedOption(e.target.value)}
+            value={selectedStatus}
+            onChange={(e) => handleStatusOptionSelect(e.target.value)}
           >
-            <option value="หมดอายุแล้ว">หมดอายุแล้ว</option>
             <option value="ทั้งหมด">ทั้งหมด</option>
             <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
+            <option value="หมดอายุแล้ว">หมดอายุแล้ว</option>
           </select>
         </div>
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "20px" }}
-        >
+        <div style={{ display: "flex", justifyContent: "center", padding: "20px", alignItems: "center" }}>
           <a href="/create-promotion" style={{ textDecoration: "none" }}>
             <h4 style={{ color: "#1B9FEC" }}>สร้างโปรโมชั่นส่วนลด</h4>
           </a>
           <h4 style={{ marginLeft: "20px" }}>ชื่อโปรโมชั่น :</h4>
-          {/* เพิ่ม id และ name ให้กับ input element */}
           <input
             type="text"
             id="search-input"
             name="search"
             className="search-input"
             placeholder="ค้นหาโปรโมชั่น..."
+            value={searchQuery} // ผูกค่า input กับ state
+            onChange={(e) => setSearchQuery(e.target.value)} // อัปเดต state เมื่อพิมพ์
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                fetchPromotions(); // เรียก fetch ใหม่เมื่อกด Enter
+              }
+            }}
             style={{
               marginLeft: "20px",
               backgroundColor: "#D9D9D9",
@@ -184,7 +340,7 @@ export default function Promotion() {
               marginTop: "auto",
               height: "35px",
               marginBottom: "auto",
-              width: "300px",
+              width: "150px",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
@@ -193,14 +349,12 @@ export default function Promotion() {
               border: "none",
               cursor: "pointer",
             }}
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            onClick={handleDateDropdownToggle}
           >
-            <span>เลือกวันที่</span>
-            <FaChevronDown
-              className={`arrow ${isDropdownOpen ? "rotate" : ""}`}
-            />
+            <span>{selectedDateOption === "กำหนดเอง" ? "กำหนดเอง" : selectedDateOption}</span>
+            <FaChevronDown className={`arrow ${isDateDropdownOpen ? "rotate" : ""}`} />
           </button>
-          {isDropdownOpen && (
+          {isDateDropdownOpen && (
             <div
               style={{
                 position: "absolute",
@@ -210,10 +364,59 @@ export default function Promotion() {
                 marginTop: "40px",
                 padding: "10px",
                 zIndex: 1,
+                width: "150px",
               }}
             >
-              <div>วันที่เริ่มต้น</div>
-              <div>วันที่สิ้นสุด</div>
+              <div
+                style={{ padding: "5px", cursor: "pointer" }}
+                onClick={() => handleDateOptionSelect("ทั้งหมด")}
+              >
+                ทั้งหมด
+              </div>
+              <div
+                style={{ padding: "5px", cursor: "pointer" }}
+                onClick={() => handleDateOptionSelect("วันนี้")}
+              >
+                วันนี้
+              </div>
+              <div
+                style={{ padding: "5px", cursor: "pointer" }}
+                onClick={() => handleDateOptionSelect("สัปดาห์นี้")}
+              >
+                สัปดาห์นี้
+              </div>
+              <div
+                style={{ padding: "5px", cursor: "pointer" }}
+                onClick={() => handleDateOptionSelect("กำหนดเอง")}
+              >
+                กำหนดเอง
+              </div>
+            </div>
+          )}
+          {showCustomInputs && (
+            <div style={{ display: "flex", gap: "10px", marginLeft: "20px" }}>
+              <input
+                type="date"
+                value={customDateRange.start}
+                onChange={(e) => setCustomDateRange({ ...customDateRange, start: e.target.value })}
+                style={{
+                  height: "35px",
+                  padding: "0 10px",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                }}
+              />
+              <input
+                type="date"
+                value={customDateRange.end}
+                onChange={(e) => setCustomDateRange({ ...customDateRange, end: e.target.value })}
+                style={{
+                  height: "35px",
+                  padding: "0 10px",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                }}
+              />
             </div>
           )}
         </div>
@@ -234,30 +437,25 @@ export default function Promotion() {
                   backgroundColor: "#f8f9fa",
                 }}
               >
-                <th
-                  style={{ padding: "12px", width: "30%", textAlign: "left" }}
-                >
+                <th style={{ padding: "12px", width: "25%", textAlign: "left" }}>
                   ชื่อโปรโมชั่น
                 </th>
-                <th
-                  style={{ padding: "12px", width: "20%", textAlign: "center" }}
-                >
+                <th style={{ padding: "12px", width: "20%", textAlign: "center" }}>
+                  สนาม
+                </th>
+                <th style={{ padding: "12px", width: "20%", textAlign: "center" }}>
                   ประเภทกีฬา
                 </th>
-                <th
-                  style={{ padding: "12px", width: "30%", textAlign: "center" }}
-                >
+                <th style={{ padding: "12px", width: "20%", textAlign: "center" }}>
                   ระยะเวลา
                 </th>
-                <th
-                  style={{ padding: "12px", width: "20%", textAlign: "center" }}
-                >
+                <th style={{ padding: "12px", width: "15%", textAlign: "center" }}>
                   ดำเนินการ
                 </th>
               </tr>
             </thead>
             <tbody>
-              {promotions.map((promo, index) => (
+              {filteredPromotions.map((promo, index) => (
                 <tr
                   key={index}
                   style={{
@@ -296,6 +494,9 @@ export default function Promotion() {
                     </div>
                   </td>
                   <td style={{ padding: "12px", textAlign: "center" }}>
+                    <h4>{promo.stadiumName}</h4>
+                  </td>
+                  <td style={{ padding: "12px", textAlign: "center" }}>
                     <div
                       style={{
                         display: "flex",
@@ -324,52 +525,24 @@ export default function Promotion() {
                     }}
                   >
                     <button
-                      style={{
-                        backgroundColor: "#1B9FEC",
-                        color: "white",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
-                      }}
-                      onClick={() => handleDetailClick(promo.name)} // ดูรายละเอียด
+                      style={buttonStyle}
+                      onClick={() => handleDetailClick(promo.id)}
                     >
                       ดูรายละเอียด
                     </button>
 
-                    <button
-                      style={{
-                        backgroundColor: "#1B9FEC",
-                        color: "white",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
-                      }}
-                      onClick={() => handleEditClick(promo.name)} // แก้ไข
-                    >
-                      <FaEdit /> แก้ไข
-                    </button>
+                    {promo.status !== "หมดอายุแล้ว" && (
+                      <button
+                        style={buttonStyle}
+                        onClick={() => handleEditClick(promo.id, promo.status)}
+                      >
+                        <FaEdit /> แก้ไข
+                      </button>
+                    )}
 
                     <button
-                      style={{
-                        backgroundColor: "#ff4d4d",
-                        color: "white",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
-                      }}
-                      onClick={() => handleDeleteClick(promo.name)} // ลบ
+                      style={deleteButtonStyle}
+                      onClick={() => handleDeleteClick(promo.name, promo.id)}
                     >
                       <FaTrash /> ลบ
                     </button>
@@ -391,7 +564,7 @@ export default function Promotion() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                zIndex: 9999,
+                zIndex: "9999",
               }}
             >
               <div
@@ -401,38 +574,20 @@ export default function Promotion() {
                   borderRadius: "12px",
                   textAlign: "center",
                   boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
-                  maxWidth: "600px", // ปรับให้กล่องกว้างขึ้น
-                  width: "95%", // ใช้เปอร์เซ็นต์ที่มากขึ้น
+                  maxWidth: "600px",
+                  width: "95%",
                   transition: "transform 0.3s ease, opacity 0.3s ease",
                 }}
               >
                 {showConfirmModal && (
                   <>
-                    <h2
-                      style={{
-                        fontSize: "24px",
-                        color: "#333",
-                        fontWeight: "600",
-                      }}
-                    >
+                    <h2 style={{ fontSize: "24px", color: "#333", fontWeight: "600" }}>
                       ยืนยันการลบ
                     </h2>
-                    <p
-                      style={{
-                        fontSize: "16px",
-                        color: "#555",
-                        marginBottom: "20px",
-                      }}
-                    >
+                    <p style={{ fontSize: "16px", color: "#555", marginBottom: "20px" }}>
                       คุณต้องการลบโปรโมชั่น "{promoToDelete}" หรือไม่?
                     </p>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        gap: "20px",
-                      }}
-                    >
+                    <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
                       <button
                         onClick={handleConfirmDelete}
                         style={{
@@ -472,30 +627,12 @@ export default function Promotion() {
                     <img
                       src="/pictureowner/correct.png"
                       alt="Success Icon"
-                      style={{
-                        width: "60px",
-                        height: "60px",
-                        marginBottom: "20px",
-                        display: "block",
-                        margin: "0 auto",
-                      }}
+                      style={{ width: "60px", height: "60px", marginBottom: "20px", display: "block", margin: "0 auto" }}
                     />
-                    <h2
-                      style={{
-                        fontSize: "24px",
-                        color: "#333",
-                        fontWeight: "600",
-                      }}
-                    >
+                    <h2 style={{ fontSize: "24px", color: "#333", fontWeight: "600" }}>
                       ลบสำเร็จ
                     </h2>
-                    <p
-                      style={{
-                        fontSize: "16px",
-                        color: "#555",
-                        marginBottom: "20px",
-                      }}
-                    >
+                    <p style={{ fontSize: "16px", color: "#555", marginBottom: "20px" }}>
                       โปรโมชั่น "{promoToDelete}" ถูกลบแล้ว
                     </p>
                     <div>

@@ -1,6 +1,6 @@
 /* ตั้งค่าพื้นหลัง */
 .background {
-  background-image: url('/pictureowner/bg.png'); /* ตรวจสอบว่าไฟล์อยู่ใน public/pictureowner/bg.png */
+  background-image: url('/pictureowner/bg.png'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
