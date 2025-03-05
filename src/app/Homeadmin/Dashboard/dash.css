@@ -1,9 +1,10 @@
 body {
-  color: var(--foreground);
+  color: black;
   background-color: rgb(207, 206, 206);
   font-family: Arial, Helvetica, sans-serif;
   height: 100vh;
   margin: 0;
+
 }
 
 .tabbar {

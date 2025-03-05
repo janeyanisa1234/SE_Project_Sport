@@ -16,9 +16,9 @@ export default function Login() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // สถานะสำหรับ Popup
   const router = useRouter();
 
-  // Base URL for your API
   const API_URL = "http://localhost:5000/api/kong";
 
   const handleLogin = async (e) => {
@@ -48,13 +48,22 @@ export default function Login() {
         // Store token in localStorage or a more secure method like HttpOnly cookies
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        // แสดง Popup "เข้าสู่ระบบแล้ว" ก่อน
+        setIsPopupVisible(true);
         
-        // Check if user is an owner and redirect accordingly
-        if (response.data.user.isOwner) {
-          router.push("/my-stadium"); // Redirect owners to owner dashboard
-        } else {
-          router.push("/Homepage"); // Redirect regular users to homepage
-        }
+        // เพิ่ม alert ก่อนเปลี่ยนหน้า
+        alert("คุณได้เข้าสู่ระบบแล้ว");
+
+        // ใช้ setTimeout เพื่อให้ Popup แสดงก่อนจะไปหน้าใหม่
+        setTimeout(() => {
+          // Check if user is an owner and redirect accordingly
+          if (response.data.user.isOwner) {
+            router.push("/my-stadium"); // Redirect owners to owner dashboard
+          } else {
+            router.push("/Homepage"); // Redirect regular users to homepage
+          }
+        }, 2000); // 2 วินาทีหลังจากแสดง Popup
       }
     } catch (err) {
       // Handle login error
@@ -201,7 +210,7 @@ export default function Login() {
                     className="btn"
                     disabled={loading}
                   >
-                    {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
+                     เข้าสู่ระบบ
                   </button>
                 </div>
               </form>
