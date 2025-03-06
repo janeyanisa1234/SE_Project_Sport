@@ -9,12 +9,14 @@ import { AuthService } from "../utils/auth"; // Adjust the path as needed
 export default function Sidebar({ isOpen, setIsOpen }) {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [userRole, setUserRole] = useState("user");
   
   useEffect(() => {
     // Load user data when component mounts
     const currentUser = AuthService.getCurrentUser();
     if (currentUser) {
       setUser(currentUser);
+      setUserRole(AuthService.getUserRole());
     } else {
       // If no user is found, redirect to login
       router.push("/Login");
@@ -29,6 +31,19 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     // Call the logout method from AuthService
     AuthService.logout();
     // Router redirect will be handled inside the AuthService.logout() method
+  };
+
+  // Function to get role display name in Thai
+  const getRoleDisplayName = (role) => {
+    switch(role) {
+      case 'admin':
+        return 'ผู้ดูแลระบบ';
+      case 'owner':
+        return 'ผู้ประกอบการ';
+      case 'user':
+      default:
+        return 'ผู้ใช้งาน';
+    }
   };
 
   return (
@@ -48,7 +63,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <div>
             <span style={{ color: "white" }}>{user?.name || "Loading..."}</span>
             <br />
-            <small style={{ color: "white" }}>UID : {user?.id?.substring(0, 8) || "xxxxxxxx"}</small>
+            <small style={{ color: "white" }}>{getRoleDisplayName(userRole)}</small>
           </div>
         </li>
       </Link>

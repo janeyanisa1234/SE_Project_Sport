@@ -9,12 +9,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   // Get user data from localStorage
   const [userName, setUserName] = useState("ผู้ใช้งาน"); // Default name
+  const [userRole, setUserRole] = useState("owner"); // Default role
 
   // Load user data when component mounts
   useEffect(() => {
     const user = AuthService.getCurrentUser();
     if (user && user.name) {
       setUserName(user.name);
+      setUserRole(AuthService.getUserRole());
     }
   }, []);
 
@@ -36,13 +38,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       <ul>
           <li>
             <img src="/pictureowner/profile.png" alt="iconprofile" />
-            <Link
-              href="/Info"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              {userName || "ผู้ใช้งาน"}
-            </Link>
-            <br />
+            <div>
+              <Link
+                href="/Info"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                {userName || "ผู้ใช้งาน"}
+              </Link>
+              <br />
+              <small style={{ color: "white" }}>เจ้าของสนาม</small>
+            </div>
           </li>
 
           <li>
@@ -55,6 +60,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             </Link>
           </li>
 
+          {/* Rest of the menu items remain unchanged */}
           <li>
             <img src="/pictureowner/promotion.png" alt="iconpromotion" />
             <Link

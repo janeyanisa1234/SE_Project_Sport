@@ -1,11 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./slidebar.css";
 import Link from "next/link";
+import { AuthService } from "../../utils/auth";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
+  const [userName, setUserName] = useState("ผู้ดูแลระบบ");
+  const router = useRouter();
+  
+  useEffect(() => {
+    // Load user data when component mounts
+    const currentUser = AuthService.getCurrentUser();
+    if (currentUser && currentUser.name) {
+      setUserName(currentUser.name);
+    }
+  }, []);
+  
   const closeSidebar = () => setIsOpen(false);
+  
+  const handleLogout = () => {
+    // Remove user data from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userRole');
+    
+    // Redirect to login page
+    router.push('/Login');
+  };
 
   return (
     <div className={`sidebar ${isOpen ? "open" : ""}`}>
@@ -22,13 +45,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <li>
             <img src="/pictureAdmin/user.svg" alt="iconprofile" />
             <div>
-              <span style={{ color: "white" }}>ญาณิศา คงหาญ</span>
+              <span style={{ color: "white" }}>{userName}</span>
               <br />
               <small style={{ color: "white" }}>ผู้ดูแลระบบ</small>
             </div>
           </li>
         </Link>
 
+        {/* Existing menu items remain unchanged */}
         <Link href="/Homeadmin/Approved" className="sidebar-link">
           <li>
             <img src="/pictureAdmin/approve.svg" alt="iconhistory" />
@@ -73,11 +97,9 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       </ul>
 
       {/* ปุ่มออกจากระบบ */}
-      <Link href="/" passHref> {/* Add passHref to make it work well with buttons */}
-        <button className="logout">
-          <img src="/pictureAdmin/logout.svg" alt="logout" /> ออกจากระบบ
-        </button>
-      </Link>
+      <button className="logout" onClick={handleLogout}>
+        <img src="/pictureAdmin/logout.svg" alt="logout" /> ออกจากระบบ
+      </button>
     </div>
   );
 }
