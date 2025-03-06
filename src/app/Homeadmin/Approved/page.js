@@ -11,9 +11,21 @@ export default function Dashboard() {
   const [filter, setFilter] = useState("all");
   const [fields, setFields] = useState([]);
 
-  const filteredFields = fields.filter(
-    (field) => filter === "all" || field.stadium_status === filter
-  );
+  const filteredFields = fields.filter((field) => {
+    if (filter === "all") {
+      return true; // Show all fields if "all" is selected
+    }
+    if (filter === "อนุมัติแล้ว") {
+      return field.status === "อนุมัติแล้ว"; // Only show fields with "อนุมัติแล้ว" status
+    }
+    if (filter === "ไม่อนุมัติ") {
+      return field.status === "ไม่อนุมัติ"; // Only show fields with "ไม่อนุมัติ" status
+    }
+    if (filter === "รออนุมัติ") {
+      return field.status !== "อนุมัติแล้ว" && field.status !== "ไม่อนุมัติ"; // Show fields that are pending approval (neither "อนุมัติแล้ว" nor "ไม่อนุมัติ")
+    }
+    return true; // Default return (just in case)
+  });
 
   useEffect(() => {
     fetchStadiums();
