@@ -9,10 +9,11 @@ const AddSportField = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false); //slidebar
   const [image, setImage] = useState(null);
-  const [sports, setSports] = useState(["ฟุตบอล", "บาสเกตบอล", "แบดมินตัน", "อื่นๆ"]);
+  const [sports, setSports] = useState(["ฟุตบอล", "ฟุตซอล", "บาสเกตบอล", "แบดมินตัน", "วอลเลย์บอล", "ปิงปอง", "อื่นๆ"]);
   const [selectedSport, setSelectedSport] = useState("");
   const [customSport, setCustomSport] = useState("");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState(""); // แยกสำหรับราคา
+  const [fieldCount, setFieldCount] = useState(""); // แยกสำหรับจำนวนสนาม
   const [fields, setFields] = useState(["สนาม A", "สนาม B", "สนาม C"]);
   const [timeSlots, setTimeSlots] = useState([]);
 
@@ -69,6 +70,10 @@ const AddSportField = () => {
             </div>
           )}
           <div className="grid grid-cols-2 gap-4 items-center">
+            <label className="text-md font-medium">จำนวนสนาม :</label>
+            <input type="number" value={fieldCount} onChange={(e) => setFieldCount(e.target.value)} placeholder="ใส่จำนวนสนาม" className="border rounded-md px-3 py-2 w-full text-sm bg-gray-50" />
+          </div>
+          <div className="grid grid-cols-2 gap-4 items-center">
             <label className="text-md font-medium">ราคา :</label>
             <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="ใส่ราคา" className="border rounded-md px-3 py-2 w-full text-sm bg-gray-50" />
           </div>
@@ -116,30 +121,34 @@ const AddSportField = () => {
               </button>
             </div>
           ))}
-          <div className="text-center">
-            <label className="block text-md font-medium mb-3 text-left">เพิ่มรูปสนาม :</label>
-            <div
-              className="w-40 h-40 border-2 border-gray-300 flex items-center justify-center bg-gray-100 rounded-lg cursor-pointer"
-              onClick={handleImageClick}
-            >
-              {image ? (
-                <img src={image} alt="สนามกีฬา" className="w-full h-full object-cover rounded-lg" />
-              ) : (
-                <FaPlus className="text-gray-500 text-4xl" />
-              )}
-            </div>
-            <input type="file" id="imageUpload" accept="image/*" onChange={handleImageUpload} className="hidden" />
-          </div>
-          <div className="flex justify-end space-x-2">
-            <button className="px-4 py-2 text-sm bg-gray-300 text-black rounded-md shadow-md hover:bg-gray-400 transition"
-            onClick={() => router.push("/my-stadium")}>
-              ยกเลิก
-            </button>
-            <button className="px-4 py-2 text-sm bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition"
-            onClick={() => router.push("/my-stadium")}>
-              ตกลง
-            </button>
-          </div>
+          {/* ส่วนเพิ่มรูปภาพ */}
+<div className="text-center">
+  <label className="block text-md font-medium mb-3 text-left">เพิ่มรูปสนาม :</label>
+  <div
+    className="w-40 h-40 border-2 border-gray-300 flex items-center justify-center bg-gray-100 rounded-lg cursor-pointer"
+    onClick={handleImageClick}
+  >
+    {image ? (
+      <img src={image} alt="สนามกีฬา" className="w-full h-full object-cover rounded-lg" />
+    ) : (
+      <FaPlus className="text-gray-500 text-4xl" />
+    )}
+  </div>
+  <input type="file" id="imageUpload" accept="image/*" onChange={handleImageUpload} className="hidden" />
+</div>
+
+{/* ปุ่มตกลง/ยกเลิก */}
+<div className="flex justify-end space-x-2">
+  <button className="px-4 py-2 text-sm bg-gray-300 text-black rounded-md shadow-md hover:bg-gray-400 transition"
+  onClick={() => router.push("/my-stadium")}>
+    ยกเลิก
+  </button>
+  <button className="px-4 py-2 text-sm bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition"
+  onClick={() => router.push("/my-stadium")}>
+    ตกลง
+  </button>
+</div>
+
         </div>
       </div>
     </div>
