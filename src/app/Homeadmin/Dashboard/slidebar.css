@@ -88,5 +88,5 @@
   gap: 10px;
   font-size: 20px;
   position: fixed; /* หรือใช้ absolute ก็ได้ */
-  bottom: 30px;
+  bottom: 5px;
 }
