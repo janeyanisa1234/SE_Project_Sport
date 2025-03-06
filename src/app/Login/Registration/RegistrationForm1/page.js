@@ -3,8 +3,7 @@ import Link from "next/link";
 import "./RegistrationForm1.css";
 import Image from "next/image"; 
 import Tabbar from "../../../tabbar-nologin/tab.js";
-import "../../../ice/Admin/slidebar";
-import Sidebar from "../../../ice/Admin/slidebar.js";
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -69,7 +68,7 @@ const RegistrationForm1 = () => {
   return (
     <>
       <Tabbar />
-      <Sidebar />
+     
       <div className="registration-container">
         <div className="registration-overlay">
           <div className="registration-box">

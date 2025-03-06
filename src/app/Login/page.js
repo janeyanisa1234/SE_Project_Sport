@@ -16,8 +16,9 @@ export default function Login() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // สถานะสำหรับ Popup
   const router = useRouter();
-  // Base URL for your API
+
   const API_URL = "http://localhost:5000/api/kong";
   // Add this missing state variable at the top with your other state variables
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -66,7 +67,11 @@ export default function Login() {
         // Store token in localStorage or a more secure method like HttpOnly cookies
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        // แสดง Popup "เข้าสู่ระบบแล้ว" ก่อน
+        setIsPopupVisible(true);
         
+
         // Store user role in localStorage
         let userRole = "user";
         if (response.data.user.isOwner) {
@@ -87,6 +92,7 @@ export default function Login() {
           if (response.data.user.isAdmin) {
             router.push("/Homeadmin"); // Redirect admins to admin dashboard
           } else if (response.data.user.isOwner) {
+
             router.push("/my-stadium"); // Redirect owners to owner dashboard
           } else {
             router.push("/Homepage"); // Redirect regular users to homepage
@@ -238,7 +244,7 @@ export default function Login() {
                     className="btn"
                     disabled={loading}
                   >
-                    {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
+                     เข้าสู่ระบบ
                   </button>
                 </div>
               </form>

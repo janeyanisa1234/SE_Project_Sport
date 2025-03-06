@@ -1,41 +1,33 @@
 "use client";
 import "./Refund.css";
 import "../Dashboard/slidebar.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
 import Link from 'next/link';
 import Tab from "../Tabbar/page.js";
 import Image from "next/image";
+import axios from 'axios';  // Import Axios
 
 export default function Manage_Cash() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
+  const [owners, setOwners] = useState([]);  // State to store fetched owners data
 
-  // ข้อมูลตัวอย่าง 3 ชุด
-  const Owners = [
-    {
-      id: 1,
-      name: "สนาม AVOCADO\nฟุตบอล\n12 ก.พ. 2568 10:00",
-      Price: "2,000",
-      bankAccount: "ธนาคารไทยพาณิชย์ - 123-456-7890 - นาย กิตติพงศ์ ใจดี",
-      status: "รอดำเนินการ",
-    },
-    {
-      id: 2,
-      name: "สนาม AVOCADO\nแบดมินตัน\n5 มี.ค. 2568 15:30",
-      Price: "200",
-      bankAccount: "ธนาคารกรุงไทย - 987-654-3210 - นางสาว พรทิพย์ สายทอง",
-      status: "รอดำเนินการ",
-    },
-    {
-      id: 3,
-      name: "สนาม AVOCADO\nเทนนิส\n20 เม.ย. 2568 18:45",
-      Price: "250",
-      bankAccount: "ธนาคารกสิกรไทย - 456-789-1234 - นาย สมชาย ทองดี",
-      status: "รอดำเนินการ",
-    },
-  ];
+  // Fetch data from the backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/cancleAdmin/bookings');
+        setOwners(response.data);
+      } catch (error) {
+        console.error("Error fetching bookings:", error.response || error.message);
+      }
+    };
+    
+
+    fetchData();
+  }, []); // Empty dependency array ensures this runs once on mount
 
   const handleStatusChange = (e) => {
     setStatusFilter(e.target.value);
@@ -51,11 +43,12 @@ export default function Manage_Cash() {
 
   const handleApprove = (id) => {
     console.log(`อนุมัติคำขอสำหรับ ID: ${id}`);
+    // Call backend API to approve the request
   };
 
   // ฟิลเตอร์ข้อมูลตามสถานะ, เดือน, และปี
-  const filteredOwners = Owners.filter((owner) => {
-    const matchesStatus = statusFilter === 'all' || owner.status === statusFilter;
+  const filteredOwners = owners.filter((owner) => {
+    const matchesStatus = statusFilter === 'all' || owner.status_booking === statusFilter;
     const matchesMonth = !month || owner.name.includes(month);
     const matchesYear = !year || owner.name.includes(year);
 
@@ -111,16 +104,20 @@ export default function Manage_Cash() {
                 <td>{owner.Price}</td>
                 <td>{owner.bankAccount}</td>
                 <td className="status-cell">
-                  <div className="status-container">
-                    <div className="status pending" onClick={() => handleApprove(owner.id)}>
-                      <Image src="/pictureAdmin/Check.svg" width={20} height={20} alt="อนุมัติ" />
-                      <span>อนุมัติคำขอ</span>
+                  {owner.status_booking === 'รออนุมัติ' ? (
+                    <div className="status-container">
+                      <div className="status pending" onClick={() => handleApprove(owner.id)}>
+                        <Image src="/pictureAdmin/Check.svg" width={20} height={20} alt="อนุมัติ" />
+                        <span>อนุมัติคำขอ</span>
+                      </div>
+                      <div className="status pending">
+                        <Image src="/pictureAdmin/Notcheck.svg" width={20} height={20} alt="ไม่อนุมัติ" />
+                        <span>ไม่อนุมัติคำขอ</span>
+                      </div>
                     </div>
-                    <div className="status pending">
-                      <Image src="/pictureAdmin/Notcheck.svg" width={20} height={20} alt="ไม่อนุมัติ" />
-                      <span>ไม่อนุมัติคำขอ</span>
-                    </div>
-                  </div>
+                  ) : (
+                    <span>{owner.status_booking}</span>  // Display the current status if not 'รออนุมัติ'
+                  )}
                 </td>
               </tr>
             ))}

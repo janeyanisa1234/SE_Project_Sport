@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  color: var(--foreground);
+  color: black;
   background-color: rgb(207, 206, 206);
   font-family: Arial, Helvetica, sans-serif;
   height: 100vh;
@@ -34,17 +34,17 @@ body {
   gap: 50px;
   align-items: center;
   margin: 0 auto;
-  max-width: 1200px; /* ปรับขนาด */
+  max-width: 1200px;
 }
 
 .filter-container select,
 .filter-container input {
-  padding: 14px; /* เพิ่มขนาด */
-  font-size: 18px; /* ใหญ่ขึ้น */
+  padding: 14px;
+  font-size: 18px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100%;
-  height: 50px; /* เพิ่มความสูง */
+  height: 50px;
 }
 
 /* ขยายขนาดไอคอนค้นหา */
@@ -54,52 +54,72 @@ body {
   cursor: pointer;
 }
 
+/* โฮเวอร์ตาราง */
+tr:hover {
+  background-color: #e0e0e0;
+}
+
 /* ปรับขนาดตาราง */
 .table-container {
   margin: 20px auto;
-  max-width: 1200px;  /* ขยายตาราง */
-  max-height: 1200px;
+  max-width: 1200px;
+  overflow-x: auto;  /* เพิ่มเลื่อนซ้ายขวาถ้าจอเล็ก */
+  background-color: white;
+  border-radius: 10px;
 }
 
+/* ตาราง */
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  border-radius: 10px;
-  overflow: hidden;
-  font-size: 1.2rem; /* ขยายตัวอักษร */
+  font-size: 1.2rem;
 }
 
-/* ปรับขนาดเซลล์ */
+/* เซลล์ */
 th, td {
-  padding: 16px; /* เพิ่ม padding */
+  padding: 16px;
   text-align: center;
   border: 1px solid #ccc;
+  white-space: nowrap; /* ป้องกันข้อความขึ้นบรรทัดใหม่ */
 }
 
 th {
   background-color: black;
   color: white;
-  font-size: 1.3rem; 
+  font-size: 1.3rem;
 }
 
 tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Corrected hover effect */
+tr:hover {
+  background-color: #e0e0e0;
+}
+
+
+/* Optionally, if you want to target even or odd rows for hover */
+tr:nth-child(even):hover {
+  background-color: #e0e0e0;
+}
+
+tr:nth-child(odd):hover {
+  background-color: #e0e0e0;
+}
+
 /* ปุ่มลบ */
 .delete-btn {
   display: flex;
   align-items: center;
-  gap: 8px; /* ปรับระยะห่างระหว่างไอคอน */
+  gap: 8px;
   background: none;
   border: none;
   cursor: pointer;
-}
-
-.delete-btn img {
-  width: 25px;
-  height: 25px;
 }
 
 .delete-btn img {
@@ -107,12 +127,12 @@ tr:nth-child(even) {
   height: 30px;
 }
 
-/* การโฮเวอร์ของตัวเลือก */
+/* คนเลือก */
 .people select:hover {
   background-color: #807f7f;
 }
 
-/* รูปสามเหลี่ยม */
+/* สามเหลี่ยม */
 .triangle-down {
   display: inline-block;
   width: 0;
@@ -123,10 +143,18 @@ tr:nth-child(even) {
   margin-left: 5px;
 }
 
+/* จอเล็กมาก (มือถือแนวตั้ง) */
 @media (max-width: 600px) {
   .filter-container {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: 1fr; /* สลับเป็นแนวตั้ง */
+    gap: 10px;
+  }
+
+  .filter-container select,
+  .filter-container input {
+    font-size: 16px;
+    padding: 10px;
+    height: 40px;
   }
 
   .search-icon {
@@ -135,27 +163,42 @@ tr:nth-child(even) {
   }
 
   table {
-    font-size: 14px;
+    font-size: 12px;
+    min-width: 600px; /* บังคับให้ตารางใหญ่พอแล้วเลื่อนซ้ายขวาได้ */
   }
 
   th, td {
     padding: 8px;
-    gap: 8px;
+    font-size: 12px;
   }
 
   .profile-pic {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
   }
 
   .delete-btn img {
-    width: 25px;
-    height: 25px;
-    align-items: center;
+    width: 20px;
+    height: 20px;
   }
 }
+/* จัดให้อีเมลและไอคอนอยู่ในแถวเดียวกัน */
+.email-link {
+  display: flex;
+  align-items: center;  /* จัดแนวให้ตรงกลาง */
+  gap: 8px; /* ระยะห่างระหว่างข้อความและไอคอน */
+  text-decoration: none; /* เอาขีดเส้นใต้ของลิงก์ออก */
+  color: inherit; /* ให้สีเหมือนกับสีของข้อความ */
+}
 
-/* คลาสใหม่สำหรับการตั้งค่าขนาดและจัดตำแหน่งของไอคอน */
+.email-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle; /* ให้ไอคอนตรงกลางกับข้อความ */
+}
+
+
+/* สำหรับไอคอนอีเมล */
 .email-icon {
   width: 16px;
   height: 16px;
@@ -163,10 +206,15 @@ tr:nth-child(even) {
   vertical-align: middle;
 }
 
-
+/* จัดอีเมลกับไอคอนเป็นแถวเดียวกัน */
 .icon {
   display: flex;
-  align-items: center; /* จัดตำแหน่งให้อยู่ในแถวเดียวกัน */
-  justify-content: center; /* จัดให้เนื้อหากลาง */
-  gap: 8px; /* ระยะห่างระหว่างข้อความและไอคอน */
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ให้ทั้ง container มี overflow-x ได้ทั้งหมด */
+.table-wrapper {
+  overflow-x: auto;
 }
