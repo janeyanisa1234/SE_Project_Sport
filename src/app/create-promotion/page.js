@@ -17,10 +17,10 @@ export default function CreatePromotion() {
   const [endTime, setEndTime] = useState("");
   const [discount, setDiscount] = useState("");
   const [discountLimit, setDiscountLimit] = useState("");
-  const [location, setLocation] = useState("");
-  const [selectedSports, setSelectedSports] = useState([]);
-  const [stadiums, setStadiums] = useState([]);
   const [selectedStadium, setSelectedStadium] = useState("");
+  const [stadiums, setStadiums] = useState([]);
+  const [sports, setSports] = useState([]);
+  const [selectedSports, setSelectedSports] = useState([]);
   const [loadingStadiums, setLoadingStadiums] = useState(true);
   const [error, setError] = useState(null);
 
@@ -47,13 +47,12 @@ export default function CreatePromotion() {
     if (params.discount) setDiscount(params.discount);
     if (params.discountLimit) setDiscountLimit(params.discountLimit);
     if (params.location) setSelectedStadium(params.location);
-    if (params.selectedStadium) setSelectedStadium(params.selectedStadium);
 
-    // ดึงข้อมูลสนาม
     setLoadingStadiums(true);
     axios
       .get("http://localhost:5000/api/stadiums")
       .then((response) => {
+        console.log("Stadiums response:", response.data);
         if (Array.isArray(response.data)) {
           setStadiums(response.data);
         } else {
@@ -63,54 +62,76 @@ export default function CreatePromotion() {
         setLoadingStadiums(false);
       })
       .catch((error) => {
-        console.error("Error fetching stadiums:", error.response?.data || error.message || error);
-        setError("ไม่สามารถโหลดรายการสนามได้: " + (error.response?.data?.error || error.message || "ไม่ทราบสาเหตุ"));
+        console.error("Error fetching stadiums:", error);
+        setError("ไม่สามารถโหลดรายการสนามได้: " + (error.response?.data?.error || error.message));
         setLoadingStadiums(false);
-        alert("เกิดข้อผิดพลาดในการโหลดรายการสนาม: " + (error.response?.data?.error || error.message || "ไม่ทราบสาเหตุ"));
       });
   }, [sportsQuery, searchParams]);
+
+  const handleStadiumChange = (e) => {
+    const stadiumId = e.target.value;
+    setSelectedStadium(stadiumId);
+    if (stadiumId) {
+      axios
+        .get(`http://localhost:5000/api/sports?stadiumId=${stadiumId}`)
+        .then((response) => {
+          console.log("Sports response:", response.data);
+          setSports(response.data);
+          setSelectedSports([]); // รีเซ็ตกีฬาเมื่อเปลี่ยนสนาม
+        })
+        .catch((error) => {
+          console.error("Error fetching sports:", error);
+          setError("ไม่สามารถโหลดข้อมูลกีฬาได้: " + error.message);
+        });
+    } else {
+      setSports([]);
+      setSelectedSports([]);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!promotionName || !startDate || !startTime || !endDate || !endTime || !discount || !selectedStadium || selectedSports.length === 0) {
       alert("กรุณากรอกข้อมูลให้ครบถ้วนรวมถึงเลือกสนามและกีฬา");
       return;
     }
-    if (parseFloat(discount) < 0 || parseFloat(discount) > 100) {
-      alert("ส่วนลดต้องอยู่ระหว่าง 0-100%");
+
+    const selectedStadiumData = stadiums.find((s) => s.id === selectedStadium);
+    const ownerId = selectedStadiumData?.owner_id || null;
+
+    if (!ownerId) {
+      alert("ไม่พบ owner_id สำหรับสนามที่เลือก");
       return;
     }
-    if (new Date(`${startDate} ${startTime}`) >= new Date(`${endDate} ${endTime}`)) {
-      alert("วันที่เริ่มต้นต้องมาก่อนวันที่สิ้นสุด");
-      return;
-    }
+
+    const effectiveEndTime = endTime || "23:59";
 
     const promotionData = {
       promotion_name: promotionName,
       start_date: startDate,
       start_time: startTime,
       end_date: endDate,
-      end_time: endTime,
-      discount: discount,
+      end_time: effectiveEndTime,
+      discount,
       discount_limit: discountLimit || null,
-      location: selectedStadium,
+      location: selectedStadiumData?.name || "ไม่ระบุ",
       sports: selectedSports,
+      owner_id: ownerId,
     };
 
+    console.log("Sending promotion data:", promotionData);
+
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/promotions",
-        promotionData
-      );
-      console.log("Response from backend:", response.data);
-      const newPromotionId = Array.isArray(response.data) ? response.data[0].id : response.data.id || null;
-      if (!newPromotionId) {
-        throw new Error("No promotion ID returned from server");
-      }
+      const response = await axios.post("http://localhost:5000/api/promotions", promotionData);
+      const newPromotionId = response.data[0].id;
       setPromotionId(newPromotionId);
-      setShowModal(true);
+      setShowModal(true); // แสดง Modal
     } catch (error) {
-      console.error("Error submitting promotion:", error.response?.data || error.message);
-      alert("เกิดข้อผิดพลาดในการบันทึกโปรโมชั่น: " + (error.response?.data?.error || error.message || "ไม่ทราบสาเหตุ"));
+      console.error("Detailed error submitting promotion:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      alert("เกิดข้อผิดพลาดในการบันทึกโปรโมชั่น: " + (error.response?.data?.error || error.message));
     }
   };
 
@@ -125,8 +146,7 @@ export default function CreatePromotion() {
 
   const handleViewDetail = () => {
     if (!promotionId) {
-      console.error("No promotion ID available");
-      alert("ไม่พบข้อมูลโปรโมชั่นที่เลือก กรุณาลองใหม่อีกครั้ง");
+      alert("ไม่พบข้อมูลโปรโมชั่นที่เลือก");
       return;
     }
     setShowModal(false);
@@ -227,19 +247,15 @@ export default function CreatePromotion() {
           <select
             className="input-field"
             value={selectedStadium}
-            onChange={(e) => setSelectedStadium(e.target.value)}
+            onChange={handleStadiumChange}
             disabled={loadingStadiums}
           >
             <option value="">เลือกสนาม</option>
-            {stadiums.length > 0 ? (
-              stadiums.map((stadium) => (
-                <option key={stadium.id} value={stadium.name}>
-                  {stadium.name}
-                </option>
-              ))
-            ) : (
-              <option disabled>ไม่มีสนาม</option>
-            )}
+            {stadiums.map((stadium) => (
+              <option key={stadium.id} value={stadium.id}>
+                {stadium.name}
+              </option>
+            ))}
           </select>
           {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
@@ -261,10 +277,7 @@ export default function CreatePromotion() {
         </div>
 
         <div className="button-group">
-          <button
-            className="cancel-button"
-            onClick={() => router.push("/promotion")}
-          >
+          <button className="cancel-button" onClick={() => router.push("/promotion")}>
             ยกเลิก
           </button>
           <button className="confirm-button" onClick={handleConfirm}>
@@ -283,8 +296,8 @@ export default function CreatePromotion() {
             />
             <h2>สร้างโปรโมชั่นสำเร็จ</h2>
             <p>
-              โปรโมชั่นส่วนลดนี้จะเริ่มเวลา {startDate} {startTime}{" "}
-              และสิ้นสุดเวลา {endDate} {endTime}
+              โปรโมชั่นส่วนลดนี้จะเริ่มเวลา {startDate} {startTime} และสิ้นสุดเวลา {endDate}{" "}
+              {endTime}
             </p>
             <div className="modal-button-group">
               <button onClick={handleCloseModal} className="modal-button">

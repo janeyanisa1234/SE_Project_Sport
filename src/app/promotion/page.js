@@ -14,7 +14,7 @@ export default function Promotion() {
   const [selectedDateOption, setSelectedDateOption] = useState("ทั้งหมด");
   const [customDateRange, setCustomDateRange] = useState({ start: "", end: "" });
   const [showCustomInputs, setShowCustomInputs] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // เพิ่ม state สำหรับช่องค้นหา
+  const [searchQuery, setSearchQuery] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [promoToDelete, setPromoToDelete] = useState(null);
@@ -26,32 +26,39 @@ export default function Promotion() {
   const fetchPromotions = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/promotions");
-      const currentDate = new Date("2025-03-06"); // วันที่ปัจจุบัน (ตามการตั้งค่า)
+      const currentDate = new Date("2025-03-06");
       const promotionsData = response.data.map((promo) => {
         let sport = "Unknown";
         let stadiumName = "ไม่ระบุ";
-        let sportIcon = "/pictureowner/93.png";
+        let sportIcon = "/pictureowner/default.png"; // ค่า default ถ้าไม่มี
         let price = "฿150";
         let discountPrice = "฿135";
 
         if (promo.sports) {
-          const sportsArray = JSON.parse(promo.sports);
+          const sportsArray = JSON.parse(promo.sports || "[]"); // ใช้ || "[]" ถ้า null
           if (sportsArray.length > 0) {
             sport = sportsArray[0].name || "Unknown";
-            stadiumName = sportsArray[0].stadiumName || "ไม่ระบุ";
+            stadiumName = promo.location || "ไม่ระบุ";
             price = `฿${sportsArray[0].price || 150}`;
-            discountPrice = `฿${Math.round((sportsArray[0].price || 150) * (1 - (promo.discount_percentage || 0) / 100))}`;
+            discountPrice = `฿${Math.round(
+              (sportsArray[0].price || 150) * (1 - (promo.discount_percentage || 0) / 100)
+            )}`;
+            sportIcon = `/pictureowner/${sport.toLowerCase().replace(/ /g, "_")}.png`; // ปรับชื่อไฟล์
           }
         }
 
-        // คำนวณสถานะจาก end_datetime และเปลี่ยน "active" เป็น "กำลังดำเนินการ"
         const endDate = new Date(promo.end_datetime);
-        const status = endDate < currentDate ? "หมดอายุแล้ว" : promo.promotion_status === "active" ? "กำลังดำเนินการ" : promo.promotion_status || "กำลังดำเนินการ";
+        const status =
+          endDate < currentDate
+            ? "หมดอายุแล้ว"
+            : promo.promotion_status === "active"
+            ? "กำลังดำเนินการ"
+            : promo.promotion_status || "กำลังดำเนินการ";
 
         return {
           id: promo.id,
           name: promo.promotion_name,
-          status: status,
+          status,
           sport,
           stadiumName,
           sportIcon,
@@ -59,13 +66,13 @@ export default function Promotion() {
           price,
           discountPrice,
           startDate: new Date(promo.start_datetime),
-          endDate: endDate,
+          endDate,
         };
       });
       setPromotions(promotionsData);
       console.log("Fetched promotions:", promotionsData);
     } catch (error) {
-      console.error("Error fetching promotions:", error);
+      console.error("Error fetching promotions:", error.response?.data || error.message);
     }
   };
 

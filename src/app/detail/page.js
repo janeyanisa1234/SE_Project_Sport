@@ -26,26 +26,26 @@ export default function Detail() {
   const fetchPromotionDetails = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/promotions/${id}`);
-      console.log("Response data:", response.data); // เพิ่ม log เพื่อตรวจสอบข้อมูล
       const promo = Array.isArray(response.data) ? response.data[0] : response.data;
-      if (!promo) {
-        throw new Error("Promotion not found");
-      }
+      if (!promo) throw new Error("Promotion not found");
+  
       let sport = "Unknown";
       let stadiumName = "ไม่ระบุ";
       let originalPrice = "฿150";
       let promoPrice = "฿135";
-
+  
       if (promo.sports) {
         const sportsArray = JSON.parse(promo.sports);
         if (sportsArray.length > 0) {
           sport = sportsArray[0].name || "Unknown";
           stadiumName = sportsArray[0].stadiumName || "ไม่ระบุ";
           originalPrice = `฿${sportsArray[0].price || 150}`;
-          promoPrice = `฿${Math.round((sportsArray[0].price || 150) * (1 - (promo.discount_percentage || 0) / 100))}`;
+          promoPrice = `฿${Math.round(
+            (sportsArray[0].price || 150) * (1 - (promo.discount_percentage || 0) / 100)
+          )}`;
         }
       }
-
+  
       setPromotion({
         name: promo.promotion_name,
         duration: `${promo.start_datetime} - ${promo.end_datetime}`,
@@ -56,13 +56,11 @@ export default function Detail() {
         discount: `${promo.discount_percentage || 0}% ลด`,
         limit: promo.discount_limit ? `${promo.discount_limit} ครั้ง` : "ไม่จำกัดการจอง",
       });
-      console.log("Fetched promotion details:", promo);
     } catch (error) {
-      console.error("Error fetching promotion details:", error.response?.data || error.message);
-      alert(error.response?.data?.error || "เกิดข้อผิดพลาดในการดึงข้อมูลโปรโมชั่น: " + error.message);
+      console.error("Error fetching promotion details:", error);
+      alert("เกิดข้อผิดพลาดในการดึงข้อมูลโปรโมชั่น");
     }
   };
-
   const handleDetailClick = () => {
     router.push("/promotion");
   };
