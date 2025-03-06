@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode'; // You'll need to install this: npm install jwt-decode
 
-const API_URL = "http://localhost:5000/api/kony";
+const API_URL = "http://localhost:5000/api/kong";
 
 // Create an axios instance with default config
 const api = axios.create({
@@ -47,10 +47,13 @@ export const AuthService = {
   // Register a new user
   register: async (userData) => {
     try {
-      const response = await api.post('/register', userData);
+      const response = await api.post(`${API_URL}/register`, userData);
       if (response.data.token) {
         AuthService.setToken(response.data.token);
         AuthService.setUser(response.data.user);
+        
+        // Determine and set user role
+        AuthService.setUserRole(response.data.user);
       }
       return response.data;
     } catch (error) {
@@ -61,10 +64,13 @@ export const AuthService = {
   // Login user
   login: async (credentials) => {
     try {
-      const response = await api.post('/login', credentials);
+      const response = await api.post(`${API_URL}/login`, credentials);
       if (response.data.token) {
         AuthService.setToken(response.data.token);
         AuthService.setUser(response.data.user);
+        
+        // Determine and set user role
+        AuthService.setUserRole(response.data.user);
       }
       return response.data;
     } catch (error) {
@@ -89,12 +95,34 @@ export const AuthService = {
   setUser: (user) => {
     localStorage.setItem('user', JSON.stringify(user));
   },
+  
+  // Determine and set user role
+  setUserRole: (user) => {
+    let role = 'user'; // Default role
+    
+    if (user.isAdmin) {
+      role = 'admin';
+    } else if (user.isOwner) {
+      role = 'owner';
+    }
+    
+    localStorage.setItem('userRole', role);
+  },
+  
+  // Get user role
+  getUserRole: () => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('userRole') || 'user';
+    }
+    return 'user';
+  },
 
   // Logout user
   logout: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
       window.location.href = '/Login';
     }
   },
@@ -143,6 +171,7 @@ export const AuthService = {
         const response = await api.get('/profile');
         if (response.data.user) {
           AuthService.setUser(response.data.user);
+          AuthService.setUserRole(response.data.user);
           return response.data.user;
         }
       }

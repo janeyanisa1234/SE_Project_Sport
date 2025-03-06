@@ -17,10 +17,10 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const router = useRouter();
-
   // Base URL for your API
   const API_URL = "http://localhost:5000/api/kong";
-
+  // Add this missing state variable at the top with your other state variables
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
   const handleLogin = async (e) => {
     e.preventDefault();
     
@@ -28,20 +28,38 @@ export default function Login() {
     setError("");
     setSuccess("");
     
-    // Basic validation
+    // Enhanced validation to include robot check
     if (!email || !password) {
       setError("กรุณากรอกอีเมลและรหัสผ่าน");
+      return;
+    }
+    
+    if (!rememberMe) {
+      setError("กรุณายืนยันว่าคุณไม่ใช่ระบบอัตโนมัติ");
       return;
     }
     
     try {
       setLoading(true);
       
-      // Make API request to login endpoint
-      const response = await axios.post(`${API_URL}/login`, {
-        email,
-        password
-      });
+      // Add debugging logs
+      console.log("Attempting login with:", { email, password });
+      console.log("API URL:", `${API_URL}/login`);
+      
+      // Add headers explicitly to match Postman
+      const response = await axios.post(`${API_URL}/login`, 
+        { email, password },
+        { 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          // Add timeout to prevent hanging requests
+          timeout: 5000
+        }
+      );
+      
+      console.log("Login response:", response.data);
       
       // Handle successful login
       if (response.data && response.data.token) {
@@ -49,12 +67,31 @@ export default function Login() {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         
-        // Check if user is an owner and redirect accordingly
+        // Store user role in localStorage
+        let userRole = "user";
         if (response.data.user.isOwner) {
-          router.push("/my-stadium"); // Redirect owners to owner dashboard
-        } else {
-          router.push("/Homepage"); // Redirect regular users to homepage
+          userRole = "owner";
+        } else if (response.data.user.isAdmin) {
+          userRole = "admin";
         }
+        localStorage.setItem("userRole", userRole);
+        // แสดง Popup "เข้าสู่ระบบแล้ว" ก่อน
+        setIsPopupVisible(true);
+        
+        // เพิ่ม alert ก่อนเปลี่ยนหน้า
+        alert("คุณได้เข้าสู่ระบบแล้ว");
+        
+        // ใช้ setTimeout เพื่อให้ Popup แสดงก่อนจะไปหน้าใหม่
+        setTimeout(() => {
+          // Redirect based on user role
+          if (response.data.user.isAdmin) {
+            router.push("/Homeadmin"); // Redirect admins to admin dashboard
+          } else if (response.data.user.isOwner) {
+            router.push("/my-stadium"); // Redirect owners to owner dashboard
+          } else {
+            router.push("/Homepage"); // Redirect regular users to homepage
+          }
+        }, 2000); // 2 วินาทีหลังจากแสดง Popup
       }
     } catch (err) {
       // Handle login error
