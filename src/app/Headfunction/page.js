@@ -2,11 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import "./Headfunction.css";
+import Link from "next/link";
+
 
 export default function Headfunction() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const dropdownRef = useRef(null); // ใช้ ref เพื่อตรวจจับการคลิกข้างนอก
+
 
   const categories = ["ฟุตบอล", "บาสเกตบอล", "เทนนิส", "แบดมินตัน", "ว่ายน้ำ"];
 
@@ -55,7 +58,9 @@ export default function Headfunction() {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
-        <img src="/picturemild/Find.png" alt="Find" className="find" />
+        <Link href={`/Homepage/Search?query=${encodeURIComponent(searchText)}`}>
+          <img src="/picturemild/Find.png" alt="Find" className="find" />
+        </Link>
       </div>
     </nav>
   );

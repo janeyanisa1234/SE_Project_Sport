@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Select.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Tabbar from "../../../Tab/tab";
 import Headfunction from "@/app/Headfunction/page";
+import axios from "axios";
 
 const SelectPlace = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -15,100 +16,30 @@ const SelectPlace = () => {
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [placeData, setPlaceData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = ["ยอดนิยม", "แบดมินตัน", "ฟุตซอล", "ฟุตบอล", "ปิงปอง"];
+  const categories = ["ทั้งหมด", "แบดมินตัน", "ฟุตซอล", "ฟุตบอล", "ปิงปอง"];
 
-  const popularVenues = [
-    {
-      img: "/picturemild/Badminton.svg",
-      alt: "สนามแบดมินตัน",
-      title: "แบดมินตัน",
-      totalCourts: 2,
-      pricePerHour: 150,
-      promotion: "ส่วนลด 10%",
-    },
-    {
-      img: "/picturemild/Footbal.svg",
-      alt: "สนามฟุตบอล",
-      title: "ฟุตบอล",
-      totalCourts: 1,
-      pricePerHour: 700,
-      promotion: "ส่วนลด 10%",
-    },
-    {
-      img: "/picturemild/Footsal.svg",
-      alt: "สนามฟุตซอล",
-      title: "ฟุตซอล",
-      totalCourts: 1,
-      pricePerHour: 400,
-      promotion: "ส่วนลด 10%",
-    },
-  ];
+  useEffect(() => {
+    async function fetchtypesData() {
+      try {
+        const response = await axios.get("http://localhost:5000/api/Booking/court");
+        console.log("📌 Data from API:", response.data);
 
-  const venues = {
-    "แบดมินตัน": [
-      {
-        img: "/picturemild/Bad_Court1.svg",
-        alt: "คอร์ดแบดมินตัน 1",
-        title: "คอร์ด 1",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00"],
-        unavailableTimeslots: ["15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00"],
-        totalCourts: 3,
-        pricePerHour: 300,
-      },
-      {
-        img: "/picturemild/Bad_Court2.svg",
-        alt: "คอร์ดแบดมินตัน 2",
-        title: "คอร์ด 2",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00"],
-        unavailableTimeslots: ["15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00"],
-        totalCourts: 2,
-        pricePerHour: 300,
-      },
-      {
-        img: "/picturemild/Bad_Court3.svg",
-        alt: "คอร์ดแบดมินตัน 3",
-        title: "คอร์ด 3",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00"],
-        unavailableTimeslots: ["15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00"],
-        totalCourts: 1,
-        pricePerHour: 300,
+        if (response.data && response.data.length > 0) {
+          setPlaceData(response.data); // Set data for courts
+        } else {
+          console.error("No place data received");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Set loading false after fetching data
       }
-    ],
-    "ฟุตซอล": [
-      {
-        img: "/picturemild/Futsal_court1.png",
-        alt: "สนามฟุตซอล 1",
-        title: "สนามฟุตซอล 1",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00"],
-        unavailableTimeslots: ["15:00 - 16:00", "16:00 - 17:00"],
-        totalCourts: 5,
-        pricePerHour: 500,
-      }
-    ],
-    "ฟุตบอล": [
-      {
-        img: "/picturemild/Football_court1.png",
-        alt: "สนามฟุตบอล 1",
-        title: "สนามฟุตบอล 1",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00"],
-        unavailableTimeslots: ["15:00 - 16:00"],
-        totalCourts: 4,
-        pricePerHour: 700,
-      }
-    ],
-    "ปิงปอง": [
-      {
-        img: "/picturemild/Pingpong_court1.png",
-        alt: "สนามปิงปอง 1",
-        title: "สนามปิงปอง 1",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00"],
-        unavailableTimeslots: ["15:00 - 16:00"],
-        totalCourts: 2,
-        pricePerHour: 150,
-      }
-    ],
-  };
+    }
+    fetchtypesData();
+  }, []);
 
   const handleVenueSelect = (venue) => {
     if (selectedVenue?.title === venue.title) {
@@ -195,55 +126,31 @@ const SelectPlace = () => {
           </div>
         </div>
 
-        {/* Popular Venues Section */}
-        {activeCategory === "ยอดนิยม" && (
-          <div className="popular-venues">
-            {popularVenues.map((venue, index) => (
-              <div
-                className={`venue-card ${selectedVenue?.title === venue.title ? "selected" : ""}`}
-                key={index}
-                onClick={() => handleVenueSelect(venue)}
-              >
-                <img src={venue.img} alt={venue.alt} className="venue-image" />
-                <div className="venue-info">
-                  <h3>{venue.title}</h3>
-                  <p>{venue.promotion}</p>
-                  <p>฿{venue.pricePerHour} / ชั่วโมง</p>
-                </div>
-              </div>
-            ))}
+        {/* All Sports Categories */}
+        {(activeCategory === "ทั้งหมด" || placeData.some(venue => venue.type === activeCategory)) && (
+          <div className="sports-categories">
+
+            {placeData.map((venue, index) => {
+              if (activeCategory === "ทั้งหมด" || venue.type === activeCategory) {
+                return (
+                  <div
+                    className={`venue-card ${selectedVenue?.title === venue.title ? "selected" : ""}`}
+                    key={index}
+                    onClick={() => handleVenueSelect(venue)}
+                  >
+                    <img src={venue.court_image} alt={venue.alt} className="venue-image" />
+                    <div className="venue-info">
+                      
+                      <p>{venue.court_type}</p> {/* แสดงประเภทของสนาม */}
+                      <p>{venue.promotion}</p>
+                      <p>฿{venue.court_price} / ชั่วโมง</p>
+                    </div>
+                  </div>
+                );
+              }
+            })}
           </div>
         )}
-
-        {/* Venue List */}
-        {activeCategory !== "ยอดนิยม" && venues[activeCategory]?.map((venue, index) => (
-          <div
-            className={`venue-card ${selectedVenue?.title === venue.title ? "selected" : ""}`}
-            key={index}
-            onClick={() => handleVenueSelect(venue)}
-          >
-            <img src={venue.img} alt={venue.alt} className="venue-image" />
-            <div className="venue-info">
-              <h3>{venue.title}</h3>
-              <div className="timeslot-container">
-                {venue.availableTimeslots.map((slot, i) => (
-                  <button
-                    key={i}
-                    className={`timeslot-btn ${selectedSlot[venue.title]?.includes(slot) ? "selected" : "available"}`}
-                    onClick={() => handleTimeslotSelect(venue, slot)}
-                  >
-                    {slot}
-                  </button>
-                ))}
-                {venue.unavailableTimeslots.map((slot, i) => (
-                  <button key={i} className="timeslot-btn unavailable" disabled>
-                    {slot}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
 
         {selectedSlot[selectedVenue?.title]?.length > 0 && selectedDate && selectedVenue && (
           <div className="confirmation">
@@ -263,20 +170,15 @@ const SelectPlace = () => {
                 <p><strong>ราคา : </strong> ฿{calculatePrice()}</p>
               </div>
               <div className="modal-actions">
-                <button 
-                  className="cancel-button" 
-                  onClick={() => setShowModal(false)}>
+                <button className="cancel-button" onClick={() => setShowModal(false)}>
                   แก้ไขการจอง
                 </button>
 
                 <Link href={"/Homepage/Search/Select/payment-qr"}>
-                  <button 
-                    className="confirm-button" 
-                    onClick={handleCloseModal}>
+                  <button className="confirm-button" onClick={handleCloseModal}>
                     ยืนยัน
                   </button>
                 </Link>
-               
               </div>
             </div>
           </div>
