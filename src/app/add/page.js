@@ -12,7 +12,8 @@ export default function Add() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const discount = parseFloat(searchParams.get("discount")) || 0; // รับส่วนลดจาก query
+  const stadiumId = searchParams.get("location"); // รับ stadiumId จาก query
+  const discount = parseFloat(searchParams.get("discount")) || 0;
 
   useEffect(() => {
     fetchSports();
@@ -20,11 +21,15 @@ export default function Add() {
 
   const fetchSports = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/sports");
+      const response = await axios.get(`http://localhost:5000/api/sports?stadiumId=${stadiumId}`);
+      console.log("Sports response:", response.data);
       setSports(response.data);
-      console.log("Fetched sports:", response.data);
     } catch (error) {
-      console.error("Error fetching sports:", error.response || error);
+      console.error("Detailed error fetching sports:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
       alert("เกิดข้อผิดพลาดในการดึงข้อมูลกีฬา: " + (error.response?.data?.error || error.message));
     }
   };
@@ -40,19 +45,14 @@ export default function Add() {
       .filter((_, index) => document.getElementById(`checkbox-${index}`).checked)
       .map((sport) => ({
         name: sport.name,
-        price: sport.price, // เก็บราคาเดิมไว้สำหรับการคำนวณในอนาคต
-        discountPrice: calculateDiscountPrice(sport.price), // ราคาหลังหักส่วนลด
-        stadiumName: sport.stadiumName,
+        price: sport.price,
+        discountPrice: calculateDiscountPrice(sport.price),
+        stadiumId: sport.stadiumId,
       }));
-    const query = `?promotionName=${encodeURIComponent(searchParams.get("promotionName") || "")}&startDate=${encodeURIComponent(searchParams.get("startDate") || "")}&startTime=${encodeURIComponent(searchParams.get("startTime") || "")}&endDate=${encodeURIComponent(searchParams.get("endDate") || "")}&endTime=${encodeURIComponent(searchParams.get("endTime") || "")}&discount=${encodeURIComponent(searchParams.get("discount") || "")}&discountLimit=${encodeURIComponent(searchParams.get("discountLimit") || "")}&location=${encodeURIComponent(searchParams.get("location") || "")}&sports=${encodeURIComponent(JSON.stringify(checkedSports))}`;
+    const query = `?promotionName=${encodeURIComponent(searchParams.get("promotionName") || "")}&startDate=${encodeURIComponent(searchParams.get("startDate") || "")}&startTime=${encodeURIComponent(searchParams.get("startTime") || "")}&endDate=${encodeURIComponent(searchParams.get("endDate") || "")}&endTime=${encodeURIComponent(searchParams.get("endTime") || "")}&discount=${encodeURIComponent(searchParams.get("discount") || "")}&discountLimit=${encodeURIComponent(searchParams.get("discountLimit") || "")}&location=${encodeURIComponent(stadiumId || "")}&sports=${encodeURIComponent(JSON.stringify(checkedSports))}`;
     router.push(`/create-promotion${query}`);
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  // คำนวณราคาหลังหักส่วนลดตาม discount จาก CreatePromotion
   const calculateDiscountPrice = (price) => {
     const discountPercentage = discount / 100;
     return Math.round(price * (1 - discountPercentage));
@@ -71,7 +71,6 @@ export default function Add() {
               <tr>
                 <th>เลือก</th>
                 <th>ประเภทกีฬา</th>
-                <th>สนาม</th>
                 <th>ราคา</th>
                 <th>ราคา (หลังหักส่วนลด)</th>
               </tr>
@@ -91,7 +90,6 @@ export default function Add() {
                     <img src={sport.image} alt={sport.name} className="sport-icon" />
                     <span>{sport.name}</span>
                   </td>
-                  <td>{sport.stadiumName}</td>
                   <td>฿{sport.price}</td>
                   <td>฿{calculateDiscountPrice(sport.price)}</td>
                 </tr>
