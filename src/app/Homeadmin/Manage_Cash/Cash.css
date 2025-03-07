@@ -19,15 +19,6 @@ body {
   margin-top: 60px;
 }
 
-.image-cell {
-  display: flex;
-  flex-direction: column; /* จัดให้รูปภาพและข้อความอยู่ในแนวตั้ง */
-  align-items: center;    /* จัดให้อยู่ตรงกลางในแนวนอน */
-  justify-content: center; /* จัดให้อยู่ตรงกลางในแนวตั้ง */
-  text-align: center;     /* จัดให้ข้อความอยู่ตรงกลาง */
-  font-size: 14px;
-}
-
 /* แก้ไขขนาดของ .iconG ที่ถูกซ้ำซ้อน */
 .iconG {
   width: 50px;  /* กำหนดขนาดใหม่เป็น 50px */
@@ -57,46 +48,52 @@ body {
   height: 50px; /* เพิ่มความสูง */
 }
 
-/* ขยายขนาดไอคอนค้นหา */
-.search-icon {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
+/* โฮเวอร์ตาราง */
+tr:hover {
+  background-color: #e0e0e0;
 }
 
 /* ปรับขนาดตาราง */
 .table-container {
   margin: 20px auto;
-  max-width: 1200px;  /* ขยายตาราง */
-  max-height: 1200px;
+  max-width: 1200px;
+  overflow-x: auto;  /* เพิ่มเลื่อนซ้ายขวาถ้าจอเล็ก */
+  background-color: white;
+  border-radius: 10px;
 }
 
+/* ตาราง */
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  border-radius: 10px;
-  overflow: hidden;
-  font-size: 16px; /* ขยายตัวอักษร */
+  font-size: 1.2rem;
 }
 
-/* ปรับขนาดเซลล์ */
+/* เซลล์ */
 th, td {
-  padding: 16px; /* เพิ่ม padding */
+  padding: 16px;
   text-align: center;
   border: 1px solid #ccc;
-  vertical-align: middle; 
+  white-space: nowrap; /* ป้องกันข้อความขึ้นบรรทัดใหม่ */
 }
 
 th {
   background-color: black;
   color: white;
-  font-size: 18px; 
-  vertical-align: middle; 
+  font-size: 1.3rem;
 }
 
 tr:nth-child(even) {
   background-color: #f9f9f9;
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Corrected hover effect */
+tr:hover {
+  background-color: #f1f0f0;
 }
 
 /* ปุ่มลบ */
@@ -112,79 +109,93 @@ tr:nth-child(even) {
 .delete-btn img {
   width: 30px;
   height: 30px;
-}
-
-/* การโฮเวอร์ของตัวเลือก */
-.people select:hover {
-  background-color: #807f7f;
-}
-
-/* รูปสามเหลี่ยม */
-.triangle-down {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid white;
-  margin-left: 5px;
-}
-
-@media (max-width: 600px) {
-  .filter-container {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .search-icon {
-    width: 40px;
-    height: 40px;
-  }
-
-  table {
-    font-size: 14px;
-  }
-
-  th, td {
-    padding: 8px;
-    gap: 8px;
-  }
-
-  .profile-pic {
-    width: 40px;
-    height: 40px;
-  }
-
-  .delete-btn img {
-    width: 25px;
-    height: 25px;
-  }
-}
-
-.status {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: black;
-  font-weight: bold;
-}
-
-.status.approved {
-  color: green;
-  white-space: nowrap; 
-}
-
-.status.pending {
-  color: rgb(12, 12, 12);
-  white-space: nowrap; 
-}
-
-.status img {
-  width: 20px;
-  height: 20px;
+  justify-content: center; /* จัดแนวกลางในแนวนอน */
+  align-items: center; /* จัดแนวกลางในแนวตั้ง */
 }
 
 .sport select:hover {
   background-color: #807f7f; 
   color: white;               
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: red;
+}
+
+/* Modal image */
+.modal-image {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto;
+}
+
+.view-image-btn {
+  background-color: #ccc; /* สีพื้นหลังเทา */
+  color: rgb(0, 0, 0); /* ข้อความเป็นสีขาว */
+  padding: 8px 16px; /* เพิ่มการเว้นระยะรอบ ๆ ข้อความ */
+  border: none; /* ไม่มีขอบ */
+  border-radius: 5px; /* มุมโค้ง */
+  cursor: pointer; /* ให้ปุ่มมีลักษณะเป็นตัวชี้เมาส์ */
+  font-size: 16px; /* ขนาดตัวอักษร */
+  transition: background-color 0.3s ease; /* การเปลี่ยนสีพื้นหลังเมื่อมีการโฮเวอร์ */
+}
+
+.view-image-btn:hover {
+  background-color: #999; /* เมื่อโฮเวอร์พื้นหลังจะเปลี่ยนเป็นสีเทาเข้มขึ้น */
+}
+
+/* ปรับการจัดวางข้อมูลบัญชีธนาคาร */
+.account-info {
+  padding-left: 10px;  /* กำหนดระยะห่างจากขอบซ้าย */
+  text-align: left;     /* ข้อความจัดชิดซ้าย */
+}
+
+/* ปุ่มดูรูปบัญชี */
+.view-image-btn {
+  margin-top: 10px; /* เพิ่มระยะห่างจากข้อมูลข้างบน */
+  display: inline-block;
+}
+
+/* เพิ่มการเปลี่ยนสีเมื่อโฮเวอร์ */
+.status.pending:hover {
+  color: red;  /* เปลี่ยนสีตัวอักษรเป็นสีแดง */
+  cursor: pointer; /* เปลี่ยนรูปเมาส์เป็นมือเมื่อโฮเวอร์ */
+}
+
+.status.pending:hover span {
+  text-decoration: underline; /* เพิ่มเส้นใต้เมื่อโฮเวอร์ */
 }
