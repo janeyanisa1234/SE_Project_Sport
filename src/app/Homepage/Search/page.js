@@ -17,7 +17,7 @@ export default function PromotionPlace() {
   useEffect(() => {
     async function fetchPlaceData() {
       try {
-        const response = await axios.get("http://localhost:5000/api/Booking/stadium");
+        const response = await axios.get("http://localhost:5000/api/booking/stadiums");
         console.log("📌 Data from API:", response.data);
 
         if (response.data && response.data.length > 0) {
@@ -70,6 +70,7 @@ export default function PromotionPlace() {
                   </div>
                 </div>
               </Link>
+
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.stadium_address)}`}
                 target="_blank"
