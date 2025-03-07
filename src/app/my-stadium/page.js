@@ -349,6 +349,7 @@ const SportField = () => {
 
                   {/* ปุ่มเพิ่มจำนวนสนาม - เฉพาะสนามที่อนุมัติแล้ว */}
                   {stadium.stadium_status === 'อนุมัติแล้ว' && (
+                    <div className="border-t border-gray-300 mt-4 pt-4">
                     <div className="flex justify-center md:justify-end mt-6 md:mt-0">
                       <button 
                         className="flex items-center bg-black text-white text-xl px-6 py-2 rounded-xl w-full md:w-auto"
@@ -357,14 +358,13 @@ const SportField = () => {
                         <FaPlus className="mr-3 text-2xl" /> เพิ่มจำนวนสนาม
                       </button>
                     </div>
+                    </div>
                   )}
                   
                   {/* สำหรับสนามที่รออนุมัติ */}
                   {stadium.stadium_status === 'รออนุมัติ' && (
                     <div className="border-t border-gray-300 mt-4 pt-4">
-                      <p className="text-yellow-600 font-medium">
-                        สนามของคุณอยู่ระหว่างการพิจารณา
-                      </p>
+                      
                       <div className="flex justify-center md:justify-end mt-6 md:mt-0">
                         <button className="flex items-center bg-black text-white text-xl px-6 py-2 rounded-xl w-full md:w-auto"
                           onClick={() => router.push("/my-stadium/add-field")}>
@@ -376,10 +376,8 @@ const SportField = () => {
                   
                   {/* สำหรับสนามที่ไม่อนุมัติ */}
                   {stadium.stadium_status === 'ไม่อนุมัติ' && (
-                    <div className="border-t border-gray-300 mt-4 pt-4">
-                      <p className="text-red-600 font-medium">
-                        สนามของคุณไม่ผ่านการอนุมัติ
-                      </p>
+                    <div className="">
+                  
                       {stadium.rejection_reason && (
                         <p className="text-gray-600 mt-1">
                           เหตุผล: {stadium.rejection_reason}
