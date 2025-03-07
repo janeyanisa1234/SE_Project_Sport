@@ -1,12 +1,12 @@
-// Search.js
 "use client";
 
 import "./Search.css";
 import Link from "next/link";
 import Tabbar from "../../Tab/tab";
 import Headfunction from "../../Headfunction/page";
+import axios from "axios";
 
-export default function PromotionPlace() {
+export default function SearchPlace() {
   const places = [
     {
       name: "AVOCADO",

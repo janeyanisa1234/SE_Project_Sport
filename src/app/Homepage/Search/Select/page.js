@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import Link from "next/link";
 import React, { useState } from "react";
 import "./Select.css";
@@ -7,17 +7,17 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Tabbar from "../../../Tab/tab";
 import Headfunction from "@/app/Headfunction/page";
-
+ 
 const SelectPlace = () => {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [activeCategory, setActiveCategory] = useState("ยอดนิยม");
+  const [activeCategory, setActiveCategory] = useState("ทั้งหมด");
   const [selectedSlot, setSelectedSlot] = useState({});
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
-
-  const categories = ["ยอดนิยม", "แบดมินตัน", "ฟุตซอล", "ฟุตบอล", "ปิงปอง"];
-
+ 
+  const categories = ["ทั้งหมด", "แบดมินตัน", "ฟุตซอล", "ฟุตบอล", "ปิงปอง"];
+ 
   const popularVenues = [
     {
       img: "/picturemild/Badminton.svg",
@@ -44,7 +44,7 @@ const SelectPlace = () => {
       promotion: "ส่วนลด 10%",
     },
   ];
-
+ 
   const venues = {
     "แบดมินตัน": [
       {
@@ -109,7 +109,7 @@ const SelectPlace = () => {
       }
     ],
   };
-
+ 
   const handleVenueSelect = (venue) => {
     if (selectedVenue?.title === venue.title) {
       return;
@@ -117,13 +117,13 @@ const SelectPlace = () => {
     setSelectedVenue(venue);
     setSelectedSlot({});
   };
-
+ 
   const handleTimeslotSelect = (venue, slot) => {
     if (!selectedVenue) {
       alert("กรุณาเลือกคอร์ดก่อนเลือกเวลา");
       return;
     }
-
+ 
     setSelectedSlot((prev) => {
       const updatedTimeslots = prev[venue.title] ? [...prev[venue.title]] : [];
       if (updatedTimeslots.includes(slot)) {
@@ -133,7 +133,7 @@ const SelectPlace = () => {
       }
     });
   };
-
+ 
   const handleConfirm = () => {
     if (selectedSlot[selectedVenue?.title]?.length > 0 && selectedDate && selectedVenue) {
       setShowModal(true);
@@ -141,17 +141,17 @@ const SelectPlace = () => {
       alert("กรุณาเลือกข้อมูลทั้งหมด");
     }
   };
-
+ 
   const handleCloseModal = () => {
     setBookingConfirmed(true);
     setShowModal(false);
   };
-
+ 
   const calculatePrice = () => {
     const selectedTimes = selectedSlot[selectedVenue?.title] || [];
     return selectedTimes.length * selectedVenue?.pricePerHour || 0;
   };
-
+ 
   return (
     <>
       <Tabbar />
@@ -171,7 +171,7 @@ const SelectPlace = () => {
             />
           </div>
         </div>
-
+ 
         {/* Categories Navigation */}
         <nav className="category-nav">
           {categories.map((category) => (
@@ -184,19 +184,21 @@ const SelectPlace = () => {
             </button>
           ))}
         </nav>
-
+ 
         {/* Legend for available/unavailable times */}
-        <div className="legend-container">
-          <div className="legend-item">
-            <span className="legend-color available"></span>
-            <span>ว่าง</span>
-            <span className="legend-color unavailable"></span>
-            <span>ไม่ว่าง</span>
+        {activeCategory !== "ทั้งหมด" && (
+          <div className="legend-container">
+            <div className="legend-item">
+              <span className="legend-color available"></span>
+              <span>ว่าง</span>
+              <span className="legend-color unavailable"></span>
+              <span>ไม่ว่าง</span>
+            </div>
           </div>
-        </div>
-
+        )}
+ 
         {/* Popular Venues Section */}
-        {activeCategory === "ยอดนิยม" && (
+        {activeCategory === "ทั้งหมด" && (
           <div className="popular-venues">
             {popularVenues.map((venue, index) => (
               <div
@@ -214,9 +216,9 @@ const SelectPlace = () => {
             ))}
           </div>
         )}
-
+ 
         {/* Venue List */}
-        {activeCategory !== "ยอดนิยม" && venues[activeCategory]?.map((venue, index) => (
+        {activeCategory !== "ทั้งหมด" && venues[activeCategory]?.map((venue, index) => (
           <div
             className={`venue-card ${selectedVenue?.title === venue.title ? "selected" : ""}`}
             key={index}
@@ -244,13 +246,13 @@ const SelectPlace = () => {
             </div>
           </div>
         ))}
-
+ 
         {selectedSlot[selectedVenue?.title]?.length > 0 && selectedDate && selectedVenue && (
           <div className="confirmation">
             <button onClick={handleConfirm}>ยืนยัน</button>
           </div>
         )}
-
+ 
         {showModal && (
           <div className="modal-overlay">
             <div className="modal">
@@ -263,15 +265,15 @@ const SelectPlace = () => {
                 <p><strong>ราคา : </strong> ฿{calculatePrice()}</p>
               </div>
               <div className="modal-actions">
-                <button 
-                  className="cancel-button" 
+                <button
+                  className="cancel-button"
                   onClick={() => setShowModal(false)}>
                   แก้ไขการจอง
                 </button>
-
+ 
                 <Link href={"/Homepage/Search/Select/payment-qr"}>
-                  <button 
-                    className="confirm-button" 
+                  <button
+                    className="confirm-button"
                     onClick={handleCloseModal}>
                     ยืนยัน
                   </button>
@@ -285,5 +287,5 @@ const SelectPlace = () => {
     </>
   );
 };
-
+ 
 export default SelectPlace;

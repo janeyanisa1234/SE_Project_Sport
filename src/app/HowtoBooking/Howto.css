@@ -1,0 +1,45 @@
+body {
+  background: linear-gradient(to right, #CDFFD8, #94B9FF);
+  height: 100vh;
+  margin: 0;
+}
+
+.howto-container {
+  max-width: 1200px; /* ขยายพื้นที่ให้ใหญ่ขึ้น */
+  margin-left: 15%;
+  text-align: center;
+}
+
+.howto-header {
+  margin-left: -10%;
+  margin-top: 70px;
+  font-size: 26px; /* เพิ่มขนาดตัวอักษร */
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.step {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.step h3 {
+  font-size: 22px;
+  color: #333;
+}
+
+.step p {
+  font-size: 18px;
+  color: #555;
+}
+
+.step-image {
+  width: 90%; /* ปรับให้รูปใหญ่ขึ้น */
+  max-width: 1000px; /* กำหนดความกว้างสูงสุด */
+  height: auto;
+  margin-top: 15px;
+  border-radius: 10px;
+  border: 3px solid black; /* เพิ่มความชัดของขอบ */
+}

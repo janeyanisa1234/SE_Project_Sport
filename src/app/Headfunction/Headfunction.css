@@ -92,12 +92,13 @@
     display: flex;
     padding: 5px;
     border-radius: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #000000;
     font-size: 1rem;
     transition: border-color 0.3s ease;
   }
-  
+
   .search-input:focus {
+    color: #000;
     outline: none;
     border-color: #000;
   }
