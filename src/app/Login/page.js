@@ -16,12 +16,11 @@ export default function Login() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [isPopupVisible, setIsPopupVisible] = useState(false); // สถานะสำหรับ Popup
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
   const router = useRouter();
 
   const API_URL = "http://localhost:5000/api/kong";
-  // Add this missing state variable at the top with your other state variables
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     
