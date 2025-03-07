@@ -12,6 +12,9 @@ const SportField = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
+  
+  // Define API base URL
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
   const AddStadiumButton = () => (
     <div className="mt-10 flex justify-center">
@@ -27,64 +30,120 @@ const SportField = () => {
     </div>
   );
 
-  useEffect(() => {
-    // Function to get user ID from multiple possible sources
-    const getUserId = () => {
-      // Try localStorage first
-      const storedUserId = localStorage.getItem('userId');
-      
-      if (storedUserId) {
-        console.log("Found userId in localStorage:", storedUserId);
-        return storedUserId;
-      }
-      
-      // Try sessionStorage as fallback
-      const sessionUserId = sessionStorage.getItem('userId');
-      if (sessionUserId) {
-        console.log("Found userId in sessionStorage:", sessionUserId);
-        return sessionUserId;
-      }
-      
-      // Try other possible storage keys
-      const possibleKeys = ['user_id', 'id', 'user'];
-      for (const key of possibleKeys) {
-        const value = localStorage.getItem(key) || sessionStorage.getItem(key);
-        if (value) {
-          console.log(`Found userId using alternative key '${key}':`, value);
-          return value;
-        }
-      }
-      
-      // Try to parse JWT token for user ID
+  // Debug component to help with troubleshooting
+  const DebugInfo = () => (
+    <div className="mt-4 p-4 bg-gray-100 rounded-lg text-xs">
+      <h4 className="font-bold mb-2">Debug Info (จะถูกลบในเวอร์ชันจริง)</h4>
+      <p>User ID: {userId || 'ไม่พบ'}</p>
+      <p>Token: {localStorage.getItem('token') ? 'มี' : 'ไม่พบ'}</p>
+      <p>API URL: {API_BASE_URL}</p>
+      <div className="mt-2">
+        <button 
+          onClick={() => {
+            console.log("Stored User ID:", userId);
+            console.log("Token:", localStorage.getItem('token'));
+            console.log("All localStorage:", { ...localStorage });
+            console.log("Stadiums:", stadiums);
+          }} 
+          className="bg-gray-200 px-2 py-1 rounded mr-2"
+        >
+          Log Data
+        </button>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="bg-gray-200 px-2 py-1 rounded"
+        >
+          Refresh
+        </button>
+      </div>
+    </div>
+  );
+
+  // FIXED getUserId function with better parsing of JSON strings
+  const getUserId = () => {
+    // Try localStorage first
+    const storedUserId = localStorage.getItem('userId');
+    
+    if (storedUserId) {
+      console.log("Found userId in localStorage:", storedUserId);
+      // Check if it's a JSON string and extract the ID if needed
       try {
-        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-        if (token) {
-          // Extract payload from JWT (without verification)
-          const base64Url = token.split('.')[1];
-          if (base64Url) {
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            
-            const payload = JSON.parse(jsonPayload);
-            const extractedId = payload.userId || payload.id || payload.sub;
-            
-            if (extractedId) {
-              console.log("Extracted userId from JWT token:", extractedId);
-              // Save it for future use
-              localStorage.setItem('userId', extractedId);
-              return extractedId;
-            }
-          }
+        if (typeof storedUserId === 'string' && (storedUserId.startsWith('{') || storedUserId.startsWith('['))) {
+          const parsedUser = JSON.parse(storedUserId);
+          return parsedUser.id || parsedUser.userId || parsedUser.user_id || storedUserId;
         }
       } catch (e) {
-        console.error("Error parsing JWT token:", e);
+        console.error("Error parsing stored userId:", e);
       }
-      
-      return null;
-    };
+      return storedUserId;
+    }
+    
+    // Try sessionStorage as fallback
+    const sessionUserId = sessionStorage.getItem('userId');
+    if (sessionUserId) {
+      console.log("Found userId in sessionStorage:", sessionUserId);
+      // Check if it's a JSON string and extract the ID if needed
+      try {
+        if (typeof sessionUserId === 'string' && (sessionUserId.startsWith('{') || sessionUserId.startsWith('['))) {
+          const parsedUser = JSON.parse(sessionUserId);
+          return parsedUser.id || parsedUser.userId || parsedUser.user_id || sessionUserId;
+        }
+      } catch (e) {
+        console.error("Error parsing stored userId:", e);
+      }
+      return sessionUserId;
+    }
+    
+    // Try other possible storage keys
+    const possibleKeys = ['user_id', 'id', 'user'];
+    for (const key of possibleKeys) {
+      const value = localStorage.getItem(key) || sessionStorage.getItem(key);
+      if (value) {
+        console.log(`Found userId using alternative key '${key}':`, value);
+        // Check if it's a JSON string and extract the ID if needed
+        try {
+          if (typeof value === 'string' && (value.startsWith('{') || value.startsWith('['))) {
+            const parsedUser = JSON.parse(value);
+            return parsedUser.id || parsedUser.userId || parsedUser.user_id || value;
+          }
+        } catch (e) {
+          console.error(`Error parsing userId from key ${key}:`, e);
+        }
+        return value;
+      }
+    }
+    
+    // Try to parse JWT token for user ID
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (token) {
+        // Extract payload from JWT (without verification)
+        const base64Url = token.split('.')[1];
+        if (base64Url) {
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          
+          const payload = JSON.parse(jsonPayload);
+          const extractedId = payload.userId || payload.id || payload.user_id || payload.sub;
+          
+          if (extractedId) {
+            console.log("Extracted userId from JWT token:", extractedId);
+            // Save it for future use
+            localStorage.setItem('userId', extractedId);
+            return extractedId;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Error parsing JWT token:", e);
+    }
+    
+    return null;
+  };
 
+  useEffect(() => {
     const fetchStadiums = async () => {
       try {
         setLoading(true);
@@ -107,10 +166,15 @@ const SportField = () => {
         }
         
         console.log("Fetching stadiums for user ID:", extractedUserId);
-        const response = await axios.get(`http://localhost:5000/api/sox/stadiums/${extractedUserId}`, {
+        console.log("Using API URL:", `${API_BASE_URL}/api/sox/stadiums/${extractedUserId}`);
+        
+        // FIXED API call with proper error handling
+        const response = await axios.get(`${API_BASE_URL}/api/sox/stadiums/${extractedUserId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
-          }
+          },
+          // Add timeout to prevent hanging requests
+          timeout: 10000
         });
         
         console.log("API Response:", response.data);
@@ -131,7 +195,9 @@ const SportField = () => {
           if (err.response.status === 401) {
             setError("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
           } else if (err.response.status === 404) {
-            setError("ไม่พบข้อมูลผู้ใช้หรือสนามกีฬา");
+            // Changed from error to empty stadiums with a message
+            setStadiums([]);
+            console.log("No stadiums found or user is not registered as an owner");
           } else {
             setError(`เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: ${err.response.data.error || err.response.status}`);
           }
@@ -148,7 +214,7 @@ const SportField = () => {
     };
 
     fetchStadiums();
-  }, []);
+  }, [API_BASE_URL]);
 
   // Function to re-login
   const handleReLogin = () => {
@@ -177,29 +243,6 @@ const SportField = () => {
     );
   };
 
-  // For debugging - temporary component
-  {/*const DebugInfo = () => (
-    <div className="mt-4 p-4 bg-gray-100 rounded-lg text-xs">
-      <h4 className="font-bold mb-2">Debug Info (จะถูกลบในเวอร์ชันจริง)</h4>
-      <p>User ID: {userId || 'ไม่พบ'}</p>
-      <p>Token: {localStorage.getItem('token') ? 'มี' : 'ไม่พบ'}</p>
-      <div className="mt-2">
-        <button 
-          onClick={() => console.log("Stored User ID:", userId, "Stadiums:", stadiums)} 
-          className="bg-gray-200 px-2 py-1 rounded mr-2"
-        >
-          Log Data
-        </button>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="bg-gray-200 px-2 py-1 rounded"
-        >
-          Refresh
-        </button>
-      </div>
-    </div>
-  );*/}
-
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-white">
       <Tabbar />
@@ -221,8 +264,6 @@ const SportField = () => {
         {loading && (
           <div className="text-center py-10">
             <p className="text-xl text-gray-600">กำลังโหลดข้อมูล...</p>
-            {/* Add Stadium button in loading state */}
-            <AddStadiumButton />
           </div>
         )}
 

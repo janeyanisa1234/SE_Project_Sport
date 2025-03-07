@@ -12,9 +12,12 @@ const AddSportsField = () => {
   const [sportsFieldName, setSportsFieldName] = useState("");
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [address, setAddress] = useState("");
   const [ownerId, setOwnerId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Fetch owner ID from session/local storage when component mounts
   useEffect(() => {
@@ -29,7 +32,8 @@ const AddSportsField = () => {
     const file = event.target.files[0];
     if (file) {
       setImageFile(file);
-      setImage(URL.createObjectURL(file));
+      setFileName(file.name);
+      setIsFileUploaded(true);
     }
   };
 
@@ -39,7 +43,7 @@ const AddSportsField = () => {
     console.log("Image File:", imageFile);
     
     if (!sportsFieldName || !address || !imageFile) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+      setErrorMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
 
@@ -54,9 +58,9 @@ const AddSportsField = () => {
       formData.append('stadium_name', sportsFieldName);
       formData.append('stadium_address', address);
       
-      // Append the image file with the correct field name - only once
+      // Append the image file with the same field name as in the pending file
       if (imageFile) {
-        formData.append('stadium_image', imageFile, imageFile.name);
+        formData.append('slipImage', imageFile, imageFile.name);
       }
 
       // Log the FormData contents for debugging
@@ -75,7 +79,7 @@ const AddSportsField = () => {
       router.push("/my-stadium");
     } catch (error) {
       console.error("Error adding stadium:", error);
-      alert("เกิดข้อผิดพลาดในการเพิ่มสนามกีฬา กรุณาลองใหม่อีกครั้ง");
+      setErrorMessage("เกิดข้อผิดพลาดในการเพิ่มสนามกีฬา กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSubmitting(false);
     }
@@ -111,11 +115,36 @@ const AddSportsField = () => {
               className="w-full px-4 py-2 border rounded mb-4"
             ></textarea>
 
+            {errorMessage && (
+              <div style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>
+                {errorMessage}
+              </div>
+            )}
+
             <label className="block text-gray-700 font-semibold mt-6 mb-2">รูปสนามกีฬา</label>
-            <label className="block bg-gray-300 w-40 h-40 flex items-center justify-center cursor-pointer rounded-lg border-dashed border-2 border-gray-500 mb-4">
-              {image ? <img src={image} alt="รูปสนาม" className="w-full h-full object-cover rounded-lg" /> : <span>+ เพิ่มรูป</span>}
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-            </label>
+            <div 
+              className="block bg-gray-300 w-40 h-40 flex items-center justify-center cursor-pointer rounded-lg border-dashed border-2 border-gray-500 mb-4"
+              onClick={() => document.getElementById("stadiumImageInput").click()}
+            >
+              {image ? (
+                <img src={image} alt="รูปสนาม" className="w-full h-full object-cover rounded-lg" />
+              ) : (
+                <span className="upload-icon">+ เพิ่มรูป</span>
+              )}
+              <input 
+                id="stadiumImageInput"
+                type="file" 
+                accept="image/*" 
+                onChange={handleImageUpload} 
+                style={{ display: 'none' }} 
+              />
+            </div>
+            
+            {isFileUploaded && (
+              <p className="upload-success-text" style={{ color: 'green', fontSize: '14px', marginBottom: '15px' }}>
+                อัปโหลดรูปสำเร็จ: {fileName}
+              </p>
+            )}
 
             <div className="flex justify-between mt-4">
               <button 
