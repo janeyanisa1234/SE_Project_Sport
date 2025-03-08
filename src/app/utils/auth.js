@@ -66,7 +66,10 @@ export const AuthService = {
     try {
       const response = await api.post(`${API_URL}/login`, credentials);
       if (response.data.token) {
+        // Store token
         AuthService.setToken(response.data.token);
+        
+        // Store user data
         AuthService.setUser(response.data.user);
         
         // Determine and set user role
@@ -93,7 +96,13 @@ export const AuthService = {
 
   // Set user data to localStorage
   setUser: (user) => {
+    // Store the complete user object
     localStorage.setItem('user', JSON.stringify(user));
+    
+    // For convenience, also store individual fields
+    if (user.id) localStorage.setItem('userId', user.id);
+    if (user.name) localStorage.setItem('userName', user.name);
+    if (user.email) localStorage.setItem('userEmail', user.email);
   },
   
   // Determine and set user role
@@ -107,6 +116,10 @@ export const AuthService = {
     }
     
     localStorage.setItem('userRole', role);
+    
+    // Also store the boolean flags directly
+    localStorage.setItem('isAdmin', user.isAdmin || false);
+    localStorage.setItem('isOwner', user.isOwner || false);
   },
   
   // Get user role
@@ -120,9 +133,15 @@ export const AuthService = {
   // Logout user
   logout: () => {
     if (typeof window !== 'undefined') {
+      // Clear all user-related data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('userRole');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('isOwner');
       window.location.href = '/Login';
     }
   },

@@ -1,6 +1,6 @@
 /* ตั้งค่าพื้นหลัง */
 .registration-container {
-  height: 130vh;
+  height: 140vh;
   background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
   background-size: cover;
   background-position: center;
@@ -40,9 +40,9 @@
   color: white;
   width: 500px; /* ลดความกว้างลง */
   height: auto; /* ให้ฟอร์มปรับขนาดอัตโนมัติ */
-  max-height: 950px; /* กำหนดความสูงสูงสุด */
+  max-height: 9900px; /* กำหนดความสูงสูงสุด */
   text-align: center;
-  margin-top: 2rem; /* เพิ่มระยะห่างจากขอบบน */
+ /* เพิ่มระยะห่างจากขอบบน */
 }
 
 /* กล่องอินพุต */

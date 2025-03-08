@@ -10,14 +10,24 @@ import axios from "axios";
 export default function Info() {
   const [showPassword, setShowPassword] = useState(false); // ✅ ต้องมี state มิฉะนั้นจะแตก
   const [userData, setUserData] = useState(null); //ดึง backend
-
+  const API_URL = "http://localhost:5000/api/ice";
   useEffect(() => {
     async function fetchUserData() {
       try {
-        const response = await axios.get("http://localhost:5000/api/edit");
-        
-        if (response.data.length > 0) {
-          setUserData(response.data[0]); // ✅ ดึงแค่ object ตัวแรก
+        const token = localStorage.getItem("token"); // ดึง Token จาก localStorage
+        if (!token) {
+          console.error("No token found, user may not be logged in.");
+          return;
+        }
+  
+        const response = await axios.get(`${API_URL}/user`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // ส่ง Token ไปกับ request
+          },
+        });
+  
+        if (response.data) {
+          setUserData(response.data); // ตั้งค่า userData จาก API response
         } else {
           console.error("No user data received");
         }
@@ -28,6 +38,7 @@ export default function Info() {
   
     fetchUserData();
   }, []);
+  
   
 
   return (
