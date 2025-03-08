@@ -12,19 +12,11 @@ export default function Dashboard() {
   const [fields, setFields] = useState([]);
 
   const filteredFields = fields.filter((field) => {
-    if (filter === "all") {
-      return true; // Show all fields if "all" is selected
-    }
-    if (filter === "อนุมัติแล้ว") {
-      return field.status === "อนุมัติแล้ว"; // Only show fields with "อนุมัติแล้ว" status
-    }
-    if (filter === "ไม่อนุมัติ") {
-      return field.status === "ไม่อนุมัติ"; // Only show fields with "ไม่อนุมัติ" status
-    }
-    if (filter === "รออนุมัติ") {
-      return field.status !== "อนุมัติแล้ว" && field.status !== "ไม่อนุมัติ"; // Show fields that are pending approval (neither "อนุมัติแล้ว" nor "ไม่อนุมัติ")
-    }
-    return true; // Default return (just in case)
+    if (filter === "all") return true;
+    if (filter === "อนุมัติแล้ว") return field.status === "อนุมัติแล้ว";
+    if (filter === "ไม่อนุมัติ") return field.status === "ไม่อนุมัติ";
+    if (filter === "รออนุมัติ") return field.status !== "อนุมัติแล้ว" && field.status !== "ไม่อนุมัติ";
+    return true;
   });
 
   useEffect(() => {
@@ -54,9 +46,7 @@ export default function Dashboard() {
       return;
     }
     try {
-      await axios.put(`http://localhost:5000/api/stadium/status/${id}`, {
-        status: 'อนุมัติแล้ว'
-      });
+      await axios.put(`http://localhost:5000/api/stadium/status/${id}`, { status: 'อนุมัติแล้ว' });
       fetchStadiums();
     } catch (error) {
       console.error('Error approving stadium:', error.response ? error.response.data : error);
@@ -70,9 +60,7 @@ export default function Dashboard() {
       return;
     }
     try {
-      await axios.put(`http://localhost:5000/api/stadium/status/${id}`, {
-        status: 'ไม่อนุมัติ'
-      });
+      await axios.put(`http://localhost:5000/api/stadium/status/${id}`, { status: 'ไม่อนุมัติ' });
       fetchStadiums();
     } catch (error) {
       console.error('Error rejecting stadium:', error.response ? error.response.data : error);
