@@ -21,94 +21,95 @@ export default function Login() {
 
   const API_URL = "http://localhost:5000/api/kong";
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+const handleLogin = async (e) => {
+  e.preventDefault();
+  
+  // Reset error and success states
+  setError("");
+  setSuccess("");
+  
+  // Enhanced validation to include robot check
+  if (!email || !password) {
+    setError("กรุณากรอกอีเมลและรหัสผ่าน");
+    return;
+  }
+  
+  if (!rememberMe) {
+    setError("กรุณายืนยันว่าคุณไม่ใช่ระบบอัตโนมัติ");
+    return;
+  }
+  
+  try {
+    setLoading(true);
     
-    // Reset error and success states
-    setError("");
-    setSuccess("");
+    // Add debugging logs
+    console.log("Attempting login with:", { email, password });
+    console.log("API URL:", `${API_URL}/login`);
     
-    // Enhanced validation to include robot check
-    if (!email || !password) {
-      setError("กรุณากรอกอีเมลและรหัสผ่าน");
-      return;
-    }
-    
-    if (!rememberMe) {
-      setError("กรุณายืนยันว่าคุณไม่ใช่ระบบอัตโนมัติ");
-      return;
-    }
-    
-    try {
-      setLoading(true);
-      
-      // Add debugging logs
-      console.log("Attempting login with:", { email, password });
-      console.log("API URL:", `${API_URL}/login`);
-      
-      // Add headers explicitly to match Postman
-      const response = await axios.post(`${API_URL}/login`, 
-        { email, password },
-        { 
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          // Add timeout to prevent hanging requests
-          timeout: 5000
-        }
-      );
-      
-      console.log("Login response:", response.data);
-      
-      // Handle successful login
-      if (response.data && response.data.token) {
-        // Store token in localStorage or a more secure method like HttpOnly cookies
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-
-        // แสดง Popup "เข้าสู่ระบบแล้ว" ก่อน
-        setIsPopupVisible(true);
-        
-
-        // Store user role in localStorage
-        let userRole = "user";
-        if (response.data.user.isOwner) {
-          userRole = "owner";
-        } else if (response.data.user.isAdmin) {
-          userRole = "admin";
-        }
-        localStorage.setItem("userRole", userRole);
-        // แสดง Popup "เข้าสู่ระบบแล้ว" ก่อน
-        setIsPopupVisible(true);
-        
-        // เพิ่ม alert ก่อนเปลี่ยนหน้า
-        alert("คุณได้เข้าสู่ระบบแล้ว");
-        
-        // ใช้ setTimeout เพื่อให้ Popup แสดงก่อนจะไปหน้าใหม่
-        setTimeout(() => {
-          // Redirect based on user role
-          if (response.data.user.isAdmin) {
-            router.push("/Homeadmin"); // Redirect admins to admin dashboard
-          } else if (response.data.user.isOwner) {
-
-            router.push("/my-stadium"); // Redirect owners to owner dashboard
-          } else {
-            router.push("/Homepage"); // Redirect regular users to homepage
-          }
-        }, 2000); // 2 วินาทีหลังจากแสดง Popup
+    // Add headers explicitly to match Postman
+    const response = await axios.post(`${API_URL}/login`, 
+      { email, password },
+      { 
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        // Add timeout to prevent hanging requests
+        timeout: 5000
       }
-    } catch (err) {
-      // Handle login error
-      if (err.response && err.response.data) {
-        setError(err.response.data.error || "เข้าสู่ระบบล้มเหลว กรุณาลองอีกครั้ง");
-      } else {
-        setError("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+    );
+    
+    console.log("Login response:", response.data);
+    
+    // Handle successful login
+    if (response.data && response.data.token) {
+      // Store token in localStorage or a more secure method like HttpOnly cookies
+      localStorage.setItem("token", response.data.token);
+      
+      // Store full user object in localStorage
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      
+      // Store user ID separately for easier access
+      localStorage.setItem("userId", response.data.user.id);
+      
+      // แสดง Popup "เข้าสู่ระบบแล้ว" ก่อน
+      setIsPopupVisible(true);
+      
+      // Store user role in localStorage
+      let userRole = "user";
+      if (response.data.user.isOwner) {
+        userRole = "owner";
+      } else if (response.data.user.isAdmin) {
+        userRole = "admin";
       }
-    } finally {
-      setLoading(false);
+      localStorage.setItem("userRole", userRole);
+      
+      // เพิ่ม alert ก่อนเปลี่ยนหน้า
+      alert("คุณได้เข้าสู่ระบบแล้ว");
+      
+      // ใช้ setTimeout เพื่อให้ Popup แสดงก่อนจะไปหน้าใหม่
+      setTimeout(() => {
+        // Redirect based on user role
+        if (response.data.user.isAdmin) {
+          router.push("/Homeadmin"); // Redirect admins to admin dashboard
+        } else if (response.data.user.isOwner) {
+          router.push("/my-stadium"); // Redirect owners to owner dashboard
+        } else {
+          router.push("/Homepage"); // Redirect regular users to homepage
+        }
+      }, 2000); // 2 วินาทีหลังจากแสดง Popup
     }
-  };
+  } catch (err) {
+    // Handle login error
+    if (err.response && err.response.data) {
+      setError(err.response.data.error || "เข้าสู่ระบบล้มเหลว กรุณาลองอีกครั้ง");
+    } else {
+      setError("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   const toggleForgotPassword = () => {
     setIsForgotPassword(!isForgotPassword);
