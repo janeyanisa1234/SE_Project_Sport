@@ -9,7 +9,7 @@ const AddSportField = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false); //slidebar
   const [image, setImage] = useState(null);
-  const [sports, setSports] = useState(["ฟุตบอล", "บาสเกตบอล", "แบดมินตัน", "อื่นๆ"]);
+  const [sports, setSports] = useState(["ฟุตบอล", "ฟุตซอล", "บาสเกตบอล", "แบดมินตัน", "วอลเลย์บอล", "ปิงปอง", "อื่นๆ"]);
   const [selectedSport, setSelectedSport] = useState("");
   const [customSport, setCustomSport] = useState("");
   const [price, setPrice] = useState(""); // แยกสำหรับราคา

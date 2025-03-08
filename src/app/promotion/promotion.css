@@ -1,0 +1,357 @@
+.background {
+    min-height: 100vh;
+    padding-bottom: 20px;
+    background-image: url('/pictureowner/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  /* ปรับหัวข้อ */
+  .header-title {
+    position: relative;
+    top: 55; /* ลบ top: 55px เพื่อให้เริ่มจากตำแหน่งธรรมชาติ */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 60px;
+    width: 100%;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .header-title h1 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  
+.container:hover {
+    transform: translateY(-5px);
+  }
+
+  /* Container สำหรับเนื้อหา */
+.container {
+    position: relative;
+    top: 75px;
+    margin: 40px auto;
+    background-color: white;
+    max-width: 1300px;
+    min-height: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  /* ตัวกรอง */
+  .filter-section {
+    margin-bottom: 20px;
+  }
+  
+  .status-dropdown {
+    background-color: #D9D9D9;
+    padding: 10px;
+    height: 35px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .search-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .create-link {
+    text-decoration: none;
+    color: #1B9FEC;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .create-link:hover {
+    color: #1790d8;
+  }
+  
+  .search-section h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .search-input {
+    background-color: #D9D9D9;
+    height: 35px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .date-dropdown {
+    position: relative;
+  }
+  
+  .date-button {
+    background-color: #D9D9D9;
+    height: 35px;
+    width: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .arrow {
+    transition: transform 0.3s ease;
+  }
+  
+  .arrow.rotate {
+    transform: rotate(180deg);
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1;
+    width: 150px;
+  }
+  
+  .dropdown-menu div {
+    padding: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .dropdown-menu div:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .custom-date-range {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .date-input {
+    height: 35px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+  
+  /* ตารางโปรโมชั่น */
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .promo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .promo-table th {
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #1B9FEC;
+    border-bottom: 2px solid #B4B1B1;
+    
+    text-align: center;
+    color: #ffffff;
+  }
+  
+  .promo-table th:first-child {
+    text-align: left;
+  }
+  
+  .promo-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #B4B1B1;
+  }
+  
+  .promo-table td:first-child {
+    text-align: left;
+  }
+  
+  .promo-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  
+  .promo-table tr:hover td {
+    background-color: #e6f0fa;
+  }
+  
+  .table-center {
+    text-align: center;
+  }
+  
+  .status-label {
+    font-size: 14px;
+    font-weight: normal;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+  }
+  
+  .status-กำลังดำเนินการ {
+    background-color: #ccffcc;
+    color: #00cc00;
+  }
+  
+  .status-หมดอายุแล้ว {
+    background-color: #ffcccc;
+    color: #ff0000;
+  }
+  
+  /* ปุ่มดำเนินการ */
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .action-button {
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100px;
+    justify-content: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .detail-button {
+    background-color: #1B9FEC;
+    color: white;
+  }
+  
+  .detail-button:hover {
+    background-color: #1790d8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .edit-button {
+    background-color: #1B9FEC;
+    color: white;
+  }
+  
+  .edit-button:hover {
+    background-color: #1790d8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .delete-button {
+    background-color: #ff4d4d;
+    color: white;
+  }
+  
+  .delete-button:hover {
+    background-color: #e04343;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 40px 60px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+  }
+  
+  .modal-content h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .modal-content p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .success-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .confirm-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .confirm-button:hover {
+    background-color: #45a049;
+  }
+  
+  .cancel-button {
+    background-color: #ccc;
+    color: black;
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .cancel-button:hover {
+    background-color: #b3b3b3;
+  }
