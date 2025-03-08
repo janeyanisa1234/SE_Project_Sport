@@ -27,7 +27,8 @@
   border-radius: 10px;
   text-align: center;
   color: white;
-  width: 350px;
+  width: 400px;
+  height: 470px;
 }
 .profile-icon {
   display: flex;
@@ -84,7 +85,7 @@
 
 .button-group {
   display: flex;
-  gap: 3rem;
+  gap: 5rem;
  
 }
 

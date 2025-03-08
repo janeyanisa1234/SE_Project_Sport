@@ -5,6 +5,18 @@ import { FaChevronDown, FaEdit, FaTrash, FaCalendarAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Tabbar from "../components/tab";
 import axios from "axios";
+import "./promotion.css"; // เพิ่มไฟล์ CSS
+
+// ฟังก์ชันแปลงวันที่ให้อยู่ในรูปแบบ DD/MM/YYYY HH:mm
+const formatDateTime = (dateTimeStr) => {
+  const date = new Date(dateTimeStr);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+};
 
 export default function Promotion() {
   const [promotions, setPromotions] = useState([]);
@@ -14,58 +26,72 @@ export default function Promotion() {
   const [selectedDateOption, setSelectedDateOption] = useState("ทั้งหมด");
   const [customDateRange, setCustomDateRange] = useState({ start: "", end: "" });
   const [showCustomInputs, setShowCustomInputs] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // เพิ่ม state สำหรับช่องค้นหา
+  const [searchQuery, setSearchQuery] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [promoToDelete, setPromoToDelete] = useState(null);
   const [promoIdToDelete, setPromoIdToDelete] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [shouldRefresh, setShouldRefresh] = useState(false);
 
   const router = useRouter();
 
   const fetchPromotions = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/promotions");
-      const currentDate = new Date("2025-03-06"); // วันที่ปัจจุบัน (ตามการตั้งค่า)
+      if (!response.data || !Array.isArray(response.data)) {
+        console.error("Invalid response data:", response.data);
+        setPromotions([]);
+        return;
+      }
+
       const promotionsData = response.data.map((promo) => {
-        let sport = "Unknown";
-        let stadiumName = "ไม่ระบุ";
-        let sportIcon = "/pictureowner/93.png";
+        console.log("Processing promotion raw:", promo);
+        let sportsList = [];
         let price = "฿150";
         let discountPrice = "฿135";
 
-        if (promo.sports) {
-          const sportsArray = JSON.parse(promo.sports);
-          if (sportsArray.length > 0) {
-            sport = sportsArray[0].name || "Unknown";
-            stadiumName = sportsArray[0].stadiumName || "ไม่ระบุ";
-            price = `฿${sportsArray[0].price || 150}`;
-            discountPrice = `฿${Math.round((sportsArray[0].price || 150) * (1 - (promo.discount_percentage || 0) / 100))}`;
+        let sportsArray = Array.isArray(promo.sports) ? promo.sports : [];
+        if (typeof promo.sports === "string") {
+          try {
+            sportsArray = JSON.parse(promo.sports);
+          } catch (e) {
+            console.warn(`Invalid JSON in sports for promotion ${promo.id}:`, promo.sports);
           }
         }
 
-        // คำนวณสถานะจาก end_datetime และเปลี่ยน "active" เป็น "กำลังดำเนินการ"
+        if (sportsArray.length > 0) {
+          sportsList = sportsArray.map((sport) => sport.name).join(", ");
+          price = `฿${sportsArray[0].price || 150}`;
+          discountPrice = `฿${sportsArray[0].discountPrice || Math.round(
+            (sportsArray[0].price || 150) * (1 - (promo.discount_percentage || 0) / 100)
+          )}`;
+        }
+
+        const startDate = new Date(promo.start_datetime);
         const endDate = new Date(promo.end_datetime);
-        const status = endDate < currentDate ? "หมดอายุแล้ว" : promo.promotion_status === "active" ? "กำลังดำเนินการ" : promo.promotion_status || "กำลังดำเนินการ";
+        const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+        console.log(`Converted dates - start: ${startDateOnly.toISOString().split('T')[0]}, end: ${endDateOnly.toISOString().split('T')[0]}`);
 
         return {
           id: promo.id,
           name: promo.promotion_name,
-          status: status,
-          sport,
-          stadiumName,
-          sportIcon,
-          duration: `${promo.start_datetime} - ${promo.end_datetime}`,
+          status: promo.promotion_status,
+          sportsList,
+          stadiumName: promo.stadium_name || "ไม่ระบุ",
+          duration: `${formatDateTime(promo.start_datetime)} - ${formatDateTime(promo.end_datetime)}`,
           price,
           discountPrice,
-          startDate: new Date(promo.start_datetime),
-          endDate: endDate,
+          startDate: startDateOnly,
+          endDate: endDateOnly,
         };
       });
       setPromotions(promotionsData);
       console.log("Fetched promotions:", promotionsData);
     } catch (error) {
-      console.error("Error fetching promotions:", error);
+      console.error("Error fetching promotions:", error.response?.data || error.message);
+      setPromotions([]);
     }
   };
 
@@ -74,65 +100,72 @@ export default function Promotion() {
     window.scrollTo(0, 0);
   }, []);
 
-  // ฟังก์ชันกรองโปรโมชั่นตาม selectedStatus, selectedDateOption, และ searchQuery
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (window.location.pathname === "/promotion" && shouldRefresh) {
+        fetchPromotions();
+        setShouldRefresh(false);
+      }
+    };
+
+    handleRouteChange();
+
+    const interval = setInterval(() => {
+      console.log("Auto-refreshing promotions...");
+      fetchPromotions();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [router, shouldRefresh]);
+
   const filterPromotions = () => {
     let filtered = [...promotions];
-
-    // กรองตามสถานะ
     if (selectedStatus !== "ทั้งหมด") {
       filtered = filtered.filter((promo) => promo.status === selectedStatus);
     }
-
-    // กรองตามช่วงวันที่
     if (selectedDateOption === "วันนี้") {
-      const today = new Date("2025-03-06");
+      const today = new Date();
+      const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      console.log("Filtering for today:", todayOnly.toISOString().split('T')[0]);
       filtered = filtered.filter((promo) => {
-        const promoStart = promo.startDate;
-        const promoEnd = promo.endDate;
-        return promoStart <= today && promoEnd >= today;
+        console.log(`Promo start: ${promo.startDate.toISOString().split('T')[0]}, end: ${promo.endDate.toISOString().split('T')[0]}`);
+        return promo.startDate.getTime() <= todayOnly.getTime() && promo.endDate.getTime() >= todayOnly.getTime();
       });
     } else if (selectedDateOption === "สัปดาห์นี้") {
-      const today = new Date("2025-03-06");
-      const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
-      const endOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+      const today = new Date();
+      const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+      const endOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 6);
+      console.log("Filtering for week - start:", startOfWeek.toISOString().split('T')[0], "end:", endOfWeek.toISOString().split('T')[0]);
       filtered = filtered.filter((promo) => {
-        const promoStart = promo.startDate;
-        const promoEnd = promo.endDate;
-        return promoStart <= endOfWeek && promoEnd >= startOfWeek;
+        console.log(`Promo start: ${promo.startDate.toISOString().split('T')[0]}, end: ${promo.endDate.toISOString().split('T')[0]}`);
+        return promo.startDate <= endOfWeek && promo.endDate >= startOfWeek;
       });
     } else if (selectedDateOption === "กำหนดเอง" && customDateRange.start && customDateRange.end) {
       const startDate = new Date(customDateRange.start);
       const endDate = new Date(customDateRange.end);
+      const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+      console.log("Filtering for custom - start:", startDateOnly.toISOString().split('T')[0], "end:", endDateOnly.toISOString().split('T')[0]);
       filtered = filtered.filter((promo) => {
-        const promoStart = promo.startDate;
-        const promoEnd = promo.endDate;
-        return promoStart >= startDate && promoEnd <= endDate;
+        console.log(`Promo start: ${promo.startDate.toISOString().split('T')[0]}, end: ${promo.endDate.toISOString().split('T')[0]}`);
+        return promo.startDate >= startDateOnly && promo.endDate <= endDateOnly;
       });
     }
-
-    // กรองตามชื่อโปรโมชั่น
     if (searchQuery.trim()) {
       filtered = filtered.filter((promo) =>
         promo.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
+    console.log("Filtered promotions:", filtered);
     return filtered;
   };
 
-  const handleStatusDropdownToggle = () => {
-    setIsStatusDropdownOpen(!isStatusDropdownOpen);
-  };
-
+  const handleStatusDropdownToggle = () => setIsStatusDropdownOpen(!isStatusDropdownOpen);
   const handleStatusOptionSelect = (option) => {
     setSelectedStatus(option);
     setIsStatusDropdownOpen(false);
   };
-
-  const handleDateDropdownToggle = () => {
-    setIsDateDropdownOpen(!isDateDropdownOpen);
-  };
-
+  const handleDateDropdownToggle = () => setIsDateDropdownOpen(!isDateDropdownOpen);
   const handleDateOptionSelect = (option) => {
     setSelectedDateOption(option);
     setShowCustomInputs(option === "กำหนดเอง");
@@ -149,28 +182,13 @@ export default function Promotion() {
     router.push(`/detail?id=${id}`);
   };
 
-const handleEditClick = (id, status) => {
-  if (!id) {
-    console.error("ID is undefined, cannot navigate to edit");
-    alert("ไม่พบข้อมูลโปรโมชั่นที่เลือก");
-    return;
-  }
-  if (status === "หมดอายุแล้ว") {
-    alert("ไม่สามารถแก้ไขโปรโมชั่นที่หมดอายุแล้ว");
-    return;
-  }
-  router.push(`/edit?id=${id}`);
-};
-
-// ฟังก์ชันรีเฟรชข้อมูลหลังจากอัปเดต
-const refreshPromotions = () => {
-  fetchPromotions();
-};
-
-  const handleCloseModal = () => {
-    setShowConfirmModal(false);
-    setShowSuccessModal(false);
-    if (showSuccessModal) router.push("/promotion");
+  const handleEditClick = (id) => {
+    if (!id) {
+      console.error("ID is undefined, cannot navigate to edit");
+      alert("ไม่พบข้อมูลโปรโมชั่นที่เลือก");
+      return;
+    }
+    router.push(`/edit?id=${id}`);
   };
 
   const handleDeleteClick = (promoName, promoId) => {
@@ -185,7 +203,6 @@ const refreshPromotions = () => {
       alert("ไม่พบ ID ของโปรโมชั่นที่เลือก");
       return;
     }
-
     try {
       await axios.delete(`http://localhost:5000/api/promotions/${promoIdToDelete}`);
       setPromotions(promotions.filter((promo) => promo.id !== promoIdToDelete));
@@ -198,352 +215,112 @@ const refreshPromotions = () => {
     }
   };
 
-  const handleCloseSuccessModal = () => {
+  const handleCloseModal = () => {
+    setShowConfirmModal(false);
     setShowSuccessModal(false);
-    router.push("/promotion");
-    window.scrollTo(0, 0);
-  };
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  // สไตล์ปุ่มมาตรฐาน
-  const buttonStyle = {
-    backgroundColor: "#1B9FEC",
-    color: "white",
-    border: "none",
-    padding: "8px 15px",
-    borderRadius: "5px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    fontSize: "14px",
-    width: "100px",
-    justifyContent: "center",
-    textAlign: "center",
-  };
-
-  const deleteButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#ff4d4d",
-    width: "100px",
+    if (showSuccessModal) {
+      fetchPromotions();
+      router.push("/promotion");
+    }
   };
 
   const filteredPromotions = filterPromotions();
 
   return (
-    <div
-      style={{
-        color: "var(--foreground)",
-        backgroundImage: `url('/pictureowner/bg.png')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        fontFamily: "Arial, Helvetica, sans-serif",
-        height: "100vh",
-        margin: "0",
-      }}
-    >
+    <div className="background">
       <Tabbar />
-      <div
-        style={{
-          position: "relative",
-          top: "75px",
-          marginBottom: "20px",
-          height: "60px",
-          width: "100%",
-          backgroundColor: "black",
-          color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <h1 style={{ textAlign: "center", color: "white", fontSize: "20px" }}>
-          รายการโปรโมชั่นส่วนลด
-        </h1>
+      <div className="header-title">
+        <h1>รายการโปรโมชั่นส่วนลด</h1>
       </div>
-      <div
-        className="Container"
-        style={{
-          position: "relative",
-          top: "75px",
-          margin: "40px",
-          padding: "20px",
-          backgroundColor: "white",
-          minHeight: "400px",
-          borderRadius: "10px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <div>
+      <div className="container">
+        <div className="filter-section">
           <select
-            id="promotion-select"
-            name="promotionSelect"
-            className="nav-button"
-            style={{
-              backgroundColor: "#D9D9D9",
-              color: "black",
-              padding: "10px",
-              height: "35px",
-              borderRadius: "5px",
-              cursor: "pointer",
-              border: "none",
-              outline: "none",
-            }}
             value={selectedStatus}
             onChange={(e) => handleStatusOptionSelect(e.target.value)}
+            className="status-dropdown"
           >
             <option value="ทั้งหมด">ทั้งหมด</option>
             <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
             <option value="หมดอายุแล้ว">หมดอายุแล้ว</option>
           </select>
-        </div>
-        <div style={{ display: "flex", justifyContent: "center", padding: "20px", alignItems: "center" }}>
-          <a href="/create-promotion" style={{ textDecoration: "none" }}>
-            <h4 style={{ color: "#1B9FEC" }}>สร้างโปรโมชั่นส่วนลด</h4>
-          </a>
-          <h4 style={{ marginLeft: "20px" }}>ชื่อโปรโมชั่น :</h4>
-          <input
-            type="text"
-            id="search-input"
-            name="search"
-            className="search-input"
-            placeholder="ค้นหาโปรโมชั่น..."
-            value={searchQuery} // ผูกค่า input กับ state
-            onChange={(e) => setSearchQuery(e.target.value)} // อัปเดต state เมื่อพิมพ์
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                fetchPromotions(); // เรียก fetch ใหม่เมื่อกด Enter
-              }
-            }}
-            style={{
-              marginLeft: "20px",
-              backgroundColor: "#D9D9D9",
-              marginTop: "auto",
-              height: "35px",
-              marginBottom: "auto",
-              padding: "0 10px",
-              border: "none",
-              borderRadius: "5px",
-              outline: "none",
-            }}
-          />
-          <h4 style={{ marginLeft: "20px" }}>ระยะเวลาโปรโมชั่น :</h4>
-          <button
-            className="nav-button"
-            style={{
-              backgroundColor: "#D9D9D9",
-              color: "black",
-              marginLeft: "20px",
-              marginTop: "auto",
-              height: "35px",
-              marginBottom: "auto",
-              width: "150px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "0 10px",
-              borderRadius: "5px",
-              border: "none",
-              cursor: "pointer",
-            }}
-            onClick={handleDateDropdownToggle}
-          >
-            <span>{selectedDateOption === "กำหนดเอง" ? "กำหนดเอง" : selectedDateOption}</span>
-            <FaChevronDown className={`arrow ${isDateDropdownOpen ? "rotate" : ""}`} />
-          </button>
-          {isDateDropdownOpen && (
-            <div
-              style={{
-                position: "absolute",
-                backgroundColor: "#fff",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                borderRadius: "5px",
-                marginTop: "40px",
-                padding: "10px",
-                zIndex: 1,
-                width: "150px",
-              }}
-            >
-              <div
-                style={{ padding: "5px", cursor: "pointer" }}
-                onClick={() => handleDateOptionSelect("ทั้งหมด")}
-              >
-                ทั้งหมด
-              </div>
-              <div
-                style={{ padding: "5px", cursor: "pointer" }}
-                onClick={() => handleDateOptionSelect("วันนี้")}
-              >
-                วันนี้
-              </div>
-              <div
-                style={{ padding: "5px", cursor: "pointer" }}
-                onClick={() => handleDateOptionSelect("สัปดาห์นี้")}
-              >
-                สัปดาห์นี้
-              </div>
-              <div
-                style={{ padding: "5px", cursor: "pointer" }}
-                onClick={() => handleDateOptionSelect("กำหนดเอง")}
-              >
-                กำหนดเอง
-              </div>
+
+          <div className="search-section">
+            <a href="/create-promotion" className="create-link">สร้างโปรโมชั่นส่วนลด</a>
+            <h4>ชื่อโปรโมชั่น :</h4>
+            <input
+              type="text"
+              placeholder="ค้นหาโปรโมชั่น..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+            <h4>ระยะเวลาโปรโมชั่น :</h4>
+            <div className="date-dropdown">
+              <button onClick={handleDateDropdownToggle} className="date-button">
+                <span>{selectedDateOption === "กำหนดเอง" ? "กำหนดเอง" : selectedDateOption}</span>
+                <FaChevronDown className={`arrow ${isDateDropdownOpen ? "rotate" : ""}`} />
+              </button>
+              {isDateDropdownOpen && (
+                <div className="dropdown-menu">
+                  <div onClick={() => handleDateOptionSelect("ทั้งหมด")}>ทั้งหมด</div>
+                  <div onClick={() => handleDateOptionSelect("วันนี้")}>วันนี้</div>
+                  <div onClick={() => handleDateOptionSelect("สัปดาห์นี้")}>สัปดาห์นี้</div>
+                  <div onClick={() => handleDateOptionSelect("กำหนดเอง")}>กำหนดเอง</div>
+                </div>
+              )}
             </div>
-          )}
-          {showCustomInputs && (
-            <div style={{ display: "flex", gap: "10px", marginLeft: "20px" }}>
-              <input
-                type="date"
-                value={customDateRange.start}
-                onChange={(e) => setCustomDateRange({ ...customDateRange, start: e.target.value })}
-                style={{
-                  height: "35px",
-                  padding: "0 10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-              />
-              <input
-                type="date"
-                value={customDateRange.end}
-                onChange={(e) => setCustomDateRange({ ...customDateRange, end: e.target.value })}
-                style={{
-                  height: "35px",
-                  padding: "0 10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-              />
-            </div>
-          )}
+            {showCustomInputs && (
+              <div className="custom-date-range">
+                <input
+                  type="date"
+                  value={customDateRange.start}
+                  onChange={(e) => setCustomDateRange({ ...customDateRange, start: e.target.value })}
+                  className="date-input"
+                />
+                <input
+                  type="date"
+                  value={customDateRange.end}
+                  onChange={(e) => setCustomDateRange({ ...customDateRange, end: e.target.value })}
+                  className="date-input"
+                />
+              </div>
+            )}
+          </div>
         </div>
-        <div>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              boxShadow: "0 0 20px rgba(0, 0, 0, 0.1)",
-            }}
-          >
+
+        <div className="table-container">
+          <table className="promo-table">
             <thead>
-              <tr
-                style={{
-                  borderBottom: "2px solid #B4B1B1",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  backgroundColor: "#f8f9fa",
-                }}
-              >
-                <th style={{ padding: "12px", width: "25%", textAlign: "left" }}>
-                  ชื่อโปรโมชั่น
-                </th>
-                <th style={{ padding: "12px", width: "20%", textAlign: "center" }}>
-                  สนาม
-                </th>
-                <th style={{ padding: "12px", width: "20%", textAlign: "center" }}>
-                  ประเภทกีฬา
-                </th>
-                <th style={{ padding: "12px", width: "20%", textAlign: "center" }}>
-                  ระยะเวลา
-                </th>
-                <th style={{ padding: "12px", width: "15%", textAlign: "center" }}>
-                  ดำเนินการ
-                </th>
+              <tr>
+                <th>ชื่อโปรโมชั่น</th>
+                <th>สนาม</th>
+                <th>ประเภทกีฬา</th>
+                <th>ระยะเวลา</th>
+                <th>ดำเนินการ</th>
               </tr>
             </thead>
             <tbody>
               {filteredPromotions.map((promo, index) => (
-                <tr
-                  key={index}
-                  style={{
-                    borderBottom: "1px solid #B4B1B1",
-                    fontSize: "16px",
-                    backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8f9fa",
-                    transition: "background-color 0.3s ease",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#e9ecef")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      index % 2 === 0 ? "#ffffff" : "#f8f9fa")
-                  }
-                >
-                  <td style={{ padding: "12px" }}>
+                <tr key={index}>
+                  <td>
                     <h4>{promo.name}</h4>
-                    <div
-                      style={{
-                        backgroundColor:
-                          promo.status === "หมดอายุแล้ว"
-                            ? "#ffcccc"
-                            : "#ccffcc",
-                        color:
-                          promo.status === "หมดอายุแล้ว"
-                            ? "#ff0000"
-                            : "#00cc00",
-                        padding: "4px 8px",
-                        borderRadius: "12px",
-                        display: "inline-block",
-                        fontSize: "14px",
-                      }}
-                    >
+                    <span className={`status-label status-${promo.status.toLowerCase().replace(" ", "-")}`}>
                       {promo.status}
-                    </div>
+                    </span>
                   </td>
-                  <td style={{ padding: "12px", textAlign: "center" }}>
-                    <h4>{promo.stadiumName}</h4>
-                  </td>
-                  <td style={{ padding: "12px", textAlign: "center" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <img
-                        src={promo.sportIcon}
-                        alt="sport icon"
-                        style={{ width: "40px", marginRight: "8px" }}
-                      />
-                      <h4>{promo.sport}</h4>
-                    </div>
-                  </td>
-                  <td style={{ padding: "12px", textAlign: "center" }}>
-                    {promo.duration}
-                  </td>
-                  <td
-                    style={{
-                      padding: "12px",
-                      textAlign: "center",
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "10px",
-                    }}
-                  >
-                    <button
-                      style={buttonStyle}
-                      onClick={() => handleDetailClick(promo.id)}
-                    >
+                  <td className="table-center"><h4>{promo.stadiumName}</h4></td>
+                  <td className="table-center"><h4>{promo.sportsList || "ไม่ระบุ"}</h4></td>
+                  <td className="table-center">{promo.duration}</td>
+                  <td className="table-center action-buttons">
+                    <button className="action-button detail-button" onClick={() => handleDetailClick(promo.id)}>
                       ดูรายละเอียด
                     </button>
-
                     {promo.status !== "หมดอายุแล้ว" && (
-                      <button
-                        style={buttonStyle}
-                        onClick={() => handleEditClick(promo.id, promo.status)}
-                      >
+                      <button className="action-button edit-button" onClick={() => handleEditClick(promo.id)}>
                         <FaEdit /> แก้ไข
                       </button>
                     )}
-
-                    <button
-                      style={deleteButtonStyle}
-                      onClick={() => handleDeleteClick(promo.name, promo.id)}
-                    >
+                    <button className="action-button delete-button" onClick={() => handleDeleteClick(promo.name, promo.id)}>
                       <FaTrash /> ลบ
                     </button>
                   </td>
@@ -553,105 +330,24 @@ const refreshPromotions = () => {
           </table>
 
           {(showConfirmModal || showSuccessModal) && (
-            <div
-              style={{
-                position: "fixed",
-                top: "0",
-                left: "0",
-                right: "0",
-                bottom: "0",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: "9999",
-              }}
-            >
-              <div
-                style={{
-                  backgroundColor: "white",
-                  padding: "40px 60px",
-                  borderRadius: "12px",
-                  textAlign: "center",
-                  boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
-                  maxWidth: "600px",
-                  width: "95%",
-                  transition: "transform 0.3s ease, opacity 0.3s ease",
-                }}
-              >
+            <div className="modal-overlay">
+              <div className="modal-content">
                 {showConfirmModal && (
                   <>
-                    <h2 style={{ fontSize: "24px", color: "#333", fontWeight: "600" }}>
-                      ยืนยันการลบ
-                    </h2>
-                    <p style={{ fontSize: "16px", color: "#555", marginBottom: "20px" }}>
-                      คุณต้องการลบโปรโมชั่น "{promoToDelete}" หรือไม่?
-                    </p>
-                    <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
-                      <button
-                        onClick={handleConfirmDelete}
-                        style={{
-                          backgroundColor: "#4CAF50",
-                          color: "white",
-                          padding: "12px 25px",
-                          borderRadius: "8px",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "16px",
-                          transition: "background-color 0.3s",
-                        }}
-                      >
-                        ยืนยัน
-                      </button>
-                      <button
-                        onClick={() => setShowConfirmModal(false)}
-                        style={{
-                          backgroundColor: "#ccc",
-                          color: "black",
-                          padding: "12px 25px",
-                          borderRadius: "8px",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "16px",
-                          transition: "background-color 0.3s",
-                        }}
-                      >
-                        ยกเลิก
-                      </button>
+                    <h2>ยืนยันการลบ</h2>
+                    <p>คุณต้องการลบโปรโมชั่น "{promoToDelete}" หรือไม่?</p>
+                    <div className="modal-buttons">
+                      <button onClick={handleConfirmDelete} className="confirm-button">ยืนยัน</button>
+                      <button onClick={() => setShowConfirmModal(false)} className="cancel-button">ยกเลิก</button>
                     </div>
                   </>
                 )}
-
                 {showSuccessModal && (
                   <>
-                    <img
-                      src="/pictureowner/correct.png"
-                      alt="Success Icon"
-                      style={{ width: "60px", height: "60px", marginBottom: "20px", display: "block", margin: "0 auto" }}
-                    />
-                    <h2 style={{ fontSize: "24px", color: "#333", fontWeight: "600" }}>
-                      ลบสำเร็จ
-                    </h2>
-                    <p style={{ fontSize: "16px", color: "#555", marginBottom: "20px" }}>
-                      โปรโมชั่น "{promoToDelete}" ถูกลบแล้ว
-                    </p>
-                    <div>
-                      <button
-                        onClick={handleCloseSuccessModal}
-                        style={{
-                          backgroundColor: "#4CAF50",
-                          color: "white",
-                          padding: "12px 25px",
-                          borderRadius: "8px",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "16px",
-                          transition: "background-color 0.3s",
-                        }}
-                      >
-                        ตกลง
-                      </button>
-                    </div>
+                    <img src="/pictureowner/correct.png" alt="Success Icon" className="success-icon" />
+                    <h2>ลบสำเร็จ</h2>
+                    <p>โปรโมชั่น "{promoToDelete}" ถูกลบแล้ว</p>
+                    <button onClick={handleCloseModal} className="confirm-button">ตกลง</button>
                   </>
                 )}
               </div>

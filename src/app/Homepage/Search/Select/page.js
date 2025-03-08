@@ -1,155 +1,161 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Select.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Tabbar from "../../../Tab/tab";
 import Headfunction from "@/app/Headfunction/page";
+import axios from "axios";
+import { useSearchParams } from "next/navigation";
 
 const SelectPlace = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [activeCategory, setActiveCategory] = useState("ยอดนิยม");
-  const [selectedSlot, setSelectedSlot] = useState({});
-  const [selectedVenue, setSelectedVenue] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const searchParams = useSearchParams();
+  const stadiumName = searchParams.get("stadium_name");
+  const stadiumAddress = searchParams.get("stadium_address");
 
-  const categories = ["ยอดนิยม", "แบดมินตัน", "ฟุตซอล", "ฟุตบอล", "ปิงปอง"];
+  const [activeCategory, setActiveCategory] = useState("ทั้งหมด");
+  const [stadiumData, setStadiumData] = useState({ name: "", address: "", imageUrl: "" });
+  const [totalVenues, setTotalVenues] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedCourt, setSelectedCourt] = useState(null); // State to store selected court
+  const [selectedTimes, setSelectedTimes] = useState([]); // State to store selected times
 
-  const popularVenues = [
-    {
-      img: "/picturemild/Badminton.svg",
-      alt: "สนามแบดมินตัน",
-      title: "แบดมินตัน",
-      totalCourts: 2,
-      pricePerHour: 150,
-      promotion: "ส่วนลด 10%",
-    },
-    {
-      img: "/picturemild/Footbal.svg",
-      alt: "สนามฟุตบอล",
-      title: "ฟุตบอล",
-      totalCourts: 1,
-      pricePerHour: 700,
-      promotion: "ส่วนลด 10%",
-    },
-    {
-      img: "/picturemild/Footsal.svg",
-      alt: "สนามฟุตซอล",
-      title: "ฟุตซอล",
-      totalCourts: 1,
-      pricePerHour: 400,
-      promotion: "ส่วนลด 10%",
-    },
-  ];
+  useEffect(() => {
+    async function fetchTotalVenues() {
+      try {
+        const response = await axios.get("http://localhost:5000/api/booking/stadiums");
+        if (response.data && response.data.length > 0) {
+          setTotalVenues(response.data);
 
-  const venues = {
-    "แบดมินตัน": [
-      {
-        img: "/picturemild/Bad_Court1.svg",
-        alt: "คอร์ดแบดมินตัน 1",
-        title: "คอร์ด 1",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00"],
-        unavailableTimeslots: ["15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00"],
-        totalCourts: 3,
-        pricePerHour: 300,
-      },
-      {
-        img: "/picturemild/Bad_Court2.svg",
-        alt: "คอร์ดแบดมินตัน 2",
-        title: "คอร์ด 2",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00"],
-        unavailableTimeslots: ["15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00"],
-        totalCourts: 2,
-        pricePerHour: 300,
-      },
-      {
-        img: "/picturemild/Bad_Court3.svg",
-        alt: "คอร์ดแบดมินตัน 3",
-        title: "คอร์ด 3",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00"],
-        unavailableTimeslots: ["15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00"],
-        totalCourts: 1,
-        pricePerHour: 300,
-      }
-    ],
-    "ฟุตซอล": [
-      {
-        img: "/picturemild/Futsal_court1.png",
-        alt: "สนามฟุตซอล 1",
-        title: "สนามฟุตซอล 1",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00"],
-        unavailableTimeslots: ["15:00 - 16:00", "16:00 - 17:00"],
-        totalCourts: 5,
-        pricePerHour: 500,
-      }
-    ],
-    "ฟุตบอล": [
-      {
-        img: "/picturemild/Football_court1.png",
-        alt: "สนามฟุตบอล 1",
-        title: "สนามฟุตบอล 1",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00"],
-        unavailableTimeslots: ["15:00 - 16:00"],
-        totalCourts: 4,
-        pricePerHour: 700,
-      }
-    ],
-    "ปิงปอง": [
-      {
-        img: "/picturemild/Pingpong_court1.png",
-        alt: "สนามปิงปอง 1",
-        title: "สนามปิงปอง 1",
-        availableTimeslots: ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00"],
-        unavailableTimeslots: ["15:00 - 16:00"],
-        totalCourts: 2,
-        pricePerHour: 150,
-      }
-    ],
-  };
+          const stadium = response.data.find((venue) => venue.stadium_name === stadiumName);
+          if (stadium) {
+            setStadiumData({
+              name: stadium.stadium_name,
+              address: stadium.stadium_address,
+              imageUrl: stadium.stadium_image,
+            });
 
-  const handleVenueSelect = (venue) => {
-    if (selectedVenue?.title === venue.title) {
-      return;
+            const categoriesInVenue = new Set();
+            stadium.courts.forEach((court) => {
+              categoriesInVenue.add(court.court_type);
+            });
+            setCategories(["ทั้งหมด", ...Array.from(categoriesInVenue)]);
+          }
+        } else {
+          console.error("No place data received");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-    setSelectedVenue(venue);
-    setSelectedSlot({});
+    fetchTotalVenues();
+  }, [stadiumName]);
+
+  const handleCategoryClick = (category) => {
+    setActiveCategory(category);
+    setSelectedCourt(null); // Reset selected court when category changes
+    setSelectedTimes([]); // Reset selected times when category changes
   };
 
-  const handleTimeslotSelect = (venue, slot) => {
-    if (!selectedVenue) {
-      alert("กรุณาเลือกคอร์ดก่อนเลือกเวลา");
-      return;
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
+  };
+
+  const handleCourtSelection = (court) => {
+    setSelectedCourt(court);
+    setSelectedTimes([]); // Reset selected times when court is selected
+  };
+
+  const handleTimeSelection = (time) => {
+    setSelectedTimes((prevTimes) =>
+      prevTimes.includes(time) ? prevTimes.filter((t) => t !== time) : [...prevTimes, time]
+    );
+  };
+
+  const handleBookingConfirmation = () => {
+    alert(
+      `คุณเลือกคอร์ด ${selectedCourt.court_type} \nวันที่: ${selectedDate}\nเวลา: ${selectedTimes.join(", ")}`
+    );
+  };
+
+  const renderVenueList = () => {
+    const stadium = totalVenues.find((venue) => venue.stadium_name === stadiumName);
+    if (!stadium) return <p>ไม่พบข้อมูลสนาม</p>;
+
+    // กรณีเลือก "ทั้งหมด" จะแสดงเฉพาะประเภทกีฬา, ราคา, และส่วนลด
+    if (activeCategory === "ทั้งหมด") {
+      return (
+        <div className="category-list">
+          {stadium.courts.map((court) => (
+            <div
+              key={court.court_id} // เพิ่ม key ที่ไม่ซ้ำกัน
+              className={`venue-card ${selectedCourt?.court_id === court.court_id ? "selected" : ""}`}
+              onClick={() => handleCourtSelection(court)}
+              style={{
+                pointerEvents: selectedCourt && selectedCourt.court_id !== court.court_id ? "none" : "auto",
+              }} // Block click on already selected courts
+            >
+              <img src={court.court_image} alt={court.court_type} className="venue-image" />
+              <h3>สนาม {court.court_type}</h3>
+              {court.discount_percentage > 0 && (
+                <p>โปรโมชั่นลด {court.discount_percentage}%</p>
+              )}
+              <p>ราคา: {court.final_price} บาท</p>
+            </div>
+          ))}
+        </div>
+      );
     }
 
-    setSelectedSlot((prev) => {
-      const updatedTimeslots = prev[venue.title] ? [...prev[venue.title]] : [];
-      if (updatedTimeslots.includes(slot)) {
-        return { ...prev, [venue.title]: updatedTimeslots.filter((time) => time !== slot) };
-      } else {
-        return { ...prev, [venue.title]: [...updatedTimeslots, slot] };
-      }
-    });
-  };
+    // ถ้า activeCategory ไม่ใช่ "ทั้งหมด" ให้กรองคอร์ดที่ตรงกับประเภทกีฬา
+    const filteredCourts = activeCategory !== "ทั้งหมด"
+      ? stadium.courts.filter((court) => court.court_type === activeCategory)
+      : stadium.courts;
 
-  const handleConfirm = () => {
-    if (selectedSlot[selectedVenue?.title]?.length > 0 && selectedDate && selectedVenue) {
-      setShowModal(true);
-    } else {
-      alert("กรุณาเลือกข้อมูลทั้งหมด");
-    }
-  };
+    return (
+      <>
+        {filteredCourts.map((court) => {
+          // สร้างช่องเวลาแยกตามจำนวนสนาม
+          const courtSlots = Array.from({ length: court.court_quantity }, (_, idx) => idx + 1);
 
-  const handleCloseModal = () => {
-    setBookingConfirmed(true);
-    setShowModal(false);
-  };
-
-  const calculatePrice = () => {
-    const selectedTimes = selectedSlot[selectedVenue?.title] || [];
-    return selectedTimes.length * selectedVenue?.pricePerHour || 0;
+          return (
+            <div
+              key={court.court_id} // เพิ่ม key ที่ไม่ซ้ำกัน
+              className={`venue-card ${selectedCourt?.court_id === court.court_id ? "selected" : ""}`}
+              onClick={() => handleCourtSelection(court)}
+              style={{
+                pointerEvents: selectedCourt && selectedCourt.court_id !== court.court_id ? "none" : "auto",
+              }} // Block click on already selected courts
+            >
+              <div className="venue-info">
+                {selectedCourt?.court_id === court.court_id && selectedDate && (
+                  <div className="timeslot-container">
+                    {courtSlots.map((slotNumber) => (
+                      <div key={slotNumber} className="slot-container">
+                        <h5>คอร์ด {slotNumber}</h5>
+                        {court.times.map((time) => (
+                          <div
+                            key={time.start + time.end} // เพิ่ม key ให้กับแต่ละเวลา
+                            className={`slot ${time.status === "available" ? "available" : "unavailable"}`}
+                            onClick={() => time.status === "available" && handleTimeSelection(time.start + time.end)}
+                          >
+                            {time.start} - {time.end}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </>
+    );
   };
 
   return (
@@ -157,128 +163,49 @@ const SelectPlace = () => {
       <Tabbar />
       <Headfunction />
       <div className="select-place-container">
-        <div className="banner">
-          <h2 className="venue-name">AVOCADO</h2>
-          <p className="venue-address">55/5 หมู่ 10 ซอย12 บ้านสวน จ.ชลบุรี</p>
-          <div className="Calender">
-            <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-              dateFormat="dd/MM/yyyy"
-              className="date-picker"
-              placeholderText="กรุณาเลือกวันที่"
-              minDate={new Date()}
+        <div className="banner" style={{ backgroundImage: `url('${stadiumData.imageUrl}')` }}>
+          <h2 className="venue-name">{stadiumName}</h2>
+          <p className="venue-address">{stadiumAddress}</p>
+
+          {/* ช่องเลือกวันที่อยู่ใต้ที่อยู่ของสนาม */}
+          <div className="date-picker-container">
+            <label htmlFor="booking-date"></label>
+            <input
+              type="date"
+              id="booking-date"
+              value={selectedDate}
+              onChange={handleDateChange}
+              min={new Date().toISOString().split("T")[0]} // Prevent selecting past dates
             />
           </div>
         </div>
 
-        {/* Categories Navigation */}
         <nav className="category-nav">
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={activeCategory === category ? "active" : ""}
-              onClick={() => setActiveCategory(category)}
-            >
-              {category}
-            </button>
-          ))}
+          {categories.length > 0 ? (
+            categories.map((category, index) => (
+              <button
+                key={category + index} // Added index to make sure the key is unique
+                className={activeCategory === category ? "active" : ""}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {category}
+              </button>
+            ))
+          ) : (
+            <p>กำลังโหลดข้อมูล...</p>
+          )}
         </nav>
 
-        {/* Legend for available/unavailable times */}
-        <div className="legend-container">
-          <div className="legend-item">
-            <span className="legend-color available"></span>
-            <span>ว่าง</span>
-            <span className="legend-color unavailable"></span>
-            <span>ไม่ว่าง</span>
-          </div>
+        <div className="venue-list">
+          {loading ? <p>กำลังโหลดข้อมูล...</p> : renderVenueList()}
         </div>
 
-        {/* Popular Venues Section */}
-        {activeCategory === "ยอดนิยม" && (
-          <div className="popular-venues">
-            {popularVenues.map((venue, index) => (
-              <div
-                className={`venue-card ${selectedVenue?.title === venue.title ? "selected" : ""}`}
-                key={index}
-                onClick={() => handleVenueSelect(venue)}
-              >
-                <img src={venue.img} alt={venue.alt} className="venue-image" />
-                <div className="venue-info">
-                  <h3>{venue.title}</h3>
-                  <p>{venue.promotion}</p>
-                  <p>฿{venue.pricePerHour} / ชั่วโมง</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Venue List */}
-        {activeCategory !== "ยอดนิยม" && venues[activeCategory]?.map((venue, index) => (
-          <div
-            className={`venue-card ${selectedVenue?.title === venue.title ? "selected" : ""}`}
-            key={index}
-            onClick={() => handleVenueSelect(venue)}
-          >
-            <img src={venue.img} alt={venue.alt} className="venue-image" />
-            <div className="venue-info">
-              <h3>{venue.title}</h3>
-              <div className="timeslot-container">
-                {venue.availableTimeslots.map((slot, i) => (
-                  <button
-                    key={i}
-                    className={`timeslot-btn ${selectedSlot[venue.title]?.includes(slot) ? "selected" : "available"}`}
-                    onClick={() => handleTimeslotSelect(venue, slot)}
-                  >
-                    {slot}
-                  </button>
-                ))}
-                {venue.unavailableTimeslots.map((slot, i) => (
-                  <button key={i} className="timeslot-btn unavailable" disabled>
-                    {slot}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {selectedSlot[selectedVenue?.title]?.length > 0 && selectedDate && selectedVenue && (
-          <div className="confirmation">
-            <button onClick={handleConfirm}>ยืนยัน</button>
-          </div>
-        )}
-
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>สรุปการจอง</h3>
-              <div className="modal-content">
-                <p><strong>ประเภทกีฬา : </strong> {activeCategory}</p>
-                <p><strong>คอร์ดที่เลือก : </strong> {selectedVenue?.title}</p>
-                <p><strong>วันที่เลือก : </strong> {selectedDate?.toLocaleDateString("th-TH")}</p>
-                <p><strong>เวลาที่เลือก : </strong> {selectedSlot[selectedVenue?.title]?.join(", ")}</p>
-                <p><strong>ราคา : </strong> ฿{calculatePrice()}</p>
-              </div>
-              <div className="modal-actions">
-                <button 
-                  className="cancel-button" 
-                  onClick={() => setShowModal(false)}>
-                  แก้ไขการจอง
-                </button>
-
-                <Link href={"/Homepage/Search/Select/payment-qr"}>
-                  <button 
-                    className="confirm-button" 
-                    onClick={handleCloseModal}>
-                    ยืนยัน
-                  </button>
-                </Link>
-               
-              </div>
-            </div>
+        {/* เมื่อเลือกคอร์ดและเวลาครบแล้ว */}
+        {selectedCourt && selectedDate && selectedTimes.length > 0 && (
+          <div className="booking-footer">
+            <button className="confirm-button" onClick={handleBookingConfirmation}>
+              ยืนยันการจอง
+            </button>
           </div>
         )}
       </div>

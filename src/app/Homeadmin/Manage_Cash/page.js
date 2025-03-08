@@ -1,54 +1,31 @@
 "use client";
 import "./Cash.css";
 import "../Dashboard/slidebar.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
 import Link from 'next/link';
 import Tab from "../Tabbar/page.js";
+import axios from 'axios';
 
 export default function Manage_Cash() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
+  const [owners, setOwners] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
-  const Owners = [
-    {
-      id: 1,
-      name: 'ภูรินันทร์ สิงห์เขา',
-      incomeBefore: 400000,
-      incomeAfter: 360000,
-      bankAccount: '123-456-7890',
-      status: 'โอนแล้ว',
-      date: '28 กุมภาพันธ์ 2568',
-    },
-    {
-      id: 2,
-      name: 'วิชัย ทองห่อ',
-      incomeBefore: 50000,
-      incomeAfter: 45000,
-      bankAccount: '234-567-8901',
-      status: 'โอนแล้ว',
-      date: '28 กุมภาพันธ์ 2568',
-    },
-    {
-      id: 3,
-      name: 'นพดล ป้องกัน',
-      incomeBefore: 75000,
-      incomeAfter: 67500,
-      bankAccount: '345-678-9012',
-      status: 'รอดำเนินการ',
-      date: '28 กุมภาพันธ์ 2568',
-    },
-    {
-      id: 4,
-      name: 'ธนากร วัฒนา',
-      incomeBefore: 120000,
-      incomeAfter: 108000,
-      bankAccount: '456-789-0123',
-      status: 'รอดำเนินการ',
-      date: '28 กุมภาพันธ์ 2568',
-    },
-  ];
+  useEffect(() => {
+    async function fetchCashData() {
+      try {
+        const response = await axios.get('http://localhost:5000/api/cashUpdate/update-cash');
+        setOwners(response.data);
+      } catch (error) {
+        console.error('Error fetching cash data:', error);
+      }
+    }
+
+    fetchCashData();
+  }, []);
 
   const handleStatusChange = (e) => {
     setStatusFilter(e.target.value);
@@ -62,14 +39,21 @@ export default function Manage_Cash() {
     setYear(e.target.value);
   };
 
-  // ฟิลเตอร์ข้อมูลตามสถานะ, เดือน, และปี
-  const filteredOwners = Owners.filter((owner) => {
+  const filteredOwners = owners.filter((owner) => {
     const matchesStatus = statusFilter === 'all' || owner.status === statusFilter;
     const matchesMonth = !month || owner.date.includes(month);
     const matchesYear = !year || owner.date.includes(year);
 
     return matchesStatus && matchesMonth && matchesYear;
   });
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
 
   return (
     <>
@@ -122,22 +106,38 @@ export default function Manage_Cash() {
             </tr>
           </thead>
           <tbody>
-            {filteredOwners.map((owner) => (
-              <tr key={owner.id}>
-                <td>{owner.id}</td>
-                <td>{owner.name}</td>
+            {filteredOwners.map((owner, index) => (
+              <tr key={owner.id_owner}>
+                <td>{index + 1}</td> 
+                <td>{owner.user_name}</td>
                 <td>
                   <div>
-                    <strong>รวม:</strong>{owner.incomeBefore} 
+                    <strong>รวม:</strong>{owner.totalIncome}
                   </div>
                   <div style={{ color: 'red' }}>
-                  <strong>จ่าย:</strong>{owner.incomeAfter} 
+                    <strong>จ่าย:</strong>{owner.incomeAfter}
                   </div>
                 </td>
                 <td>{owner.date}</td>
-                <td>{owner.bankAccount}</td>
+                <td>
+                  <div className="account-info">
+                    <strong>ชื่อบัญชี:</strong> {owner.user_name} <br />
+                    <strong>ชื่อธนาคาร:</strong> {owner.bank_name} <br />
+                    <strong>เลขที่บัญชี:</strong> {owner.bank_account} <br />
+                    {owner.status === "โอนแล้ว" ? (
+                      <>
+                        <button onClick={() => handleImageClick(owner.identity_card_url)} className="view-image-btn">
+                          ดูรูปบัญชี
+                        </button>
+                      </>
+                    ) : (
+                      <button onClick={() => handleImageClick(owner.identity_card_url)} className="view-image-btn">
+                        ดูรูปบัญชี
+                      </button>
+                    )}
+                  </div>
+                </td>
                 <td className="status-cell">
-                  {/* แสดงสถานะ */}
                   {owner.status === "โอนแล้ว" ? (
                     <div className="status approved">
                       <span>โอนแล้ว</span>
@@ -145,11 +145,30 @@ export default function Manage_Cash() {
                   ) : (
                     <div className="status-container">
                       <div className="status pending">
-                      <Link href="/Homeadmin/Manage_Cash/Pending" passHref>
-                      <span>รอดำเนินการ</span>
-                      </Link>
+                        <Link 
+                          href={{
+                            pathname: "/Homeadmin/Manage_Cash/Pending",
+                            query: { 
+                              id_owner: owner.id_owner,
+                              user_name: owner.user_name,
+                              bank_name: owner.bank_name,
+                              bank_account: owner.bank_account,
+                              date: owner.date
+                            }
+                          }}
+                          passHref
+                        >
+                          <span>รอดำเนินการ</span>
+                        </Link>
                       </div>
                     </div>
+                  )}
+                  {owner.status === "โอนแล้ว" && (
+                    <>
+                      <button onClick={() => handleImageClick(owner.slip_url)} className="view-image-btn">
+                        ดูสลิปโอนเงิน
+                      </button>
+                    </>
                   )}
                 </td>
               </tr>
@@ -157,6 +176,15 @@ export default function Manage_Cash() {
           </tbody>
         </table>
       </div>
+
+      {selectedImage && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={closeModal}>X</button>
+            <img src={selectedImage} alt="รูปภาพ" className="modal-image" />
+          </div>
+        </div>
+      )}
     </>
   );
 }

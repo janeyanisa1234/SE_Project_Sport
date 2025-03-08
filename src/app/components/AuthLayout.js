@@ -6,10 +6,16 @@ import { useRouter, usePathname } from 'next/navigation';
 import { AuthService } from '../utils/auth';
 
 // Paths that require authentication
-const protectedPaths = ['/Homepage', '/Profile', '/Admin', '/Info', '/cancle', '/about'];
+const protectedPaths = ['/Homepage', '/Profile', '/Info', '/cancle', '/about'];
 
 // Paths that are only for non-authenticated users
 const authPaths = ['/Login', '/Login/Registration'];
+
+// Paths that require admin role
+const adminPaths = ['/Homeadmin', '/Admin'];
+
+// Paths that require owner role
+const ownerPaths = ['/my-stadium', '/promotion', '/owner-stats', '/owner-reportbooking', '/money'];
 
 export default function AuthLayout({ children }) {
   const router = useRouter();
@@ -19,12 +25,21 @@ export default function AuthLayout({ children }) {
   useEffect(() => {
     // Check authentication status
     const isAuthenticated = AuthService.isAuthenticated();
+    const userRole = AuthService.getUserRole();
+    
     const isProtectedPath = protectedPaths.some(path => 
       pathname === path || pathname.startsWith(`${path}/`)
     );
+    
     const isAuthPath = authPaths.some(path => 
       pathname === path || pathname.startsWith(`${path}/`)
     );
+    
+    const isAdminPath = adminPaths.some(path => 
+      pathname === path || pathname.startsWith(`${path}/`)
+    );
+    
+    const isOwnerPath = ownerPaths
 
     if (isProtectedPath && !isAuthenticated) {
       // Redirect to login if trying to access protected path without auth

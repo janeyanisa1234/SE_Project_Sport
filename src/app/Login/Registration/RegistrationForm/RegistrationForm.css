@@ -1,6 +1,6 @@
 
 .registration-container {
-  height: 100vh;
+  height: 130vh;
   background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
   background-size: cover;
   background-position: center;
@@ -28,7 +28,7 @@
   padding: 2rem;
   border-radius: 10px;
   color: white;
-  width: 24rem;
+  width: 30rem;
   text-align: center;
 }
 

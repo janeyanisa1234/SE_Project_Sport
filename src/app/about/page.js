@@ -2,7 +2,7 @@
 import "./dash.css";
 import React, { useState } from "react";
 import Image from "next/image";
-import Tabbar from "../Tab/tab";
+import Tabbar from "../components/tab.js";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

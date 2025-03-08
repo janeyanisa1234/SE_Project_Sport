@@ -3,13 +3,17 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Tabbar from "../../components/tab";
-import axios from "axios";
+
+import axios from "axios"; // Import axios
+
 
 const AddSportsField = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
+  // Form states
   const [sportsFieldName, setSportsFieldName] = useState("");
+
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [fileName, setFileName] = useState('');
@@ -18,6 +22,7 @@ const AddSportsField = () => {
   const [ownerId, setOwnerId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
 
   // Fetch owner ID from session/local storage when component mounts
   useEffect(() => {
@@ -31,6 +36,7 @@ const AddSportsField = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+
       setImageFile(file);
       setFileName(file.name);
       setIsFileUploaded(true);
@@ -82,22 +88,29 @@ const AddSportsField = () => {
       setErrorMessage("เกิดข้อผิดพลาดในการเพิ่มสนามกีฬา กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSubmitting(false);
+
     }
   };
 
   return (
-    <div className="relative w-full h-screen bg-cover bg-center flex flex-col pb-20" 
+    <div className="relative w-full h-screen bg-cover bg-center flex flex-col" 
     style={{ backgroundImage: "url('/pictureowner/bg.png')" }}
     >
       <Tabbar/>
-      <br></br><br></br><br></br>
-      <div className="flex flex-col items-center justify-center flex-grow px-4">
-        <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full">
-          <div className="bg-black text-white text-lg font-bold px-6 py-3 text-center rounded-t-lg relative z-10">
+
+      <div className="flex flex-col items-center justify-center flex-grow px-4 overflow-auto">
+        <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full my-8">
+          <div className="bg-black text-white text-lg font-bold px-6 py-3 text-center rounded-t-lg">
             เพิ่มสนามกีฬา
           </div>
 
           <div className="p-6">
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {error}
+              </div>
+            )}
+
             <label className="block text-gray-700 font-semibold mb-2">ชื่อสนาม</label>
             <input
               type="text"
@@ -109,6 +122,7 @@ const AddSportsField = () => {
 
             <label className="block text-gray-700 font-semibold mb-2">ที่ตั้ง</label>
             <textarea 
+
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="รายละเอียดที่อยู่, ตำบล, อำเภอ, จังหวัด, รหัสไปรษณีย์" 
@@ -119,6 +133,7 @@ const AddSportsField = () => {
               <div style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>
                 {errorMessage}
               </div>
+
             )}
 
             <label className="block text-gray-700 font-semibold mt-6 mb-2">รูปสนามกีฬา</label>
@@ -150,16 +165,22 @@ const AddSportsField = () => {
               <button 
                 className="bg-gray-400 px-6 py-2 rounded text-white" 
                 onClick={() => router.push("/my-stadium")}
+
                 disabled={isSubmitting}
+
+                
+
               >
                 ยกเลิก
               </button>
               <button 
+
                 className={`${isSubmitting ? 'bg-green-300' : 'bg-green-500'} px-6 py-2 rounded text-white`}
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'กำลังดำเนินการ...' : 'ยืนยัน'}
+
               </button>
             </div>
           </div>

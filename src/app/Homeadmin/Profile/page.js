@@ -16,7 +16,7 @@ export default function Admin() {
     <>
       <Tab />
       <Sidebar/>
-      <div className="admin-container" style={{ backgroundImage: "url('/pictureice/stadium-bg.png')" }}>
+      <div className="admin-container" >
         <div className="admin-overlay">
           <div className="admin-card">
             <div className="admin-user-icon">
