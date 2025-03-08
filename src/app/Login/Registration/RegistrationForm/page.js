@@ -22,7 +22,7 @@ const RegistrationForm = () => {
   const router = useRouter();
 
   // Base URL for your API
-  const API_URL = "http://localhost:5000/api/kong";
+  const API_URL = "http://localhost:5000/kong";
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

@@ -23,7 +23,7 @@ const RegistrationForm1 = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const API_URL = "http://localhost:5000/api/kong";
+  const API_URL = "http://localhost:5000/kong";
 
   const handleChange = (e) => {
     const { name, value } = e.target;

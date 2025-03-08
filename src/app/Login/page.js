@@ -19,7 +19,7 @@ export default function Login() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const router = useRouter();
 
-  const API_URL = "http://localhost:5000/api/kong";
+  const API_URL = "http://localhost:5000/kong";
 
   const handleLogin = async (e) => {
     e.preventDefault();
