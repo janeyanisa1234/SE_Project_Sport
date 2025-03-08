@@ -258,7 +258,7 @@ const SportField = () => {
         </h2>
 
         {/* Debug Info - for development only */}
-        {process.env.NODE_ENV !== 'production'}
+        {process.env.NODE_ENV !== 'production' /*&& <DebugInfo />*/}
 
         {/* Loading state */}
         {loading && (
@@ -296,7 +296,7 @@ const SportField = () => {
         {!loading && !error && stadiums.length === 0 && (
           <>
             <div className="text-center py-10 bg-gray-200 rounded-lg p-4 border-4 border-gray-300 shadow-2xl rounded-2xl">
-              <p className="text-xl text-gray-600 mb-4">คุณยังไม่มีสนามกีฬา</p>
+              <p className="text-xl text-gray-600 mb-4">ยังไม่ได้เพิ่มประเภทกีฬา</p>
               <p className="text-gray-500 mb-6">คลิกปุ่มด้านล่างเพื่อเพิ่มสนามกีฬาของคุณ</p>
             </div>
             {/* Add Stadium button already included in this state */}
@@ -336,9 +336,10 @@ const SportField = () => {
                   {/* ที่ตั้ง */}
                   <p className="text-gray-700 text-xl mt-2">ที่ตั้ง : {stadium.stadium_address}</p>
 
-                  {/* ประเภทกีฬา - จะต้องเพิ่มหลังจากมีการเชื่อมต่อตารางประเภทกีฬา */}
+                  {/* ประเภทกีฬา - เพิ่มข้อความ "ประเภทกีฬา" */}
                   <div className="mt-4 text-gray-800 text-lg">
-                    {stadium.sports_types ? (
+                    <p className="text-xl font-semibold text-black mb-2">ประเภทกีฬา</p>
+                    {stadium.sports_types && stadium.sports_types.length > 0 ? (
                       stadium.sports_types.map((sport, idx) => (
                         <p key={idx}>{sport.name} - {sport.count} สนาม</p>
                       ))
@@ -350,34 +351,40 @@ const SportField = () => {
                   {/* ปุ่มเพิ่มจำนวนสนาม - เฉพาะสนามที่อนุมัติแล้ว */}
                   {stadium.stadium_status === 'อนุมัติแล้ว' && (
                     <div className="border-t border-gray-300 mt-4 pt-4">
-                    <div className="flex justify-center md:justify-end mt-6 md:mt-0">
-                      <button 
-                        className="flex items-center bg-black text-white text-xl px-6 py-2 rounded-xl w-full md:w-auto"
-                        onClick={() => router.push(`/my-stadium/add-field`)}
-                      >
-                        <FaPlus className="mr-3 text-2xl" /> เพิ่มจำนวนสนาม
-                      </button>
-                    </div>
+                      <div className="flex justify-center md:justify-end mt-6 md:mt-0">
+                        <button 
+                          className="flex items-center bg-black text-white text-xl px-6 py-2 rounded-xl w-full md:w-auto"
+                          onClick={() => {
+                            localStorage.setItem('stadium_id', stadium.id);
+                            router.push(`/my-stadium/add-field`);
+                          }}
+                        >
+                          <FaPlus className="mr-3 text-2xl" /> เพิ่มจำนวนสนาม
+                        </button>
+                      </div>
                     </div>
                   )}
                   
                   {/* สำหรับสนามที่รออนุมัติ */}
                   {stadium.stadium_status === 'รออนุมัติ' && (
                     <div className="border-t border-gray-300 mt-4 pt-4">
-                      
                       <div className="flex justify-center md:justify-end mt-6 md:mt-0">
-                        <button className="flex items-center bg-black text-white text-xl px-6 py-2 rounded-xl w-full md:w-auto"
-                          onClick={() => router.push("/my-stadium/add-field")}>
+                        <button 
+                          className="flex items-center bg-black text-white text-xl px-6 py-2 rounded-xl w-full md:w-auto"
+                          onClick={() => {
+                            localStorage.setItem('stadium_id', stadium.id);
+                            router.push(`/my-stadium/add-field`);
+                          }}
+                        >
                           <FaPlus className="mr-3 text-2xl" /> เพิ่มจำนวนสนาม
-                      </button>
-                    </div>
+                        </button>
+                      </div>
                     </div>
                   )}
                   
                   {/* สำหรับสนามที่ไม่อนุมัติ */}
                   {stadium.stadium_status === 'ไม่อนุมัติ' && (
                     <div className="">
-                  
                       {stadium.rejection_reason && (
                         <p className="text-gray-600 mt-1">
                           เหตุผล: {stadium.rejection_reason}
