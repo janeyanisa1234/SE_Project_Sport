@@ -8,11 +8,12 @@ import Headfunction from "../../Headfunction/page";
 import axios from "axios";
 import { useSearchParams } from "next/navigation"; // ใช้เพื่อดึง query parameter
 
-export default function PromotionPlace() {
+export default function SearchPlace() {
   const [placeData, setPlaceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams(); 
   const query = searchParams.get("query") || ""; // ดึงค่าค้นหาจาก URL
+  
 
   useEffect(() => {
     async function fetchPlaceData() {
