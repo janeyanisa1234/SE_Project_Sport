@@ -18,7 +18,7 @@ export default function ResetPassword() {
   const searchParams = useSearchParams();
   
   // Base URL for your API
-  const API_URL = "http://localhost:5000/api/kony";
+  const API_URL = "http://localhost:5000/api/kong";
   
   useEffect(() => {
     // Get token from URL
