@@ -8,14 +8,13 @@ import "./detail.css";
 
 export default function Detail() {
   const [promotion, setPromotion] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
   useEffect(() => {
-    if (!id) {
-      console.error("No ID provided for fetching promotion details");
+    if (!id || isNaN(parseInt(id))) {
+      console.error("Invalid or missing ID for fetching promotion details:", id);
       alert("ไม่มีข้อมูลโปรโมชั่นที่เลือก กรุณาเลือกโปรโมชั่นจากรายการ");
       router.push("/promotion");
       return;
@@ -23,50 +22,64 @@ export default function Detail() {
     fetchPromotionDetails();
   }, [id]);
 
+  // ฟังก์ชันสำหรับจัดรูปแบบวันที่เป็น YYYY-MM-DD HH:mm
+  const formatDate = (dateString) => {
+    if (!dateString || isNaN(new Date(dateString).getTime())) {
+      return "ไม่ระบุ";
+    }
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // เดือนเริ่มที่ 0 จึงต้อง +1
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+
   const fetchPromotionDetails = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/promotions/${id}`);
       const promo = Array.isArray(response.data) ? response.data[0] : response.data;
       if (!promo) throw new Error("Promotion not found");
-  
-      let sport = "Unknown";
-      let stadiumName = "ไม่ระบุ";
-      let originalPrice = "฿150";
-      let promoPrice = "฿135";
-  
-      if (promo.sports) {
-        const sportsArray = JSON.parse(promo.sports);
-        if (sportsArray.length > 0) {
-          sport = sportsArray[0].name || "Unknown";
-          stadiumName = sportsArray[0].stadiumName || "ไม่ระบุ";
-          originalPrice = `฿${sportsArray[0].price || 150}`;
-          promoPrice = `฿${Math.round(
-            (sportsArray[0].price || 150) * (1 - (promo.discount_percentage || 0) / 100)
-          )}`;
-        }
+
+      let sportsData = [{ name: "ไม่ระบุ", price: 150, discountPrice: 135, discount: "0%" }];
+      let discountPercentage = promo.discount_percentage || 0;
+
+      if (promo.sports && Array.isArray(promo.sports) && promo.sports.length > 0) {
+        sportsData = promo.sports.map((s) => {
+          const price = s.price || 150;
+          const discountPrice = s.discountPrice || Math.round(price * (1 - discountPercentage / 100));
+          const calculatedDiscount = s.discountPrice
+            ? `${Math.round(((price - s.discountPrice) / price) * 100)}%`
+            : `${discountPercentage}%`;
+
+          return {
+            name: s.name || "ไม่ระบุ",
+            price,
+            discountPrice,
+            discount: calculatedDiscount,
+          };
+        });
       }
-  
+
       setPromotion({
-        name: promo.promotion_name,
-        duration: `${promo.start_datetime} - ${promo.end_datetime}`,
-        sport,
-        stadiumName,
-        originalPrice,
-        promoPrice,
-        discount: `${promo.discount_percentage || 0}% ลด`,
-        limit: promo.discount_limit ? `${promo.discount_limit} ครั้ง` : "ไม่จำกัดการจอง",
+        id: promo.id,
+        name: promo.promotion_name || "ไม่ระบุ",
+        duration: `${formatDate(promo.start_datetime)} - ${formatDate(promo.end_datetime)}`, // ปรับรูปแบบวันที่
+        stadiumName: promo.stadium_name || "ไม่ระบุ",
+        sports: sportsData,
+        status: promo.promotion_status || "ไม่ระบุ",
       });
+      console.log("Fetched promotion details:", promotion); // ตรวจสอบข้อมูล
     } catch (error) {
       console.error("Error fetching promotion details:", error);
-      alert("เกิดข้อผิดพลาดในการดึงข้อมูลโปรโมชั่น");
+      alert("เกิดข้อผิดพลาดในการดึงข้อมูลโปรโมชั่น: " + (error.response?.data?.error || error.message));
+      router.push("/promotion");
     }
   };
-  const handleDetailClick = () => {
-    router.push("/promotion");
-  };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  const handleBackClick = () => {
+    router.push("/promotion");
   };
 
   return (
@@ -78,55 +91,63 @@ export default function Detail() {
 
       <div className="container">
         <div className="section-title">
-          <h2>รายละเอียดเบื้องต้น</h2>
+          <h2>รายละเอียดโปรโมชั่น</h2>
         </div>
 
         {promotion ? (
           <div className="promo-info">
-            <div className="info-row">
-              <h3>ชื่อโปรโมชั่น :</h3>
-              <h3 className="highlight-text">{promotion.name}</h3>
-            </div>
-            <div className="info-row">
-              <h3>สนาม :</h3>
-              <h3 className="highlight-text">{promotion.stadiumName}</h3>
-            </div>
-            <div className="info-row">
-              <h3>ระยะเวลาโปรโมชั่น :</h3>
-              <h3 className="highlight-text">{promotion.duration}</h3>
-            </div>
+          <div className="info-row">
+            <h3>ชื่อโปรโมชั่น :</h3>
+            <h3 className="highlight-text">{promotion.name}</h3>
           </div>
-        ) : (
+          <div className="info-row">
+            <h3>สนาม :</h3>
+            <h3 className="highlight-text">{promotion.stadiumName}</h3>
+          </div>
+          <div className="info-row">
+            <h3>ระยะเวลาโปรโมชั่น :</h3>
+            <h3 className="highlight-text">{promotion.duration}</h3>
+          </div>
+          <div className="info-row">
+            <h3>สถานะ :</h3>
+            <h3 className={`highlight-text ${promotion.status.toLowerCase().replace(" ", "-")}`}>
+              {promotion.status}
+            </h3>
+          </div>
+        </div>
+      ) : (
           <p>กำลังโหลดข้อมูล...</p>
         )}
 
         <table className="promo-table">
           <thead>
-            <tr><th>ประเภทกีฬา</th><th>สนาม</th><th>ราคาเดิม</th><th>ราคาโปรโมชั่น</th><th>ส่วนลด</th><th>จำกัดการจอง</th></tr>
+            <tr>
+              <th>ประเภทกีฬา</th>
+              <th>ราคาเดิม</th>
+              <th>ราคาโปรโมชั่น</th>
+              <th>ส่วนลด</th>
+            </tr>
           </thead>
           <tbody>
             {promotion ? (
-              <tr>
-                <td className="table-center">
-                  <div className="sport-info">
-                    <img src={`/pictureowner/${promotion.sport.toLowerCase()}.png`} alt="sport-icon" className="sport-icon" />
-                    <h4>{promotion.sport}</h4>
-                  </div>
-                </td>
-                <td className="table-center">{promotion.stadiumName}</td>
-                <td className="table-center">{promotion.originalPrice}</td>
-                <td className="table-center">{promotion.promoPrice}</td>
-                <td className="table-center">{promotion.discount}</td>
-                <td className="table-center">{promotion.limit}</td>
-              </tr>
+              promotion.sports.map((sport, index) => (
+                <tr key={index}>
+                  <td className="table-center" style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{sport.name}</td>
+                  <td className="table-center" style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{`฿${sport.price}`}</td>
+                  <td className="table-center" style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{`฿${sport.discountPrice}`}</td>
+                  <td className="table-center" style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{sport.discount}</td>
+                </tr>
+              ))
             ) : (
-              <tr><td colSpan="6">กำลังโหลดข้อมูล...</td></tr>
+              <tr>
+                <td colSpan="4">กำลังโหลดข้อมูล...</td>
+              </tr>
             )}
           </tbody>
         </table>
 
         <div className="button-container">
-          <button className="back-button" onClick={handleDetailClick}>
+          <button className="back-button" onClick={handleBackClick}>
             กลับไปยังรายการโปรโมชั่น
           </button>
         </div>
