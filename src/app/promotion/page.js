@@ -5,9 +5,8 @@ import { FaChevronDown, FaEdit, FaTrash, FaCalendarAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Tabbar from "../components/tab";
 import axios from "axios";
-import "./promotion.css"; // เพิ่มไฟล์ CSS
+import "./promotion.css";
 
-// ฟังก์ชันแปลงวันที่ให้อยู่ในรูปแบบ DD/MM/YYYY HH:mm
 const formatDateTime = (dateTimeStr) => {
   const date = new Date(dateTimeStr);
   const day = String(date.getDate()).padStart(2, "0");
@@ -36,8 +35,17 @@ export default function Promotion() {
   const router = useRouter();
 
   const fetchPromotions = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("กรุณาเข้าสู่ระบบก่อนดูโปรโมชั่น");
+      router.push("/Login");
+      return;
+    }
+  
     try {
-      const response = await axios.get("http://localhost:5000/api/promotions");
+      const response = await axios.get("http://localhost:5000/api/promotions", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!response.data || !Array.isArray(response.data)) {
         console.error("Invalid response data:", response.data);
         setPromotions([]);
@@ -72,8 +80,6 @@ export default function Promotion() {
         const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
         const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
 
-        console.log(`Converted dates - start: ${startDateOnly.toISOString().split('T')[0]}, end: ${endDateOnly.toISOString().split('T')[0]}`);
-
         return {
           id: promo.id,
           name: promo.promotion_name,
@@ -88,17 +94,23 @@ export default function Promotion() {
         };
       });
       setPromotions(promotionsData);
-      console.log("Fetched promotions:", promotionsData);
-    } catch (error) {
-      console.error("Error fetching promotions:", error.response?.data || error.message);
-      setPromotions([]);
+    console.log("Fetched promotions:", promotionsData);
+  } catch (error) {
+    console.error("Error fetching promotions:", error.response?.data || error.message);
+    if (error.code === "ERR_NETWORK") {
+      alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า backend รันอยู่หรือไม่");
+    } else if (error.response?.status === 401) {
+      alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+      router.push("/Login");
     }
-  };
+    setPromotions([]);
+  }
+};
 
   useEffect(() => {
     fetchPromotions();
     window.scrollTo(0, 0);
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -198,20 +210,35 @@ export default function Promotion() {
   };
 
   const handleConfirmDelete = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("กรุณาเข้าสู่ระบบก่อนลบโปรโมชั่น");
+      router.push("/Login");
+      return;
+    }
+
     if (!promoIdToDelete) {
       console.error("No promo ID to delete");
       alert("ไม่พบ ID ของโปรโมชั่นที่เลือก");
       return;
     }
+
     try {
-      await axios.delete(`http://localhost:5000/api/promotions/${promoIdToDelete}`);
+      await axios.delete(`http://localhost:5000/api/promotions/${promoIdToDelete}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setPromotions(promotions.filter((promo) => promo.id !== promoIdToDelete));
       setShowConfirmModal(false);
       setShowSuccessModal(true);
       console.log(`Deleted promotion with id: ${promoIdToDelete}`);
     } catch (error) {
-      console.error("Error deleting promotion:", error);
-      alert("เกิดข้อผิดพลาดในการลบโปรโมชั่น: " + (error.response?.data?.error || error.message));
+      console.error("Error deleting promotion:", error.response?.data || error);
+      if (error.response?.status === 401) {
+        alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+        router.push("/Login");
+      } else {
+        alert("เกิดข้อผิดพลาดในการลบโปรโมชั่น: " + (error.response?.data?.error || error.message));
+      }
     }
   };
 
