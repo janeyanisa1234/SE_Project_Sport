@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { AuthService } from '../utils/auth';
 
 // Paths that require authentication
-const protectedPaths = ['/Homepage', '/Profile', '/Info', '/cancle', '/about'];
+const protectedPaths = ['/Homepage', '/Info', '/cancle'];
 
 // Paths that are only for non-authenticated users
 const authPaths = ['/Login', '/Login/Registration'];
@@ -16,6 +16,9 @@ const adminPaths = ['/Homeadmin', '/Admin'];
 
 // Paths that require owner role
 const ownerPaths = ['/my-stadium', '/promotion', '/owner-stats', '/owner-reportbooking', '/money'];
+
+// Paths that are accessible to everyone (public paths)
+const publicPaths = ['/about'];
 
 export default function AuthLayout({ children }) {
   const router = useRouter();
@@ -39,7 +42,19 @@ export default function AuthLayout({ children }) {
       pathname === path || pathname.startsWith(`${path}/`)
     );
     
-    const isOwnerPath = ownerPaths
+    const isOwnerPath = ownerPaths.some(path => 
+      pathname === path || pathname.startsWith(`${path}/`)
+    );
+    
+    const isPublicPath = publicPaths.some(path => 
+      pathname === path || pathname.startsWith(`${path}/`)
+    );
+
+    // Skip authentication checks for public paths
+    if (isPublicPath) {
+      setIsLoading(false);
+      return;
+    }
 
     if (isProtectedPath && !isAuthenticated) {
       // Redirect to login if trying to access protected path without auth
