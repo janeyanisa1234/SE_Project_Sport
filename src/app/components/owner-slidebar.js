@@ -46,6 +46,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 {userName || "ผู้ใช้งาน"}
               </Link>
               <br />
+              
               <small style={{ color: "white" }}>เจ้าของสนาม</small>
             </div>
           </li>
@@ -103,7 +104,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <li>
             <img src="/pictureowner/passwd.png" alt="iconpasswd" />
             <Link
-              href="/EmailInput"
+              href="/ownerProfile/Email"
               style={{ textDecoration: "none", color: "inherit" }}
             >
             เปลี่ยนรหัสผ่าน

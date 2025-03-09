@@ -1,4 +1,4 @@
-.name-container {
+.change-password-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -8,53 +8,53 @@
   background-position: center;
   background-repeat: no-repeat;
   }
+ 
   
-  
-  .name-box {
-    background: rgb(252, 251, 251);
-    padding: 2rem;
+  .form-container {
+    background-color: rgb(255, 255, 255);
+    padding: 28px;
     border-radius: 10px;
+    width: 380px;
     text-align: center;
     color: rgb(0, 0, 0);
-    width: 450px;
   }
   
   .title {
-    font-size: 1.8rem;
+    font-size: 24px;
     font-weight: bold;
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
   }
   
   .input-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 16px;
     text-align: left;
   }
   
   .input-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 8px;
   }
   
-  .input-field {
+  .input-group input {
     width: 100%;
-    padding: 0.5rem;
-    border-radius: 5px;
-    border: 1px solid rgb(0, 0, 0);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #000000;
     color: black;
   }
   
-  .save-btn {
+  .submit-btn {
     width: 100%;
-    background: #22c55e;
+    background-color: #22c55e;
     color: white;
-    padding: 0.5rem;
-    border-radius: 5px;
-    font-weight: bold;
+    padding: 10px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 0.3s;
+    font-size: 16px;
+    transition: background 0.3s ease;
   }
   
-  .save-btn:hover {
-    background: #16a34a;
+  .submit-btn:hover {
+    background-color: #16a34a;
   }
   

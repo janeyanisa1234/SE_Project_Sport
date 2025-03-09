@@ -1,4 +1,5 @@
-.name-container {
+/* EmailInput.css */
+.email-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -10,51 +11,46 @@
   }
   
   
-  .name-box {
-    background: rgb(252, 251, 251);
-    padding: 2rem;
+  .email-box {
+    background: rgb(255, 255, 255);
+    padding: 3rem;
     border-radius: 10px;
     text-align: center;
     color: rgb(0, 0, 0);
-    width: 450px;
+    width: 500px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-  
-  .input-group {
-    margin-bottom: 1.5rem;
-    text-align: left;
-  }
-  
-  .input-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  
-  .input-field {
+  .email-input {
     width: 100%;
-    padding: 0.5rem;
-    border-radius: 5px;
-    border: 1px solid rgb(0, 0, 0);
+    padding: 12px;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
     color: black;
   }
   
-  .save-btn {
+  .email-warning {
+    color: red;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+  
+  .email-button {
+    margin-top: 20px;
     width: 100%;
     background: #22c55e;
     color: white;
-    padding: 0.5rem;
-    border-radius: 5px;
     font-weight: bold;
+    padding: 12px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s;
   }
   
-  .save-btn:hover {
+  .email-button:hover {
     background: #16a34a;
   }
   
