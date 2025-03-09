@@ -17,19 +17,29 @@ export default function Add() {
   const initialSelectedSports = JSON.parse(decodeURIComponent(searchParams.get("sports") || "[]")); // ดึงกีฬาที่เคยเลือก
 
   useEffect(() => {
-    if (stadiumId) {
-      fetchSports();
-    } else {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("กรุณาเข้าสู่ระบบก่อนเพิ่มกีฬา");
+      router.push("/Login");
+      return;
+    }
+
+    if (!stadiumId) {
       console.error("No stadiumId provided in query");
       alert("ไม่พบข้อมูลสนาม กรุณาเลือกสนามจากหน้า Create Promotion ก่อน");
       router.push("/create-promotion");
+      return;
     }
+
+    fetchSports(token);
   }, [stadiumId, router]);
 
-  const fetchSports = async () => {
+  const fetchSports = async (token) => {
     try {
       console.log("Fetching sports for stadiumId:", stadiumId);
-      const response = await axios.get(`http://localhost:5000/api/sports?stadiumId=${stadiumId}`);
+      const response = await axios.get(`http://localhost:5000/api/sports?stadiumId=${stadiumId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log("Sports response:", response.data);
       if (Array.isArray(response.data) && response.data.length > 0) {
         // ผสานข้อมูลกีฬากับสถานะที่เคยเลือก
@@ -56,7 +66,12 @@ export default function Add() {
         response: error.response?.data,
         status: error.response?.status,
       });
-      alert("เกิดข้อผิดพลาดในการดึงข้อมูลกีฬา: " + (error.response?.data?.error || error.message));
+      if (error.response?.status === 401) {
+        alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+        router.push("/Login");
+      } else {
+        alert("เกิดข้อผิดพลาดในการดึงข้อมูลกีฬา: " + (error.response?.data?.error || error.message));
+      }
     }
   };
 

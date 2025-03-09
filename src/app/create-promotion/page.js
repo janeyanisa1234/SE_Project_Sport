@@ -28,19 +28,32 @@ export default function CreatePromotion() {
   const [promotionId, setPromotionId] = useState(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("กรุณาเข้าสู่ระบบก่อนสร้างโปรโมชั่น");
+      router.push("/Login");
+      return;
+    }
+  
     setLoadingStadiums(true);
     axios
-      .get("http://localhost:5000/api/stadiums")
+      .get("http://localhost:5000/api/stadiums", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setStadiums(Array.isArray(response.data) ? response.data : []);
         setLoadingStadiums(false);
       })
       .catch((error) => {
-        console.error("Error fetching stadiums:", error);
+        console.error("Error fetching stadiums:", error.response?.data || error.message);
         setLoadingStadiums(false);
+        if (error.response?.status === 401) {
+          alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+          router.push("/Login");
+        }
       });
-  }, []);
-
+  }, [router]);
+  
   useEffect(() => {
     const updatedSports = selectedSports.map((sport) => ({
       ...sport,
@@ -69,15 +82,16 @@ export default function CreatePromotion() {
   };
 
   const handleSubmit = async () => {
-    const discountNum = parseFloat(discount) || 0;
-    if (!promotionName || !startDate || !startTime || !endDate || !endTime || !discount || !selectedStadium || selectedSports.length === 0) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("กรุณาเข้าสู่ระบบก่อนสร้างโปรโมชั่น");
+      router.push("/Login");
       return;
     }
 
-    const selectedStadiumData = stadiums.find((s) => s.id === selectedStadium);
-    if (!selectedStadiumData?.owner_id) {
-      alert("ไม่พบ owner_id สำหรับสนามที่เลือก");
+    const discountNum = parseFloat(discount) || 0;
+    if (!promotionName || !startDate || !startTime || !endDate || !endTime || !discount || !selectedStadium || selectedSports.length === 0) {
+      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
 
@@ -90,22 +104,21 @@ export default function CreatePromotion() {
       discount: discountNum,
       location: selectedStadium,
       sports: selectedSports,
-      owner_id: selectedStadiumData.owner_id,
     };
 
     console.log("Sending promotion data:", promotionData);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/promotions", promotionData);
+      const response = await axios.post("http://localhost:5000/api/promotions", promotionData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log("Response from server:", response.data);
       setPromotionId(response.data[0]?.id || null);
-      setShowModal(true); // ตั้งค่าให้ modal แสดง
-      console.log("Modal should be visible, showModal:", true);
+      setShowModal(true);
     } catch (error) {
       console.error("Error submitting promotion:", {
         message: error.message,
         response: error.response?.data,
-        status: error.response?.status,
       });
       alert("เกิดข้อผิดพลาดในการบันทึก: " + (error.response?.data?.error || error.message));
     }
