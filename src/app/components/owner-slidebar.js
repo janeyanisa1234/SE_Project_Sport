@@ -40,7 +40,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             <img src="/pictureowner/profile.png" alt="iconprofile" />
             <div>
               <Link
-                href="/Info"
+                href="/ownerProfile"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 {userName || "ผู้ใช้งาน"}
