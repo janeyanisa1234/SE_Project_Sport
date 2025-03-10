@@ -6,6 +6,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import "./ownerProfile.css";
 import Tabbar from "../components/tab";
+import Link from "next/link";
 
 export default function Profile() {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,18 +45,12 @@ export default function Profile() {
             <p className="profile-text"><strong>ชื่อ : </strong>{user?.name || "-"}</p>
             <p className="profile-text"><strong>อีเมล : </strong>{user?.email || "-"}</p>
             <p className="profile-text"><strong>เบอร์โทร : </strong>{user?.phone || "-"}</p>
-
-            <div className="profile-password">
-              <p className="mr-2"><strong>รหัสผ่าน : </strong> ********</p>
-              <button onClick={() => setShowPassword(!showPassword)} className="toggle-btn">
-                {showPassword ? <EyeOff size={24} className="icon" /> : <Eye size={24} className="icon" />}
-              </button>
-            </div>
-
             <p className="profile-text"><strong>ชื่อธนาคาร : </strong>{user?.bank_name || "-"}</p>
             <p className="profile-text"><strong>เลขบัญชีธนาคาร : </strong>{user?.bank_account || "-"}</p>
-
+            <Link href={"/ownerProfile/Email"}>
             <button className="profile-button">เปลี่ยนรหัสผ่าน</button>
+            </Link>
+           
           </div>
         </div>
       </div>

@@ -1,24 +1,14 @@
 .infochange-container {
-    height: 100vh;
-    background: url('/pictureice/stadium-bg.png') center/cover no-repeat;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-  }
-  
-  .overlay {
-  position: absolute;
-  
-  inset: 0;
-
-  background-color: rgba(240, 224, 224, 0.507);
-
+  min-height: 100vh;
   display: flex;
-
-  align-items: center;
-
   justify-content: center;
+  align-items: center;
+  background-image: url('/pictureowner/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   }
+
   
   .content-box {
     background: rgb(255, 255, 255);
