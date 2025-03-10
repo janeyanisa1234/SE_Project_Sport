@@ -106,7 +106,7 @@ const SportField = () => {
       'ไม่อนุมัติ': 'text-red-600 bg-red-100'
     };
     return (
-      <span className={`${statusStyles[status] || 'text-gray-600 bg-gray-100'} text-lg font-semibold px-3 py-1 rounded-full`}>
+      <span className={`${statusStyles[status] || 'text-gray-600 bg-gray-100'} text-lg font-semibold px-3 py-1 rounded-full absolute right-6 top-6`}>
         สถานะ: {status}
       </span>
     );
@@ -188,7 +188,7 @@ const SportField = () => {
 
         {!loading && !error && stadiums.length === 0 && (
           <div>
-          <AddStadiumButton />
+            <AddStadiumButton />
           </div>
         )}
 
@@ -210,12 +210,12 @@ const SportField = () => {
                     }}
                   />
                 </div>
-                <div className="flex flex-col justify-between w-full md:w-1/2 bg-white rounded-xl p-6">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <h3 className="text-3xl text-gray-900 font-extrabold tracking-tight">สนาม: {stadium.stadium_name}</h3>
+                <div className="flex flex-col justify-between w-full md:w-1/2 bg-white rounded-xl p-6 relative">
+                  <div className="flex flex-col gap-4">
+                    <h3 className="text-3xl text-gray-900 font-extrabold tracking-tight max-w-[calc(100%-10rem)] break-words">สนาม: {stadium.stadium_name}</h3>
                     {renderStatus(stadium.stadium_status)}
                   </div>
-                  <p className="text-gray-700 text-lg mt-3">ที่ตั้ง: {stadium.stadium_address}</p>
+                  <p className="text-gray-700 text-lg mt-3 max-w-[calc(100%-10rem)] break-words overflow-hidden">ที่ตั้ง: {stadium.stadium_address}</p>
                   <div className="mt-4 text-gray-800 text-lg">
                     <p className="text-xl font-semibold text-gray-900 mb-2">ประเภทกีฬา</p>
                     {stadium.sports_types && stadium.sports_types.length > 0 ? (
