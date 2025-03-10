@@ -12,34 +12,23 @@ export default function Info() {
   const [userData, setUserData] = useState(null); //ดึง backend
   const API_URL = "http://localhost:5000/api/ice";
   useEffect(() => {
-    async function fetchUserData() {
+    // ดึงข้อมูลเจ้าของ
+    const fetchadmin = async () => {
       try {
-        const token = localStorage.getItem("token"); // ดึง Token จาก localStorage
-        if (!token) {
-          console.error("No token found, user may not be logged in.");
-          return;
-        }
-  
-        const response = await axios.get(`${API_URL}/user`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // ส่ง Token ไปกับ request
-          },
+        const token = localStorage.getItem("token"); // ดึง Token
+        const response = await axios.get(`${API_URL}/owner`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
-  
-        if (response.data) {
-          setUserData(response.data); // ตั้งค่า userData จาก API response
-        } else {
-          console.error("No user data received");
-        }
+
+        setUser(response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching owner:", error.response?.data?.message || error.message);
       }
-    }
-  
-    fetchUserData();
-  }, []);
-  
-  
+    };
+
+    fetchadmin();
+  }, [])
+
 
   return (
     <>

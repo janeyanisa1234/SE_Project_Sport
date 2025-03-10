@@ -100,17 +100,6 @@ export default function Sidebar({ isOpen, setIsOpen }) {
               การเงิน
             </Link>
           </li>
-
-          <li>
-            <img src="/pictureowner/passwd.png" alt="iconpasswd" />
-            <Link
-              href="/ownerProfile/Email"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-            เปลี่ยนรหัสผ่าน
-            </Link>
-          </li>
-
           <li>
             <img src="/pictureowner/about.png" alt="iconabout" />
             <Link

@@ -36,7 +36,7 @@ export default function EmailInput() {
       
       // Make API request to send-reset-password-email endpoint with auth header
       const response = await axios.post(
-        `${API_URL}/send-reset-password-email`, 
+        `${API_URL}/send-reset`, 
         { email },
         { 
           headers: { 

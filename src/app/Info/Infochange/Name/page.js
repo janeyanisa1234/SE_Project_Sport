@@ -3,51 +3,73 @@
 import React, { useState } from 'react';
 import "./Name.css"; 
 import Tab from "../../../Tab/tab"; 
- 
-import { Link } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function Name() {
   const [currentName, setCurrentName] = useState('');
   const [newName, setNewName] = useState('');
+  const router = useRouter();
+  const API_URL = "http://localhost:5000/api/ice";
 
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("token"); // ดึง JWT Token
+      const response = await fetch(`${API_URL}/update-name`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ newName })
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        alert("อัปเดตชื่อสำเร็จ!");
+        router.push("/Info"); // ไปที่หน้า Info หลังจากบันทึกสำเร็จ
+      } else {
+        alert("เกิดข้อผิดพลาด: " + data.error);
+      }
+    } catch (error) {
+      console.error("Error updating name:", error);
+      alert("เกิดข้อผิดพลาด");
+    }
+  };
+  
   return (
         <>
+          <Tab />
+          <div className="name-container">
+            <div className="overlay">
+              <div className="name-box">
+                <h2 className="title">เปลี่ยนชื่อ-นามสกุล</h2>
 
-          <Tabbar />
+                <div className="input-group">
+                  <label>ชื่อเดิม</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={currentName}
+                    onChange={(e) => setCurrentName(e.target.value)}
+                    required
+                  />
+                </div>
 
-    <div className="name-container">
-      <div className="overlay">
-        <div className="name-box">
-          <h2 className="title">เปลี่ยนชื่อ-นามสกุล</h2>
+                <div className="input-group">
+                  <label>ชื่อใหม่</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    required
+                  />
+                </div>
 
-          <div className="input-group">
-            <label>ชื่อเดิม</label>
-            <input
-              type="text"
-              className="input-field"
-              value={currentName}
-              onChange={(e) => setCurrentName(e.target.value)}
-              required
-            />
+                <button onClick={handleSave} className="save-btn">บันทึกการเปลี่ยนแปลง</button>
+              </div>
+            </div>
           </div>
-
-          <div className="input-group">
-            <label>ชื่อใหม่</label>
-            <input
-              type="text"
-              className="input-field"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              required
-            />
-         <button type="submit" className="save-btn"></button>
-          <Link href="/Info">
-          <button className="save-btn">บันทึกการเปลี่ยนแปลง</button>
-          </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-    </>
+        </>
   );
 }
