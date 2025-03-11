@@ -7,95 +7,104 @@ import Tabbar from "../components/tab";
 import axios from "axios";
 import "./createpromotion.css";
 
+// Component หลักสำหรับสร้างโปรโมชัน
 export default function CreatePromotion() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  // Hooks การนำทางและพารามิเตอร์
+  const router = useRouter(); // อินสแตนซ์ของ router
+  const searchParams = useSearchParams(); // ดึง query parameters
 
-  const initialSports = JSON.parse(decodeURIComponent(searchParams.get("sports") || "[]"));
-  const initialDiscount = searchParams.get("discount") || "";
+  // ค่าพารามิเตอร์เริ่มต้นจาก URL
+  const initialSports = JSON.parse(decodeURIComponent(searchParams.get("sports") || "[]")); // รายการกีฬาเริ่มต้น
+  const initialDiscount = searchParams.get("discount") || ""; // ส่วนลดเริ่มต้น
 
-  const [promotionName, setPromotionName] = useState(searchParams.get("promotionName") || "");
-  const [startDate, setStartDate] = useState(searchParams.get("startDate") || "");
-  const [startTime, setStartTime] = useState(searchParams.get("startTime") || "");
-  const [endDate, setEndDate] = useState(searchParams.get("endDate") || "");
-  const [endTime, setEndTime] = useState(searchParams.get("endTime") || "");
-  const [discount, setDiscount] = useState(initialDiscount);
-  const [selectedStadium, setSelectedStadium] = useState(searchParams.get("location") || "");
-  const [stadiums, setStadiums] = useState([]);
-  const [selectedSports, setSelectedSports] = useState(initialSports);
-  const [loadingStadiums, setLoadingStadiums] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [promotionId, setPromotionId] = useState(null);
+  // State การจัดการข้อมูลและ UI
+  const [promotionName, setPromotionName] = useState(searchParams.get("promotionName") || ""); // ชื่อโปรโมชัน
+  const [startDate, setStartDate] = useState(searchParams.get("startDate") || ""); // วันที่เริ่ม
+  const [startTime, setStartTime] = useState(searchParams.get("startTime") || ""); // เวลาเริ่ม
+  const [endDate, setEndDate] = useState(searchParams.get("endDate") || ""); // วันที่สิ้นสุด
+  const [endTime, setEndTime] = useState(searchParams.get("endTime") || ""); // เวลาสิ้นสุด
+  const [discount, setDiscount] = useState(initialDiscount); // ส่วนลด
+  const [selectedStadium, setSelectedStadium] = useState(searchParams.get("location") || ""); // สนามที่เลือก
+  const [stadiums, setStadiums] = useState([]); // รายการสนาม
+  const [selectedSports, setSelectedSports] = useState(initialSports); // รายการกีฬาที่เลือก
+  const [loadingStadiums, setLoadingStadiums] = useState(true); // สถานะการโหลดสนาม
+  const [showModal, setShowModal] = useState(false); // ควบคุมการแสดง modal
+  const [promotionId, setPromotionId] = useState(null); // ID โปรโมชันที่สร้าง
 
+  // Effect hook สำหรับโหลดข้อมูลสนามเมื่อเริ่มต้น
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
-      alert("กรุณาเข้าสู่ระบบก่อนสร้างโปรโมชั่น");
-      router.push("/Login");
+      alert("กรุณาเข้าสู่ระบบก่อนสร้างโปรโมชั่น"); // แจ้งเตือนถ้าไม่มี token
+      router.push("/Login"); // ไปหน้า login
       return;
     }
-  
-    setLoadingStadiums(true);
+
+    setLoadingStadiums(true); // เริ่มโหลดสนาม
     axios
       .get("http://localhost:5000/api/stadiums", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }, // header สำหรับ API
       })
       .then((response) => {
-        setStadiums(Array.isArray(response.data) ? response.data : []);
-        setLoadingStadiums(false);
+        setStadiums(Array.isArray(response.data) ? response.data : []); // อัปเดตรายการสนาม
+        setLoadingStadiums(false); // หยุดโหลด
       })
       .catch((error) => {
-        console.error("Error fetching stadiums:", error.response?.data || error.message);
-        setLoadingStadiums(false);
-        if (error.response?.status === 401) {
-          alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
-          router.push("/Login");
+        console.error("Error fetching stadiums:", error.response?.data || error.message); // log ข้อผิดพลาด
+        setLoadingStadiums(false); // หยุดโหลด
+        if (error.response?.status === 401) { // ถ้า token หมดอายุ
+          alert("เซสชันหมดอายุ"); // แจ้งเตือน
+          router.push("/Login"); // ไปหน้า login
         }
       });
   }, [router]);
-  
+
+  // Effect hook อัปเดตราคากีฬาเมื่อส่วนลดเปลี่ยน
   useEffect(() => {
     const updatedSports = selectedSports.map((sport) => ({
       ...sport,
-      discountPrice: calculateDiscountPrice(sport.price, discount),
+      discountPrice: calculateDiscountPrice(sport.price, discount), // อัปเดตราคาหลังลด
     }));
-    setSelectedSports(updatedSports);
+    setSelectedSports(updatedSports); // อัปเดต state
   }, [discount]);
 
+  // ฟังก์ชันคำนวณราคาหลังลด
   const calculateDiscountPrice = (price, discount) => {
-    const discountNum = parseFloat(discount) || 0;
-    const discountPercentage = discountNum / 100;
-    return Math.round(price * (1 - discountPercentage));
+    const discountNum = parseFloat(discount) || 0; // แปลงส่วนลดเป็นตัวเลข
+    const discountPercentage = discountNum / 100; // คำนวณเปอร์เซ็นต์
+    return Math.round(price * (1 - discountPercentage)); // คืนค่าราคาหลังลด
   };
 
+  // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูล
   const handleDiscountChange = (e) => {
-    setDiscount(e.target.value);
+    setDiscount(e.target.value); // อัปเดตส่วนลด
   };
 
   const handleStadiumChange = (e) => {
-    setSelectedStadium(e.target.value);
+    setSelectedStadium(e.target.value); // อัปเดตสนามที่เลือก
   };
 
-  const handleAddSports = () => {
-    const query = `?promotionName=${encodeURIComponent(promotionName)}&startDate=${encodeURIComponent(startDate)}&startTime=${encodeURIComponent(startTime)}&endDate=${encodeURIComponent(endDate)}&endTime=${encodeURIComponent(endTime)}&discount=${encodeURIComponent(discount)}&location=${encodeURIComponent(selectedStadium)}&sports=${encodeURIComponent(JSON.stringify(selectedSports))}`;
-    router.push(`/add${query}`);
+  // ฟังก์ชันจัดการการนำทางและบันทึก
+  const handleAddSports = () => { // เพิ่มกีฬา
+    const query = `?promotionName=${encodeURIComponent(promotionName)}&startDate=${encodeURIComponent(startDate)}&startTime=${encodeURIComponent(startTime)}&endDate=${encodeURIComponent(endDate)}&endTime=${encodeURIComponent(endTime)}&discount=${encodeURIComponent(discount)}&location=${encodeURIComponent(selectedStadium)}&sports=${encodeURIComponent(JSON.stringify(selectedSports))}`; // สร้าง query string
+    router.push(`/add${query}`); // ไปหน้าเพิ่มกีฬา
   };
 
-  const handleSubmit = async () => {
-    const token = localStorage.getItem("token");
+  const handleSubmit = async () => { // บันทึกโปรโมชัน
+    const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
-      alert("กรุณาเข้าสู่ระบบก่อนสร้างโปรโมชั่น");
-      router.push("/Login");
+      alert("กรุณาเข้าสู่ระบบก่อนสร้างโปรโมชั่น"); // แจ้งเตือนถ้าไม่มี token
+      router.push("/Login"); // ไปหน้า login
       return;
     }
 
-    const discountNum = parseFloat(discount) || 0;
-    if (!promotionName || !startDate || !startTime || !endDate || !endTime || !discount || !selectedStadium || selectedSports.length === 0) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+    const discountNum = parseFloat(discount) || 0; // แปลงส่วนลดเป็นตัวเลข
+    if (!promotionName || !startDate || !startTime || !endDate || !endTime || !discount || !selectedStadium || selectedSports.length === 0) { // ตรวจสอบข้อมูล
+      alert("กรุณากรอกข้อมูลให้ครบถ้วน"); // แจ้งเตือนถ้าขาดข้อมูล
       return;
     }
 
-    const promotionData = {
+    const promotionData = { // ข้อมูลโปรโมชัน
       promotion_name: promotionName,
       start_date: startDate,
       start_time: startTime,
@@ -106,31 +115,30 @@ export default function CreatePromotion() {
       sports: selectedSports,
     };
 
-    console.log("Sending promotion data:", promotionData);
-
+    console.log("Sending data:", promotionData); // log ข้อมูลที่ส่ง
     try {
       const response = await axios.post("http://localhost:5000/api/promotions", promotionData, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }, // header สำหรับ API
       });
-      console.log("Response from server:", response.data);
-      setPromotionId(response.data[0]?.id || null);
-      setShowModal(true);
+      console.log("Response:", response.data); // log ข้อมูลที่ได้
+      setPromotionId(response.data[0]?.id || null); // ตั้ง ID โปรโมชัน
+      setShowModal(true); // แสดง modal
     } catch (error) {
-      console.error("Error submitting promotion:", {
-        message: error.message,
-        response: error.response?.data,
-      });
-      alert("เกิดข้อผิดพลาดในการบันทึก: " + (error.response?.data?.error || error.message));
+      console.error("Submit error:", error.message, error.response?.data); // log ข้อผิดพลาด
+      alert("เกิดข้อผิดพลาด: " + (error.response?.data?.error || error.message)); // แจ้งเตือน
     }
   };
+
+  // ส่วนแสดงผล UI
+  if (loadingStadiums) return <div>กำลังโหลดข้อมูลสนาม...</div>; // แสดงขณะโหลด
 
   return (
     <div className="background">
       <Tabbar />
-      <div className="header-title">
+      <div className="create-header-title">
         <h1>สร้างโปรโมชั่นส่วนลด</h1>
       </div>
-      <div className="container">
+      <div className="create-container">
         <div className="form-row">
           <h2 className="form-title">ชื่อโปรโมชั่น</h2>
           <input
