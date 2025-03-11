@@ -6,94 +6,94 @@ import Sidebar from "./Dashboard/slidebar.js";
 import Tab from "./Tabbar/page";
 import { Bar } from "react-chartjs-2";  
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
-
+import axios from "axios";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Dashboard() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [newUsers, setNewUsers] = useState({ total: 0, regular: 0, owners: 0 });
 
-  const closeSidebar = () => {
-    setIsSidebarOpen(false);
-  };
+  const closeSidebar = () => setIsSidebarOpen(false);
 
-  // ข้อมูลที่ใช้สำหรับกราฟแท่ง
-  const data = {
-    labels: ['ฟุตบอล', 'บาสเกตบอล', 'วอลเลย์บอล', 'เทนนิส', 'แบดมินตัน','ปิงปอง','ฟิตเนต'],  // ตัวอย่างหมวดหมู่ของประเภทสนามกีฬา
+  // ดึงข้อมูลผู้ใช้ใหม่วันนี้จาก API ด้วย axios
+  useEffect(() => {
+    const fetchNewUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/users/new-users-today"); // เปลี่ยนเป็น /new-users-today
+        setNewUsers(response.data); // ปรับตามโครงสร้างจาก routesJane/users.js
+      } catch (error) {
+        console.error("Error fetching new users with axios:", error);
+      }
+    };
+    fetchNewUsers();
+  }, []);
+
+  const chartData = {
+    labels: ["ผู้ใช้ทั้งหมด", "ผู้ใช้ทั่วไป", "ผู้ประกอบการ"],
     datasets: [
       {
-        label: 'จำนวนการจอง',
-        data: [120, 90, 80, 70, 60,30,40],  // จำนวนสนามกีฬาที่แต่ละประเภท
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // สีของกราฟ
-        borderColor: 'rgba(75, 192, 192, 1)',  // สีขอบกราฟ
-        borderWidth: 1, 
+        label: "จำนวนผู้ใช้ใหม่วันนี้",
+        data: [newUsers.total, newUsers.regular, newUsers.owners],
+        backgroundColor: ["#4BC0C0", "#36A2EB", "#FF6384"],
+        borderColor: ["#4BC0C0", "#36A2EB", "#FF6384"],
+        borderWidth: 1,
       },
     ],
   };
 
-  const options = {
-    responsive: true,  
-    maintainAspectRatio: false,  // กำหนดให้สามารถขยาย/ย่อได้ตามขนาดหน้าจอ
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'กราฟแสดงจำนวนการจองแต่ละประเภท',
-      },
+      legend: { position: "top" },
+      title: { display: true, text: "จำนวนผู้ใช้ใหม่วันนี้" },
+    },
+    scales: {
+      y: { beginAtZero: true },
     },
   };
 
-  // Hook เพื่อจัดการกับการ resize ของหน้าจอ
+  // ไม่จำเป็นต้องยิง event resize ซ้ำ เพราะ Chart.js responsive อยู่แล้ว
+  // ถ้าต้องการควบคุมเพิ่มเติม สามารถใช้ state หรือ ref ได้
   useEffect(() => {
-    const handleResize = () => {
-      // เมื่อขนาดหน้าจอเปลี่ยนแปลงจะบังคับให้ chart.js รีเฟรชกราฟ
-      window.dispatchEvent(new Event("resize"));
-    };
-    
-    window.addEventListener("resize", handleResize);
-    
-    // Cleanup event listener เมื่อ component ถูกลบออกจาก DOM
-    return () => window.removeEventListener("resize", handleResize);
+    // ไม่ต้องทำอะไรเพิ่มเติม เพราะ responsive: true จัดการให้แล้ว
   }, []);
-  
+
   return (
     <>
-    <Tab/>
+      <Tab />
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-      
-      <br />
+      <br/>
       <p className="summary">
-        <img src="/pictureAdmin/iconG.svg" className="iconG" alt="icon" />
-        สรุปผลวันนี้
+        <img src="/pictureAdmin/mapeo.svg" className="iconG" alt="group icon" />
+        ผู้ใช้ใหม่วันนี้
       </p>
+      <br/>
+      <div className="dashboard-container">
+        <div className="stats-container">
+          <div className="stat-box">
+            <h3>{newUsers.total}</h3>
+            <p>ผู้ใช้ใหม่ทั้งหมด</p>
+            <span className="percentage positive">+{((newUsers.total / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
+          </div>
+          <div className="stat-box">
+            <h3>{newUsers.regular}</h3>
+            <p>ผู้ใช้ทั่วไปใหม่</p>
+            <span className="percentage positive">+{((newUsers.regular / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
+          </div>
+          <div className="stat-box">
+            <h3>{newUsers.owners}</h3>
+            <p>ผู้ประกอบการใหม่</p>
+            <span className="percentage positive">+{((newUsers.owners / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
+          </div>
+        </div>
 
-      <div className="container3">
-        <div className="box">
-          <p style={{ color: "blue", fontWeight: "bold" }}>XXXX</p>
-          <p style={{ color: "red" }}>XX%</p>
-          จำนวน
-        </div>
-        <div className="box">
-          <p style={{ color: "#1B9FEC", fontWeight: "bold" }}>XXXX</p>
-          <p style={{ color: "red" }}>XX%</p>
-          จำนวน
-        </div>
-        <div className="box">
-          <p style={{ color: "#1B9FEC", fontWeight: "bold" }}>XXXX</p>
-          <p style={{ color: "red" }}>XX%</p>
-          จำนวน
+        {/* กราฟ */}
+        <div className="chart-container">
+          <Bar data={chartData} options={chartOptions} />
         </div>
       </div>
-
-      <div className="container2">
-        <div className="box2">
-          {/* แสดงกราฟแท่ง */}
-          <Bar data={data} options={options} />
-        </div>
-      </div>
-
     </>
   );
 }

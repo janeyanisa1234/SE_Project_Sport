@@ -3,55 +3,34 @@ import "./Refund.css";
 import "../Dashboard/slidebar.css";
 import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
-import Link from 'next/link';
 import Tab from "../Tabbar/page.js";
-import Image from "next/image";
+import Link from "next/link";
+import axios from "axios";
 
-export default function Manage_Cash() {
+export default function Manage_Refunds() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
-  const [owners, setOwners] = useState([]);  // State to store owners data
+  const [owners, setOwners] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
-  // Simulating fetching data with mock data
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/cancle/cancle-booking');
+      if (response.data && response.data.data) {
+        setOwners(response.data.data);
+      } else {
+        console.error("Data not found:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = () => {
-      const mockData = [
-        {
-          id: 1,
-          name: "Booking A - กุมภาพันธ์ 2568",
-          Price: 1000,
-          bankAccount: "123-456-7890",
-          status_booking: "โอนแล้ว",
-        },
-        {
-          id: 2,
-          name: "Booking B - มีนาคม 2569",
-          Price: 1500,
-          bankAccount: "234-567-8901",
-          status_booking: "รอคืนเงิน",
-        },
-        {
-          id: 3,
-          name: "Booking C - เมษายน 2570",
-          Price: 2000,
-          bankAccount: "345-678-9012",
-          status_booking: "ไม่อนุมัติคำขอ",
-        },
-        {
-          id: 4,
-          name: "Booking D - กุมภาพันธ์ 2568",
-          Price: 1200,
-          bankAccount: "456-789-0123",
-          status_booking: "รออนุมัติ",
-        },
-      ];
-      
-      setOwners(mockData);
-    };
-
     fetchData();
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
   const handleStatusChange = (e) => {
     setStatusFilter(e.target.value);
@@ -65,19 +44,22 @@ export default function Manage_Cash() {
     setYear(e.target.value);
   };
 
-  const handleApprove = (id) => {
-    console.log(`อนุมัติคำขอสำหรับ ID: ${id}`);
-    // Add logic to handle approve functionality
-  };
-
-  // ฟิลเตอร์ข้อมูลตามสถานะ, เดือน, และปี
   const filteredOwners = owners.filter((owner) => {
     const matchesStatus = statusFilter === 'all' || owner.status_booking === statusFilter;
-    const matchesMonth = !month || owner.name.includes(month);
-    const matchesYear = !year || owner.name.includes(year);
-
+    const matchesMonth = !month || owner.date_play.includes(month);
+    const matchesYear = !year || owner.date_play.includes(year);
     return matchesStatus && matchesMonth && matchesYear;
   });
+
+  const openModal = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedImage('');
+  };
 
   return (
     <>
@@ -92,9 +74,8 @@ export default function Manage_Cash() {
       <div className="filter-container">
         <select className="sport" value={statusFilter} onChange={handleStatusChange}>
           <option value="all">ทั้งหมด</option>
-          <option value="โอนแล้ว">โอนแล้ว</option>
-          <option value="รอคืนเงิน">รอคืนเงิน</option>
-          <option value="ไม่อนุมัติคำขอ">ไม่อนุมัติคำขอ</option>
+          <option value="ยกเลิกแล้ว">ยกเลิกแล้ว</option>
+          <option value="รอดำเนินการยกเลิก">รอดำเนินการยกเลิก</option>
         </select>
         <select className="sport" value={month} onChange={handleMonthChange}>
           <option value="">ทั้งหมด</option>
@@ -121,26 +102,43 @@ export default function Manage_Cash() {
             </tr>
           </thead>
           <tbody>
-            {filteredOwners.map((owner) => (
-              <tr key={owner.id}>
-                <td>{owner.id}</td>
-                <td style={{ whiteSpace: "pre-line" }}>{owner.name}</td>
-                <td>{owner.Price}</td>
-                <td>{owner.bankAccount}</td>
+            {filteredOwners.length > 0 && filteredOwners.map((owner, index) => (
+              <tr key={owner.id_booking}>
+                <td>{index + 1}</td>
+                <td className="booking-details">
+                  <p>ชื่อผู้จอง: {owner.user_name}</p>
+                  <p>ชื่อสนาม: {owner.stadium_name}</p>
+                  <p>ชนิดกีฬา: {owner.court_type}</p>
+                  <p>วันที่เล่น: {owner.date_play}</p>
+                  <p>เวลาที่เล่น: {owner.time_slot}</p>
+                </td>
+                <td>{owner.totalPrice}</td>
+                <td className="account-info">
+                  <p>ธนาคาร: {owner.bank}</p>
+                  <p>หมายเลขบัญชี: {owner.bank_number}</p>
+                  <p>เหตุผลการยกเลิก: {owner.reasoncancle}</p>
+                  <button
+                    onClick={() => openModal(owner.bankimages)}
+                    className="view-image-btn"
+                  >
+                    ดูรูปสมุดบัญชี
+                  </button>
+                </td>
                 <td className="status-cell">
-                  {owner.status_booking === 'รออนุมัติ' ? (
-                    <div className="status-container">
-                      <div className="status pending" onClick={() => handleApprove(owner.id)}>
-                        <Image src="/pictureAdmin/Check.svg" width={20} height={20} alt="อนุมัติ" />
-                        <span>อนุมัติคำขอ</span>
-                      </div>
-                      <div className="status pending">
-                        <Image src="/pictureAdmin/Notcheck.svg" width={20} height={20} alt="ไม่อนุมัติ" />
-                        <span>ไม่อนุมัติคำขอ</span>
-                      </div>
-                    </div>
+                  {owner.status_booking === "รอดำเนินการยกเลิก" ? (
+                    <Link href={`/Homeadmin/Manage_Refunds/Pending?id=${owner.id_booking}`}>
+                      <span className="status-link">{owner.status_booking}</span>
+                    </Link>
                   ) : (
-                    <span>{owner.status_booking}</span>  // Display the current status if not 'รออนุมัติ'
+                    <div>
+                      <span
+                        className="status-cancelled"
+                        onClick={owner.slipcancle ? () => openModal(owner.slipcancle) : null}
+                        style={{ cursor: owner.slipcancle ? 'pointer' : 'default' }}
+                      >
+                        {owner.status_booking}
+                      </span>
+                    </div>
                   )}
                 </td>
               </tr>
@@ -148,6 +146,15 @@ export default function Manage_Cash() {
           </tbody>
         </table>
       </div>
+
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={closeModal}>X</button>
+            <img src={selectedImage} alt="Evidence" className="modal-image" />
+          </div>
+        </div>
+      )}
     </>
   );
 }
