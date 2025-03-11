@@ -5,20 +5,23 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { AuthService } from '../utils/auth';
 
-// Paths that require authentication
-const protectedPaths = ['/Homepage', '/Info', '/cancle'];
+// Paths that require authentication (any logged-in user)
+const protectedPaths = ['/Homepage'];
 
 // Paths that are only for non-authenticated users
 const authPaths = ['/Login', '/Login/Registration'];
 
 // Paths that require admin role
-const adminPaths = ['/Homeadmin', '/Admin'];
+const adminPaths = ['/Homeadmin'];
 
 // Paths that require owner role
-const ownerPaths = ['/my-stadium', '/promotion', '/owner-stats', '/owner-reportbooking', '/money'];
+const ownerPaths = ['/ownerProfile', '/owner-reportbooking', '/owner-stats', '/my-stadium', '/promotion', '/create-promotion', '/detail', '/add', '/edit', '/money'];
+
+// Paths that require normal user role
+const userPaths = ['/Info', '/cancle'];
 
 // Paths that are accessible to everyone (public paths)
-const publicPaths = ['/about'];
+const publicPaths = ['/about', '/HitPlace-mo-login', '/PromotionPlace-no-login', '/Search-nologin'];
 
 export default function AuthLayout({ children }) {
   const router = useRouter();
@@ -30,6 +33,7 @@ export default function AuthLayout({ children }) {
     const isAuthenticated = AuthService.isAuthenticated();
     const userRole = AuthService.getUserRole();
     
+    // Check if current path matches any of our defined path categories
     const isProtectedPath = protectedPaths.some(path => 
       pathname === path || pathname.startsWith(`${path}/`)
     );
@@ -46,6 +50,10 @@ export default function AuthLayout({ children }) {
       pathname === path || pathname.startsWith(`${path}/`)
     );
     
+    const isUserPath = userPaths.some(path => 
+      pathname === path || pathname.startsWith(`${path}/`)
+    );
+    
     const isPublicPath = publicPaths.some(path => 
       pathname === path || pathname.startsWith(`${path}/`)
     );
@@ -56,7 +64,7 @@ export default function AuthLayout({ children }) {
       return;
     }
 
-
+    // Handle redirects based on authentication status and user role
     if (isProtectedPath && !isAuthenticated) {
       // Redirect to login if trying to access protected path without auth
       router.push('/Login');
@@ -68,6 +76,9 @@ export default function AuthLayout({ children }) {
       router.push('/Login');
     } else if (isOwnerPath && (!isAuthenticated || userRole !== 'owner')) {
       // Redirect non-owner users trying to access owner paths
+      router.push('/Login');
+    } else if (isUserPath && (!isAuthenticated || userRole !== 'user')) {
+      // Redirect non-regular users trying to access user-specific paths
       router.push('/Login');
     }
 

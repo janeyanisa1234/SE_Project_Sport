@@ -103,7 +103,7 @@ export const AuthService = {
   
   // Determine and set user role
   setUserRole: (user) => {
-    let role = 'user';
+    let role = 'user'; // Default to regular user
     
     if (user.isAdmin) {
       role = 'admin';
@@ -121,9 +121,13 @@ export const AuthService = {
   // Get user role
   getUserRole: () => {
     if (typeof window !== 'undefined') {
+      // If not authenticated, return null instead of 'user'
+      if (!AuthService.isAuthenticated()) {
+        return null;
+      }
       return localStorage.getItem('userRole') || 'user';
     }
-    return 'user';
+    return null; // Return null for server-side rendering
   },
 
   // Logout user
