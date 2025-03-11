@@ -2,7 +2,8 @@
 .background {
   min-height: 100vh;
   padding-bottom: 20px;
-  background-image: url('/pictureowner/bg.png');
+ /*background-image: url('/pictureowner/bg.png');*/
+ background:linear-gradient(to bottom, #F5F5F5, #DCE4E8);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -38,7 +39,7 @@
 .create-container {
   position: relative;
   top: -20; /* ลบ top: 40px เพื่อให้เริ่มจากตำแหน่งธรรมชาติ */
-  margin: 100px auto 20px; /* เพิ่ม margin-top ให้ห่างจาก header และ margin-bottom เพื่อเว้นด้านล่าง */
+  margin: 120px auto 20px; /* เพิ่ม margin-top ให้ห่างจาก header และ margin-bottom เพื่อเว้นด้านล่าง */
   background-color: white;
   max-width: 750px;
   min-height: 400px;
