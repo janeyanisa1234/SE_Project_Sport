@@ -24,6 +24,13 @@ export default function EditPromotion() {
   const id = searchParams.get("id");
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("กรุณาเข้าสู่ระบบก่อนแก้ไขโปรโมชั่น");
+      router.push("/Login");
+      return;
+    }
+
     console.log("ID from query:", id, "URL:", window.location.href);
     if (!id) {
       console.error("No ID provided for editing, redirecting to /promotion");
@@ -32,49 +39,64 @@ export default function EditPromotion() {
       return;
     }
 
-    const fetchPromotionDetails = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`http://localhost:5000/api/promotions/${id}`, {
-          headers: { "Content-Type": "application/json" },
-          timeout: 10000,
-        });
-        console.log("API Response:", response.data, "Status:", response.status);
-        const promo = Array.isArray(response.data) ? response.data[0] : response.data;
-        if (!promo) throw new Error("Promotion not found");
+    fetchPromotionDetails(token);
+  }, [id, router]);
 
-        const start = new Date(promo.start_datetime);
-        const end = new Date(promo.end_datetime);
+  const fetchPromotionDetails = async (token) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:5000/api/promotions/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        timeout: 10000,
+      });
+      console.log("API Response:", response.data, "Status:", response.status);
+      const promo = Array.isArray(response.data) ? response.data[0] : response.data;
+      if (!promo) throw new Error("Promotion not found");
 
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-          throw new Error("Invalid date format in promotion data");
-        }
+      const start = new Date(promo.start_datetime);
+      const end = new Date(promo.end_datetime);
 
-        setPromotionName(promo.promotion_name || "");
-        setStartDate(start.toISOString().split("T")[0] || "");
-        setStartTime(start.toTimeString().slice(0, 5) || "");
-        setEndDate(end.toISOString().split("T")[0] || "");
-        setEndTime(end.toTimeString().slice(0, 5) || "");
-        setDiscount(promo.discount_percentage?.toString() || "");
-        setLocation(promo.location || "ไม่ระบุ");
-        setSports(promo.sports || []);
-      } catch (error) {
-        console.error("Error fetching promotion details:", {
-          message: error.message,
-          response: error.response?.data,
-        });
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        throw new Error("Invalid date format in promotion data");
+      }
+
+      setPromotionName(promo.promotion_name || "");
+      setStartDate(start.toISOString().split("T")[0] || "");
+      setStartTime(start.toTimeString().slice(0, 5) || "");
+      setEndDate(end.toISOString().split("T")[0] || "");
+      setEndTime(end.toTimeString().slice(0, 5) || "");
+      setDiscount(promo.discount_percentage?.toString() || "");
+      setLocation(promo.location || "ไม่ระบุ");
+      setSports(promo.sports || []);
+    } catch (error) {
+      console.error("Error fetching promotion details:", {
+        message: error.message,
+        response: error.response?.data,
+      });
+      if (error.response?.status === 401) {
+        alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+        router.push("/Login");
+      } else {
         setError("ไม่สามารถโหลดข้อมูลโปรโมชั่นได้: " + (error.response?.data?.error || error.message));
         alert("เกิดข้อผิดพลาดในการโหลดข้อมูลโปรโมชั่น: " + (error.response?.data?.error || error.message));
         router.push("/promotion");
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchPromotionDetails();
-  }, [id, router]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSave = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("กรุณาเข้าสู่ระบบก่อนบันทึกการแก้ไข");
+      router.push("/Login");
+      return;
+    }
+
     if (!startDate || !startTime || !endDate || !endTime) {
       alert("กรุณากรอกวันที่และเวลาให้ครบถ้วน");
       return;
@@ -91,7 +113,10 @@ export default function EditPromotion() {
 
     try {
       const response = await axios.put(`http://localhost:5000/api/promotions/${id}`, updatedPromotion, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         timeout: 10000,
       });
       console.log("Updated promotion:", response.data, "Status:", response.status);
@@ -101,7 +126,12 @@ export default function EditPromotion() {
         message: error.message,
         response: error.response?.data,
       });
-      alert("เกิดข้อผิดพลาดในการอัปเดตโปรโมชั่น: " + (error.response?.data?.error || error.message));
+      if (error.response?.status === 401) {
+        alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+        router.push("/Login");
+      } else {
+        alert("เกิดข้อผิดพลาดในการอัปเดตโปรโมชั่น: " + (error.response?.data?.error || error.message));
+      }
     }
   };
 

@@ -7,159 +7,213 @@ import axios from "axios";
 
 const AddSportsField = () => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-
   const [sportsFieldName, setSportsFieldName] = useState("");
-  const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
-  const [fileName, setFileName] = useState('');
+  const [imagePreview, setImagePreview] = useState(null);
+  const [fileName, setFileName] = useState("");
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [address, setAddress] = useState("");
   const [ownerId, setOwnerId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Fetch owner ID from session/local storage when component mounts
   useEffect(() => {
-    const storedOwnerId = localStorage.getItem('userId');
+    const storedOwnerId = localStorage.getItem("userId");
     console.log("Retrieved Owner ID from localStorage:", storedOwnerId);
     if (storedOwnerId) {
       setOwnerId(storedOwnerId);
+    } else {
+      setErrorMessage("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบอีกครั้ง");
+      router.push("/login");
     }
-  }, []);
+  }, [router]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith("image/")) {
+        setErrorMessage("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น");
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setErrorMessage("ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB");
+        return;
+      }
+
       setImageFile(file);
       setFileName(file.name);
       setIsFileUploaded(true);
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+      setErrorMessage("");
     }
   };
 
   const handleSubmit = async () => {
-    console.log("Stadium Name:", sportsFieldName);
-    console.log("Address:", address);
-    console.log("Image File:", imageFile);
-    
-    if (!sportsFieldName || !address || !imageFile) {
+    if (!sportsFieldName || !address || !imageFile || !ownerId) {
       setErrorMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
 
     setIsSubmitting(true);
+    setErrorMessage("");
 
     try {
-      const token = localStorage.getItem('token');
-      
-      // Create FormData with correct field names
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
       const formData = new FormData();
-      formData.append('owner_id', ownerId);
-      formData.append('stadium_name', sportsFieldName);
-      formData.append('stadium_address', address);
-      
-      // Append the image file with the same field name as in the pending file
-      if (imageFile) {
-        formData.append('slipImage', imageFile, imageFile.name);
-      }
+      formData.append("owner_id", ownerId);
+      formData.append("stadium_name", sportsFieldName);
+      formData.append("stadium_address", address);
+      formData.append("slipImage", imageFile);
 
-      // Log the FormData contents for debugging
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ':', pair[1]);
-      }
-
-      const response = await axios.post('http://localhost:5000/api/sox/add_stadium', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
+      const response = await axios.post(
+        "http://localhost:5000/api/sox/add_stadium",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       alert("เพิ่มสนามกีฬาสำเร็จ กรุณารอการตรวจสอบจากแอดมิน");
       router.push("/my-stadium");
     } catch (error) {
       console.error("Error adding stadium:", error);
-      setErrorMessage("เกิดข้อผิดพลาดในการเพิ่มสนามกีฬา กรุณาลองใหม่อีกครั้ง");
+      setErrorMessage(
+        error.response?.data?.error || "เกิดข้อผิดพลาดในการเพิ่มสนามกีฬา กรุณาลองใหม่อีกครั้ง"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="relative w-full h-screen bg-cover bg-center flex flex-col pb-20" 
-    style={{ backgroundImage: "url('/pictureowner/bg.png')" }}
+    <div
+      className="relative w-full h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col"
+      style={{ backgroundImage: "url('/pictureowner/bg.png'), linear-gradient(to bottom right, #1a1a1a, #000000, #404040)", backgroundSize: "cover", backgroundPosition: "center" }}
     >
-      <Tabbar/>
-      <br></br><br></br><br></br>
-      <div className="flex flex-col items-center justify-center flex-grow px-4">
-        <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full">
-          <div className="bg-black text-white text-lg font-bold px-6 py-3 text-center rounded-t-lg relative z-10">
+      <Tabbar />
+      <div className="flex flex-col items-center justify-center flex-grow px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full transform transition-all duration-300 hover:shadow-2xl">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-black to-gray-900 text-white text-xl font-bold px-6 py-4 text-center rounded-t-2xl relative z-10">
             เพิ่มสนามกีฬา
           </div>
+          <div className="p-6 sm:p-8">
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg shadow-md animate-slide-in">
+                <span className="font-medium">{errorMessage}</span>
+              </div>
+            )}
 
-          <div className="p-6">
-            <label className="block text-gray-700 font-semibold mb-2">ชื่อสนาม</label>
+            {/* Sports Field Name */}
+            <label className="block text-gray-800 font-semibold mb-2">ชื่อสนาม</label>
             <input
               type="text"
               value={sportsFieldName}
               onChange={(e) => setSportsFieldName(e.target.value)}
               placeholder="ใส่ชื่อสนามของคุณ"
-              className="w-full px-4 py-2 border rounded mb-4"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 shadow-sm"
+              disabled={isSubmitting}
             />
 
-            <label className="block text-gray-700 font-semibold mb-2">ที่ตั้ง</label>
-            <textarea 
+            {/* Address */}
+            <label className="block text-gray-800 font-semibold mt-6 mb-2">ที่ตั้ง</label>
+            <textarea
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="รายละเอียดที่อยู่, ตำบล, อำเภอ, จังหวัด, รหัสไปรษณีย์" 
-              className="w-full px-4 py-2 border rounded mb-4"
-            ></textarea>
+              placeholder="รายละเอียดที่อยู่, ตำบล, อำเภอ, จังหวัด, รหัสไปรษณีย์"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 shadow-sm resize-y h-32"
+              disabled={isSubmitting}
+            />
 
-            {errorMessage && (
-              <div style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>
-                {errorMessage}
+            {/* Image Upload */}
+            <label className="block text-gray-800 font-semibold mt-6 mb-2">
+              รูปสนามกีฬา
+            </label>
+            <div className="mb-6">
+              <div
+                className="relative bg-gray-100 w-48 h-48 flex items-center justify-center cursor-pointer rounded-xl border-2 border-dashed border-gray-400 hover:border-black transition-all duration-300 overflow-hidden shadow-md"
+                onClick={() => !isSubmitting && document.getElementById("stadiumImageInput").click()}
+              >
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-xl transition-transform duration-300 hover:scale-105"
+                  />
+                ) : (
+                  <span className="text-gray-500 font-medium flex flex-col items-center">
+                    <svg
+                      className="w-8 h-8 mb-2 text-black"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    + เพิ่มรูป
+                  </span>
+                )}
+                <input
+                  id="stadiumImageInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: "none" }}
+                  disabled={isSubmitting}
+                />
               </div>
-            )}
-
-            <label className="block text-gray-700 font-semibold mt-6 mb-2">รูปสนามกีฬา</label>
-            <div 
-              className="block bg-gray-300 w-40 h-40 flex items-center justify-center cursor-pointer rounded-lg border-dashed border-2 border-gray-500 mb-4"
-              onClick={() => document.getElementById("stadiumImageInput").click()}
-            >
-              {image ? (
-                <img src={image} alt="รูปสนาม" className="w-full h-full object-cover rounded-lg" />
-              ) : (
-                <span className="upload-icon">+ เพิ่มรูป</span>
+              {isFileUploaded && (
+                <p className="mt-3 text-sm text-green-600 font-medium animate-fade-in">
+                  อัปโหลดรูปสำเร็จ: {fileName}
+                </p>
               )}
-              <input 
-                id="stadiumImageInput"
-                type="file" 
-                accept="image/*" 
-                onChange={handleImageUpload} 
-                style={{ display: 'none' }} 
-              />
             </div>
-            
-            {isFileUploaded && (
-              <p className="upload-success-text" style={{ color: 'green', fontSize: '14px', marginBottom: '15px' }}>
-                อัปโหลดรูปสำเร็จ: {fileName}
-              </p>
-            )}
 
-            <div className="flex justify-between mt-4">
-              <button 
-                className="bg-gray-400 px-6 py-2 rounded text-white" 
+            {/* Buttons */}
+            <div className="flex justify-between mt-8 gap-4">
+              <button
+                className="bg-gray-200 px-6 py-2.5 rounded-lg text-gray-700 font-semibold hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 transition-all duration-200 shadow-md"
                 onClick={() => router.push("/my-stadium")}
                 disabled={isSubmitting}
               >
                 ยกเลิก
               </button>
-              <button 
-                className={`${isSubmitting ? 'bg-green-300' : 'bg-green-500'} px-6 py-2 rounded text-white`}
+              <button
+                className={`${
+                  isSubmitting
+                    ? "bg-green-300"
+                    : "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
+                } px-6 py-2.5 rounded-lg text-white font-semibold disabled:bg-green-300 transition-all duration-200 shadow-md`}
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'กำลังดำเนินการ...' : 'ยืนยัน'}
+                {isSubmitting ? "กำลังดำเนินการ..." : "ยืนยัน"}
               </button>
             </div>
           </div>

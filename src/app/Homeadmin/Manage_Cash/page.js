@@ -108,7 +108,7 @@ export default function Manage_Cash() {
           <tbody>
             {filteredOwners.map((owner, index) => (
               <tr key={owner.id_owner}>
-                <td>{index + 1}</td> 
+                <td>{index + 1}</td>
                 <td>{owner.user_name}</td>
                 <td>
                   <div>
@@ -124,23 +124,20 @@ export default function Manage_Cash() {
                     <strong>ชื่อบัญชี:</strong> {owner.user_name} <br />
                     <strong>ชื่อธนาคาร:</strong> {owner.bank_name} <br />
                     <strong>เลขที่บัญชี:</strong> {owner.bank_account} <br />
-                    {owner.status === "โอนแล้ว" ? (
-                      <>
-                        <button onClick={() => handleImageClick(owner.identity_card_url)} className="view-image-btn">
-                          ดูรูปบัญชี
-                        </button>
-                      </>
-                    ) : (
-                      <button onClick={() => handleImageClick(owner.identity_card_url)} className="view-image-btn">
-                        ดูรูปบัญชี
-                      </button>
-                    )}
+                    <button onClick={() => handleImageClick(owner.identity_card_url)} className="view-image-btn">
+                      ดูรูปบัญชี
+                    </button>
                   </div>
                 </td>
                 <td className="status-cell">
                   {owner.status === "โอนแล้ว" ? (
                     <div className="status approved">
-                      <span>โอนแล้ว</span>
+                      <span 
+                        onClick={() => handleImageClick(owner.slip_url)} 
+                        style={{ cursor: 'pointer' }}
+                      >
+                        โอนแล้ว
+                      </span>
                     </div>
                   ) : (
                     <div className="status-container">
@@ -162,13 +159,6 @@ export default function Manage_Cash() {
                         </Link>
                       </div>
                     </div>
-                  )}
-                  {owner.status === "โอนแล้ว" && (
-                    <>
-                      <button onClick={() => handleImageClick(owner.slip_url)} className="view-image-btn">
-                        ดูสลิปโอนเงิน
-                      </button>
-                    </>
                   )}
                 </td>
               </tr>
