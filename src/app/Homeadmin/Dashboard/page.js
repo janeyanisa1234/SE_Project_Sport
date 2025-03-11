@@ -177,15 +177,15 @@ export default function Dashboard() {
   };
 
   return (
+    <>
+    <Sidebar />
+    <Tab />
+    <div className="header-titledash">
+        <h1>แดชบอร์ด</h1>
+      </div>
     <div className="dashboard">
-      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-      <div className="dashboard-main">
-        <Tab />
+      
         <div className="dashboard-container">
-          <header className="dashboard-header">
-            <h1>แดชบอร์ด</h1>
-          </header>
-
           <div className="filter-section">
             <div className="filter-item">
               <select
@@ -293,7 +293,8 @@ export default function Dashboard() {
             </div>
           </section>
         </div>
-      </div>
+      
     </div>
+    </>
   );
 }

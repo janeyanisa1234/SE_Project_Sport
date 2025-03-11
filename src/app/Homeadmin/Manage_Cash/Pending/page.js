@@ -26,7 +26,6 @@ export default function TransferForm() {
   const [fileName, setFileName] = useState('');
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -42,7 +41,7 @@ export default function TransferForm() {
     
     // ตรวจสอบข้อมูลที่จำเป็น
     if (!transferDate || !transferTime || !adminName || !file) {
-      setErrorMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+      alert('กรุณากรอกข้อมูลให้ครบถ้วน');
       return;
     }
     
@@ -72,11 +71,12 @@ export default function TransferForm() {
       
       // ถ้าสำเร็จให้ redirect กลับไปยังหน้าหลัก
       if (response.status === 200) {
+        alert('ดำเนินการสำเร็จ');
         router.push('/Homeadmin/Manage_Cash');
       }
     } catch (error) {
       console.error('Error submitting transfer:', error);
-      setErrorMessage('เกิดข้อผิดพลาดในการดำเนินการ กรุณาลองใหม่อีกครั้ง');
+      alert('เกิดข้อผิดพลาดในการดำเนินการ กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsSubmitting(false);
     }
@@ -103,12 +103,6 @@ export default function TransferForm() {
           </div>
 
           <h3 className="evidence-title">แบบหลักฐาน</h3>
-          
-          {errorMessage && (
-            <div style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>
-              {errorMessage}
-            </div>
-          )}
           
           <form onSubmit={handleSubmit}>
             <div className="form-section">

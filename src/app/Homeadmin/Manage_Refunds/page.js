@@ -12,8 +12,7 @@ export default function Manage_Refunds() {
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
   const [owners, setOwners] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedRefund, setSelectedRefund] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -32,17 +31,9 @@ export default function Manage_Refunds() {
     fetchData();
   }, []);
 
-  const handleStatusChange = (e) => {
-    setStatusFilter(e.target.value);
-  };
-
-  const handleMonthChange = (e) => {
-    setMonth(e.target.value);
-  };
-
-  const handleYearChange = (e) => {
-    setYear(e.target.value);
-  };
+  const handleStatusChange = (e) => setStatusFilter(e.target.value);
+  const handleMonthChange = (e) => setMonth(e.target.value);
+  const handleYearChange = (e) => setYear(e.target.value);
 
   const filteredOwners = owners.filter((owner) => {
     const matchesStatus = statusFilter === 'all' || owner.status_booking === statusFilter;
@@ -51,43 +42,45 @@ export default function Manage_Refunds() {
     return matchesStatus && matchesMonth && matchesYear;
   });
 
-  const openModal = (imageUrl) => {
-    setSelectedImage(imageUrl);
-    setIsModalOpen(true);
+  const handleRefundClick = async (owner) => {
+    try {
+      setSelectedRefund({
+        slipUrl: owner.slipcancle,
+        payDate: owner.refund_date,
+        adminName: owner.admin_name
+      });
+    } catch (error) {
+      console.error("Error preparing refund details:", error);
+      setSelectedRefund({
+        slipUrl: owner.slipcancle,
+        payDate: null,
+        adminName: null
+      });
+    }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedImage('');
+  const handleImageClick = (imageUrl) => {
+    setSelectedRefund({
+      slipUrl: imageUrl,
+      payDate: null,
+      adminName: null
+    });
   };
+
+  const closeModal = () => setSelectedRefund(null);
 
   return (
     <>
       <Sidebar />
       <Tab />
-      <br />
-      <p className="summary">
-        <img src="/pictureAdmin/Cash.svg" className="iconG" alt="group icon" />
-        รายการคำขอ
-      </p>
-      <br />
+      <div className="header-titlerefund">
+        <h1>รายการคำขอยกเลิก</h1>
+      </div>
       <div className="filter-container">
         <select className="sport" value={statusFilter} onChange={handleStatusChange}>
           <option value="all">ทั้งหมด</option>
           <option value="ยกเลิกแล้ว">ยกเลิกแล้ว</option>
           <option value="รอดำเนินการยกเลิก">รอดำเนินการยกเลิก</option>
-        </select>
-        <select className="sport" value={month} onChange={handleMonthChange}>
-          <option value="">ทั้งหมด</option>
-          <option value="02">กุมภาพันธ์</option>
-          <option value="03">มีนาคม</option>
-          <option value="04">เมษายน</option>
-        </select>
-        <select className="sport" value={year} onChange={handleYearChange}>
-          <option value="">ทั้งหมด</option>
-          <option value="2568">2568</option>
-          <option value="2569">2569</option>
-          <option value="2570">2570</option>
         </select>
       </div>
       <div className="table-container">
@@ -106,19 +99,20 @@ export default function Manage_Refunds() {
               <tr key={owner.id_booking}>
                 <td>{index + 1}</td>
                 <td className="booking-details">
-                  <p>ชื่อผู้จอง: {owner.user_name}</p>
-                  <p>ชื่อสนาม: {owner.stadium_name}</p>
-                  <p>ชนิดกีฬา: {owner.court_type}</p>
-                  <p>วันที่เล่น: {owner.date_play}</p>
-                  <p>เวลาที่เล่น: {owner.time_slot}</p>
+                  <p><span className="font-bold">ชื่อผู้จอง:</span> {owner.user_name}</p>
+                  <p><span className="font-bold">ชื่อสนาม:</span> {owner.stadium_name}</p>
+                  <p><span className="font-bold">ชนิดกีฬา:</span> {owner.court_type}</p>
+                  <p><span className="font-bold">วันที่เล่น:</span> {owner.date_play}</p>
+                  <p><span className="font-bold">เวลาที่เล่น:</span> {owner.time_slot}</p>
                 </td>
-                <td>{owner.totalPrice}</td>
+                <td style={{ fontWeight: 'bold' }}>{owner.totalPrice}</td>
                 <td className="account-info">
-                  <p>ธนาคาร: {owner.bank}</p>
-                  <p>หมายเลขบัญชี: {owner.bank_number}</p>
-                  <p>เหตุผลการยกเลิก: {owner.reasoncancle}</p>
+                  <p><span className="font-bold">ชื่อบัญชี:</span> {owner.user_name}</p>
+                  <p><span className="font-bold">ชื่อธนาคาร:</span> {owner.bank}</p>
+                  <p><span className="font-bold">เลขที่บัญชี:</span> {owner.bank_number}</p>
+                  <p><span className="font-bold">เหตุผลการยกเลิก:</span> {owner.reasoncancle}</p>
                   <button
-                    onClick={() => openModal(owner.bankimages)}
+                    onClick={() => handleImageClick(owner.bankimages)}
                     className="view-image-btn"
                   >
                     ดูรูปสมุดบัญชี
@@ -133,7 +127,7 @@ export default function Manage_Refunds() {
                     <div>
                       <span
                         className="status-cancelled"
-                        onClick={owner.slipcancle ? () => openModal(owner.slipcancle) : null}
+                        onClick={owner.slipcancle ? () => handleRefundClick(owner) : null}
                         style={{ cursor: owner.slipcancle ? 'pointer' : 'default' }}
                       >
                         {owner.status_booking}
@@ -147,11 +141,18 @@ export default function Manage_Refunds() {
         </table>
       </div>
 
-      {isModalOpen && (
+      {selectedRefund && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="close-btn" onClick={closeModal}>X</button>
-            <img src={selectedImage} alt="Evidence" className="modal-image" />
+            <img src={selectedRefund.slipUrl} alt="Evidence" className="modal-image" />
+            {selectedRefund.payDate && selectedRefund.adminName && (
+              <div className="refund-details" style={{ padding: '15px', textAlign: 'center' }}>
+                <p><strong>วันที่โอน:</strong> {new Date(selectedRefund.payDate).toLocaleDateString('th-TH')}</p>
+                <p><strong>เวลา:</strong> {new Date(selectedRefund.payDate).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })}</p>
+                <p><strong>ผู้ดำเนินการ:</strong> {selectedRefund.adminName}</p>
+              </div>
+            )}
           </div>
         </div>
       )}

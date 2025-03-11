@@ -4,8 +4,8 @@ import Image from "next/image";
 import "./profile.css";
 import Tab from "../Tabbar/page.js";
 import "../Dashboard/slidebar.css";
-import React, { useState } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
+import React, { useState, useEffect } from "react";
 import Link from 'next/link';
 import axios from "axios";
 
