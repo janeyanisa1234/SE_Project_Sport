@@ -1,22 +1,17 @@
 /* ตั้งค่าพื้นหลังและจัดกึ่งกลาง */
-body {
+.background {
+  min-height: 100vh;
+  padding-bottom: 20px;
   background-image: url('/pictureowner/bg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* ปรับหัวข้อ */
-.header-title {
+.add-header-title {
   position: relative;
-  top: 20px;           /* ขยับลง */
+  top: 50px; 
   margin-top: 20px;
   margin-bottom: 20px;
   height: 60px;
@@ -28,16 +23,16 @@ body {
   align-items: center;
 }
 
-.header-title h1 {
+.add-header-title h1 {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
 }
 
 /* ปรับการแสดงผลในส่วนของรายละเอียด */
-.container {
+.add-container {
   position: relative;
-  top: 20;
+  top: 50;
   margin: 20px auto;
   background-color: white;
   max-width: 750px;
@@ -48,7 +43,7 @@ body {
   transition: transform 0.3s ease;
 }
 
-.container:hover {
+.add-container:hover {
   transform: translateY(-5px);
 }
 

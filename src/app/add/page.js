@@ -6,116 +6,118 @@ import Tabbar from "../components/tab";
 import axios from "axios";
 import "./add.css";
 
+// Component หลักสำหรับเพิ่มกีฬาในโปรโมชัน
 export default function Add() {
-  const [sports, setSports] = useState([]);
-  const [selectedCount, setSelectedCount] = useState(0);
-  const [stadiumName, setStadiumName] = useState("ไม่ระบุ");
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const stadiumId = searchParams.get("location");
-  const discount = parseFloat(searchParams.get("discount")) || 0;
+  // Hooks การนำทางและพารามิเตอร์
+  const router = useRouter(); // อินสแตนซ์ของ router
+  const searchParams = useSearchParams(); // ดึง query parameters
+
+  // ค่าพารามิเตอร์เริ่มต้นจาก URL
+  const stadiumId = searchParams.get("location"); // ดึง ID สนาม
+  const discount = parseFloat(searchParams.get("discount")) || 0; // ดึงส่วนลด
   const initialSelectedSports = JSON.parse(decodeURIComponent(searchParams.get("sports") || "[]")); // ดึงกีฬาที่เคยเลือก
 
+  // State การจัดการข้อมูลและ UI
+  const [sports, setSports] = useState([]); // เก็บรายการกีฬา
+  const [selectedCount, setSelectedCount] = useState(0); // จำนวนกีฬาที่เลือก
+  const [stadiumName, setStadiumName] = useState("ไม่ระบุ"); // ชื่อสนาม
+
+  // Effect hook สำหรับโหลดข้อมูลกีฬาเมื่อเริ่มต้น
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
-      alert("กรุณาเข้าสู่ระบบก่อนเพิ่มกีฬา");
-      router.push("/Login");
+      alert("กรุณาเข้าสู่ระบบก่อนเพิ่มกีฬา"); // แจ้งเตือนถ้าไม่มี token
+      router.push("/Login"); // ไปหน้า login
       return;
     }
 
-    if (!stadiumId) {
-      console.error("No stadiumId provided in query");
-      alert("ไม่พบข้อมูลสนาม กรุณาเลือกสนามจากหน้า Create Promotion ก่อน");
-      router.push("/create-promotion");
+    if (!stadiumId) { // ตรวจสอบ stadiumId
+      console.error("No stadiumId provided"); // log ถ้าไม่มี ID
+      alert("ไม่พบข้อมูลสนาม"); // แจ้งเตือน
+      router.push("/create-promotion"); // ไปหน้าสร้างโปรโมชัน
       return;
     }
 
-    fetchSports(token);
+    fetchSports(token); // ดึงข้อมูลกีฬา
   }, [stadiumId, router]);
 
+  // ฟังก์ชันดึงข้อมูลกีฬาจาก API
   const fetchSports = async (token) => {
     try {
-      console.log("Fetching sports for stadiumId:", stadiumId);
+      console.log("Fetching sports for stadiumId:", stadiumId); // log การดึงข้อมูล
       const response = await axios.get(`http://localhost:5000/api/sports?stadiumId=${stadiumId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }, // header สำหรับ API
       });
-      console.log("Sports response:", response.data);
+
+      console.log("Sports response:", response.data); // log ข้อมูลที่ได้
       if (Array.isArray(response.data) && response.data.length > 0) {
-        // ผสานข้อมูลกีฬากับสถานะที่เคยเลือก
-        const updatedSports = response.data.map((sport) => {
+        const updatedSports = response.data.map((sport) => { // ผสานข้อมูลกีฬากับสถานะที่เลือก
           const isSelected = initialSelectedSports.some(
             (selected) => selected.name === sport.name && selected.stadiumId === sport.stadiumId
           );
-          return {
-            ...sport,
-            checked: isSelected, // เพิ่ม property เพื่อระบุว่าเลือกแล้ว
-          };
+          return { ...sport, checked: isSelected }; // เพิ่ม property checked
         });
-        setSports(updatedSports);
-        setSelectedCount(initialSelectedSports.length); // ตั้งค่าเริ่มต้นตามจำนวนที่เคยเลือก
-        setStadiumName(response.data[0].stadiumName || "ไม่ระบุ");
+        setSports(updatedSports); // อัปเดต state
+        setSelectedCount(initialSelectedSports.length); // ตั้งจำนวนที่เลือกเริ่มต้น
+        setStadiumName(response.data[0].stadiumName || "ไม่ระบุ"); // ตั้งชื่อสนาม
       } else {
-        setSports([]);
-        console.warn("No sports found for stadiumId:", stadiumId);
-        alert("ไม่พบกีฬาสำหรับสนามนี้ กรุณาตรวจสอบข้อมูลในฐานข้อมูล");
+        setSports([]); // รีเซ็ตถ้าไม่มีข้อมูล
+        console.warn("No sports found for stadiumId:", stadiumId); // log คำเตือน
+        alert("ไม่พบกีฬาสำหรับสนามนี้"); // แจ้งเตือน
       }
     } catch (error) {
-      console.error("Detailed error fetching sports:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-      });
-      if (error.response?.status === 401) {
-        alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
-        router.push("/Login");
+      console.error("Fetch error:", error.message, error.response?.data); // log ข้อผิดพลาด
+      if (error.response?.status === 401) { // ถ้า token หมดอายุ
+        alert("เซสชันหมดอายุ"); // แจ้งเตือน
+        router.push("/Login"); // ไปหน้า login
       } else {
-        alert("เกิดข้อผิดพลาดในการดึงข้อมูลกีฬา: " + (error.response?.data?.error || error.message));
+        alert("เกิดข้อผิดพลาด: " + (error.response?.data?.error || error.message)); // แจ้งเตือนข้อผิดพลาดอื่น
       }
     }
   };
 
-  const handleCheckboxChange = (event, index) => {
-    const updatedSports = sports.map((sport, i) =>
-      i === index ? { ...sport, checked: event.target.checked } : sport
-    );
-    setSports(updatedSports);
-    setSelectedCount((prevCount) =>
-      event.target.checked ? prevCount + 1 : prevCount - 1
-    );
+  // ฟังก์ชันคำนวณราคาหลังลด
+  const calculateDiscountPrice = (price) => {
+    const discountPercentage = discount / 100; // คำนวณเปอร์เซ็นต์ส่วนลด
+    return Math.round(price * (1 - discountPercentage)); // คืนค่าราคาหลังลด
   };
 
-  const handleConfirm = () => {
+  // ฟังก์ชันจัดการการเปลี่ยนแปลงและการนำทาง
+  const handleCheckboxChange = (event, index) => { // อัปเดต checkbox
+    const updatedSports = sports.map((sport, i) =>
+      i === index ? { ...sport, checked: event.target.checked } : sport // อัปเดตเฉพาะกีฬาที่เลือก
+    );
+    setSports(updatedSports); // อัปเดต state
+    setSelectedCount((prevCount) => (event.target.checked ? prevCount + 1 : prevCount - 1)); // อัปเดตจำนวน
+  };
+
+  const handleConfirm = () => { // ยืนยันการเลือก
     const checkedSports = sports
-      .filter((sport) => sport.checked)
+      .filter((sport) => sport.checked) // กรองกีฬาที่เลือก
       .map((sport) => ({
-        name: sport.name,
-        price: sport.price,
-        discountPrice: calculateDiscountPrice(sport.price),
-        stadiumId: sport.stadiumId,
+        name: sport.name, // ชื่อกีฬา
+        price: sport.price, // ราคา
+        discountPrice: calculateDiscountPrice(sport.price), // ราคาหลังลด
+        stadiumId: sport.stadiumId, // ID สนาม
       }));
 
-    if (checkedSports.length === 0) {
-      alert("กรุณาเลือกกีฬาอย่างน้อย 1 รายการ");
+    if (checkedSports.length === 0) { // ตรวจสอบการเลือก
+      alert("กรุณาเลือกกีฬาอย่างน้อย 1 รายการ"); // แจ้งเตือนถ้าไม่เลือก
       return;
     }
 
-    const query = `?promotionName=${encodeURIComponent(searchParams.get("promotionName") || "")}&startDate=${encodeURIComponent(searchParams.get("startDate") || "")}&startTime=${encodeURIComponent(searchParams.get("startTime") || "")}&endDate=${encodeURIComponent(searchParams.get("endDate") || "")}&endTime=${encodeURIComponent(searchParams.get("endTime") || "")}&discount=${encodeURIComponent(searchParams.get("discount") || "")}&location=${encodeURIComponent(stadiumId || "")}&sports=${encodeURIComponent(JSON.stringify(checkedSports))}`;
-    router.push(`/create-promotion${query}`);
+    const query = `?promotionName=${encodeURIComponent(searchParams.get("promotionName") || "")}&startDate=${encodeURIComponent(searchParams.get("startDate") || "")}&startTime=${encodeURIComponent(searchParams.get("startTime") || "")}&endDate=${encodeURIComponent(searchParams.get("endDate") || "")}&endTime=${encodeURIComponent(searchParams.get("endTime") || "")}&discount=${encodeURIComponent(searchParams.get("discount") || "")}&location=${encodeURIComponent(stadiumId || "")}&sports=${encodeURIComponent(JSON.stringify(checkedSports))}`; // สร้าง query string
+    router.push(`/create-promotion${query}`); // ไปหน้าสร้างโปรโมชันพร้อมข้อมูล
   };
 
-  const calculateDiscountPrice = (price) => {
-    const discountPercentage = discount / 100;
-    return Math.round(price * (1 - discountPercentage));
-  };
-
+  // ส่วนแสดงผล UI
   return (
     <div className="background">
       <Tabbar />
-      <div className="header-title">
+      <div className="add-header-title">
         <h1>เพิ่มกีฬา</h1>
       </div>
-      <div className="container">
+      <div className="add-container">
         <div className="debug-info">
           <p><span className="label">ชื่อสนาม</span> <span className="value">{stadiumName}</span></p>
           <p><span className="label">ส่วนลด</span> <span className="value">{discount}%</span></p>

@@ -1,18 +1,17 @@
 /* ตั้งค่าพื้นหลัง */
 .background {
-  background-image: url('/pictureowner/bg.png'); 
+  min-height: 100vh;
+  padding-bottom: 20px;
+  background-image: url('/pictureowner/bg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 100vh;
-  width: 100%;
-  position: relative;
 }
 
 /* ปรับหัวข้อ */
-.header-title {
+.detail-header-title {
   position: relative;
-  top: 55px;           /* ขยับลง */
+  top: 50px;           /* ขยับลง */
   margin-top: 20px;
   margin-bottom: 20px;
   height: 60px;
@@ -24,16 +23,16 @@
   align-items: center;
 }
 
-.header-title h1 {
+.detail-header-title h1 {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
 }
 
 /* Container สำหรับเนื้อหา */
-.container {
+.detail-container {
   position: relative;
-  top: 75px;
+  top: 45px;
   margin: 40px auto;
   background-color: white;
   max-width: 1200px;
@@ -44,7 +43,7 @@
 }
 
 /* ส่วนหัวข้อของ section */
-.section-title {
+.detail-section-title {
   margin-bottom: 20px;
   font-size: 24px;
   font-weight: bold;
@@ -159,7 +158,7 @@
   cursor: pointer;
   width: 260px;
   border: none;
-  font-weight: 500;
+  font-weight: 600;
   transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 

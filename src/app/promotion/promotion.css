@@ -1,3 +1,4 @@
+/* พื้นหลังทั่วไป */
 .background {
   min-height: 100vh;
   padding-bottom: 20px;
@@ -8,9 +9,9 @@
 }
 
 /* ปรับหัวข้อ */
-.header-title {
+.promo-header-title {
   position: relative;
-  top: 55;
+  top: 50px;
   margin-top: 20px;
   margin-bottom: 20px;
   height: 60px;
@@ -22,55 +23,51 @@
   align-items: center;
 }
 
-.header-title h1 {
+.promo-header-title h1 {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
 }
 
-.container:hover {
-  transform: translateY(-5px);
-}
-
-/* Container สำหรับเนื้อหา */
+/* คอนเทนเนอร์หลัก */
 .container {
-  position: relative;
-  top: 75px;
-  margin: 40px auto;
-  background-color: white;
+  margin: 80px auto 20px;
+  background-color: #fff;
   max-width: 1300px;
-  min-height: 400px;
-  height: auto;
+  min-height: calc(100vh - 140px - 60px);
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  transition: transform 0.3s ease;
   box-sizing: border-box;
-  overflow: auto;
+  overflow-y: auto;
 }
 
-/* ตัวกรอง */
+/* ส่วนกรองข้อมูล */
 .filter-section {
   margin-bottom: 20px;
+  padding: 10px;
 }
 
 .status-dropdown {
-  background-color: #D9D9D9;
-  padding: 10px;
-  height: 36px;
-  border-radius: 5px;
+  background-color: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 6px;
   border: none;
-  outline: none;
   font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.status-dropdown:hover {
+  background-color: #e0e0e0;
 }
 
 .search-section {
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
-  gap: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .create-link {
@@ -78,9 +75,13 @@
   color: #1B9FEC;
   font-size: 16px;
   font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .create-link:hover {
+  background-color: #e6f0fa;
   color: #1790d8;
 }
 
@@ -91,13 +92,20 @@
 }
 
 .search-input {
-  background-color: #D9D9D9;
-  height: 35px;
-  padding: 0 10px;
+  background-color: #f0f0f0;
+  height: 36px;
+  padding: 0 12px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 16px;
   outline: none;
+  width: 200px;
+  transition: background-color 0.3s;
+}
+
+.search-input:focus {
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(27, 159, 236, 0.5);
 }
 
 .date-dropdown {
@@ -105,17 +113,22 @@
 }
 
 .date-button {
-  background-color: #D9D9D9;
-  height: 35px;
+  background-color: #f0f0f0;
+  height: 36px;
   width: 150px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10px;
-  border-radius: 5px;
+  padding: 0 12px;
+  border-radius: 6px;
   border: none;
   font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.date-button:hover {
+  background-color: #e0e0e0;
 }
 
 .arrow {
@@ -131,21 +144,22 @@
   top: 40px;
   left: 0;
   background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  padding: 10px;
-  z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 8px;
+  z-index: 100;
   width: 150px;
 }
 
 .dropdown-menu div {
-  padding: 5px;
+  padding: 6px 10px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.2s;
 }
 
 .dropdown-menu div:hover {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;
 }
 
 .custom-date-range {
@@ -154,132 +168,147 @@
 }
 
 .date-input {
-  height: 35px;
-  padding: 0 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
   font-size: 16px;
+  transition: border-color 0.3s;
 }
 
-/* ตารางโปรโมชั่น */
-.table-container {
-  overflow-x: auto;
+.date-input:focus {
+  border-color: #1B9FEC;
+  outline: none;
 }
 
-.promo-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 16px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+/* การ์ดโปรโมชัน */
+.promo-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px;
 }
 
-.promo-table th {
-  padding: 18px;
-  font-size: 18px;
-  font-weight: bold;
+/* หัวตาราง */
+.promo-header-row {
+  display: grid;
+  grid-template-columns: 280px 200px 300px 280px 150px; /* ลดความกว้างของ "ประเภทกีฬา" จาก 265px เป็น 200px */
   background-color: #1B9FEC;
-  border-bottom: 2px solid #B4B1B1;
-  text-align: center;
-  color: #ffffff;
-}
-
-.promo-table th:first-child {
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
   text-align: left;
 }
 
-.promo-table td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #B4B1B1; /* เส้นขอบล่างของเซลล์ */
-  height: 80px;
-  vertical-align: middle;
-}
-
-.promo-table td:first-child {
+/* ปรับการจัดตำแหน่งในหัวตาราง */
+.promo-header-row span {
   text-align: left;
 }
 
-.promo-table tr:nth-child(even) {
-  background-color: #f8f9fa;
+/* ปรับการ์ดโปรโมชัน */
+.promo-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.promo-table tr:hover td {
-  background-color: #e6f0fa;
+.promo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.table-center {
-  text-align: center;
+/* ปรับการจัดตำแหน่งในแถวข้อมูล */
+.promo-content {
+  display: grid;
+  grid-template-columns: 240px 200px 200px 320px 190px; /* ลดความกว้างของ "ประเภทกีฬา" จาก 265px เป็น 200px */
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  box-sizing: border-box;
 }
 
+/* ปรับส่วนหัวของการ์ด */
+.promo-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  max-width: 240px; /* จำกัดความกว้างให้เท่ากับคอลัมน์ "ชื่อโปรโมชัน" */
+}
+
+.promo-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%; /* ให้ความกว้างไม่เกิน container ของ .promo-header */
+}
+
+/* ปรับสถานะให้แสดงด้านล่าง */
 .status-label {
-  font-size: 14px;
-  font-weight: normal;
-  padding: 4px 8px;
+  font-size: 12px;
+  padding: 4px 10px;
   border-radius: 12px;
   display: inline-block;
+  font-weight: 500;
+  margin-top: 5px;
 }
 
 .status-กำลังดำเนินการ {
-  background-color: #ccffcc;
+  background-color: #e6ffe6;
   color: #00cc00;
 }
 
 .status-หมดอายุแล้ว {
-  background-color: #ffcccc;
+  background-color: #ffe6e6;
   color: #ff0000;
+}
+
+/* ปรับข้อมูลในแต่ละคอลัมน์ */
+.promo-field {
+  font-size: 14px;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ปุ่มดำเนินการ */
 .action-buttons {
   display: flex;
-  justify-content: center;
-  align-items: center;
   gap: 0px;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  /* ลบ border-bottom ออกเพื่อให้ใช้ border-bottom ของ td */
+  justify-content: flex-end;
+  padding-right: 0px;
 }
 
 .action-button {
-  text-decoration: none;
-  color: #1B9FEC;
-  font-size: 14px;
-  font-weight: bold;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  width: 80px;
-  height: 0px;
-  line-height: 10px;
-  white-space: nowrap;
-  box-sizing: border-box;
   background: none;
   border: none;
+  color: #1B9FEC;
+  font-size: 14px; /* ลดขนาดตัวอักษรจาก 14px เป็น 12px เพื่อให้ "ดูรายละเอียด" อยู่ในหนึ่งบรรทัด */
+  font-weight: 500;
+  padding: 4px 8px; /* ลด padding เพื่อให้ปุ่มเล็กลง */
   cursor: pointer;
-  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 2px; /* ลดระยะห่างระหว่างไอคอนและข้อความ */
+  transition: color 0.3s, background-color 0.3s;
+  white-space: nowrap; /* ป้องกันการขึ้นบรรทัดใหม่ */
 }
 
 .action-button:hover {
   color: #1790d8;
-}
-
-.detail-button {
-  color: #1B9FEC;
-}
-
-.detail-button:hover {
-  color: #1790d8;
-}
-
-.edit-button {
-  color: #1B9FEC;
-}
-
-.edit-button:hover {
-  color: #1790d8;
+  background-color: #e6f0fa;
+  border-radius: 4px;
 }
 
 .delete-button {
@@ -288,6 +317,15 @@
 
 .delete-button:hover {
   color: #e04343;
+  background-color: #ffe6e6;
+}
+
+/* กรณีไม่มีข้อมูล */
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 16px;
 }
 
 /* Modal */
@@ -297,26 +335,31 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 1000;
 }
 
 .modal-content {
-  background-color: white;
-  padding: 40px 60px;
+  background-color: #fff;
+  padding: 30px;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  max-width: 600px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content h2 {
-  font-size: 24px;
+  font-size: 22px;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .modal-content p {
@@ -326,24 +369,23 @@
 }
 
 .success-icon {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 20px;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 15px;
   display: block;
-  margin: 0 auto;
 }
 
 .modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
 }
 
 .confirm-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px 25px;
-  border-radius: 8px;
+  background-color: #48FF48;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
   font-size: 16px;
@@ -351,14 +393,14 @@
 }
 
 .confirm-button:hover {
-  background-color: #45a049;
+  background-color: #48FF48;
 }
 
 .cancel-button {
-  background-color: #ccc;
-  color: black;
-  padding: 12px 25px;
-  border-radius: 8px;
+  background-color: #ddd;
+  color: #333;
+  padding: 10px 20px;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
   font-size: 16px;
@@ -366,5 +408,5 @@
 }
 
 .cancel-button:hover {
-  background-color: #b3b3b3;
+  background-color: #ccc;
 }
