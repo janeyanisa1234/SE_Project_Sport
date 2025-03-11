@@ -1,21 +1,16 @@
 /* ตั้งค่าพื้นหลัง */
 .registration-container {
-  height: 140vh;
-  background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
+  min-height: 140vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/pictureowner/bg.png');
   background-size: cover;
   background-position: center;
-  position: relative;
+  background-repeat: no-repeat;
 }
 
-/* เพิ่ม overlay */
-.registration-overlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(240, 224, 224, 0.507);
-  display: flex;
-  align-items: center; /* เปลี่ยนจาก flex-start เป็น center */
-  justify-content: center;
-}
+
 
 /* ไอคอนผู้ใช้ */
 .icon-container {

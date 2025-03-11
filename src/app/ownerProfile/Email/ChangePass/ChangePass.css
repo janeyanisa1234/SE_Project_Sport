@@ -1,5 +1,4 @@
 .change-password-container {
-
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -9,8 +8,7 @@
   background-position: center;
   background-repeat: no-repeat;
   }
-  
-
+ 
   
   .form-container {
     background-color: rgb(255, 255, 255);

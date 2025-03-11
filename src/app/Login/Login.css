@@ -1,24 +1,13 @@
 /* Login.css */
 .login-container {
   min-height: 100vh;
-  background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/pictureowner/bg.png');
   background-size: cover;
   background-position: center;
-  position: relative;
-}
-
-.overlay {
-  position: absolute;
-
-  inset: 0;
-
-  background-color: rgba(240, 224, 224, 0.507);
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
+  background-repeat: no-repeat;
 }
 
 .login-box {
@@ -30,6 +19,7 @@
   width: 400px;
   height: 500px;
 }
+
 .profile-icon {
   display: flex;
   align-items: center;
@@ -107,7 +97,6 @@
 .btn:hover {
   background: #f1f1f1;
 }
-
 
 /* Add this to your Login.css and RegistrationForm.css files */
 
