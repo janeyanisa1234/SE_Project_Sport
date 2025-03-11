@@ -190,12 +190,11 @@ tr:hover {
   display: inline-block;
 }
 
-/* เพิ่มการเปลี่ยนสีเมื่อโฮเวอร์ */
-.status.pending:hover {
-  color: red;  /* เปลี่ยนสีตัวอักษรเป็นสีแดง */
-  cursor: pointer; /* เปลี่ยนรูปเมาส์เป็นมือเมื่อโฮเวอร์ */
+.status.approved span {
+  cursor: pointer; /* ทำให้เมาส์เป็นรูปมือ */
+  text-decoration: underline; /* เพิ่มเส้นใต้เพื่อบอกว่าคลิกได้ (可选) */
 }
 
-.status.pending:hover span {
-  text-decoration: underline; /* เพิ่มเส้นใต้เมื่อโฮเวอร์ */
+.status.approved span:hover {
+  color: #007bff; /* เปลี่ยนสีเมื่อ hover เพื่อให้เด่นขึ้น (可选) */
 }

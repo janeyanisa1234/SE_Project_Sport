@@ -1,99 +1,292 @@
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   color: black;
   background-color: rgb(207, 206, 206);
   font-family: Arial, Helvetica, sans-serif;
-  height: 100vh;
+  min-height: 100vh; /* ใช้ min-height เพื่อให้ยืดหยุ่น */
   margin: 0;
-
 }
 
-.tabbar {
-  background-color: black;
-  color: white;
+/* Dashboard Layout */
+.dashboard {
   display: flex;
-  align-items: center;
-  font-size: 24px;
+  min-height: 100vh;
+  width: 100%; /* ให้เต็มความกว้าง */
 }
 
-.iconG {
-  width: 50px;
-  height: 50px;
-  background-color: black;
-  border-radius: 10%;
-  margin-left: 25px;
-}
-
-.hamburgur {
-  width: 50px;
-  height: 50px;
-  margin-right: 5px;
-}
-
-.home {
-  width: 40px;
-  height: 40px;
-  margin-right: 5px;
-}
-
-.summary {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 30px;
-  font-weight: bold;
-  margin-top: 60px;
-}
-
-.container, .container2, .container3 {
-  width: 95%;
-  max-width: 1350px;
-  margin: 30px auto;
-}
-
-.container, .container3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-}
-
-.box {
-  background-color: white;
+/* Main Container */
+.dashboard-main {
+  flex: 1;
   padding: 20px;
-  text-align: center;
-  border-radius: 10px;
-  font-size: 20px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%; /* ให้เต็มความกว้างของ parent */
+  min-height: 100vh; /* ให้สูงเต็มหน้าจอ */
+  display: flex; /* เพิ่ม flex เพื่อจัดการลูก element */
+  flex-direction: column; /* จัดเรียงแนวตั้ง */
+  background-color: transparent; /* ลบสีพื้นหลังเพื่อให้ body แสดงผล */
 }
 
-.box2 {
-  background-color: white;
-  padding: 25px;
-  text-align: center;
-  border-radius: 10px;
-  font-size: 20px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  min-height: 500px;
-  box-sizing: border-box;
+.dashboard-container {
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  max-width: 1100px;
+  margin: 80px auto 40px auto;
+  width: 100%; /* ให้เต็มความกว้างของ parent */
+  flex: 1; /* ให้ยืดหยุ่นตาม .dashboard-main */
 }
 
-/* Responsive adjustments */
+/* Header */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+  font-size: 40px;
+  font-weight: 600;
+  color: #000000; /* สีดำตามที่ต้องการ */
+}
+
+.dashboard-header .subtitle {
+  font-size: 18px;
+  color: #64748b;
+  margin-top: 8px;
+}
+
+/* Filter Section */
+.filter-section {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+  background-color: #f8fafc;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-item label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #475569;
+}
+
+.filter-select {
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #1e293b;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.3);
+}
+
+.reset-button {
+  padding: 12px 28px;
+  font-size: 16px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.reset-button:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+/* Data Sections */
+.data-section {
+  margin-bottom: 50px;
+}
+
+.data-section h2 {
+  font-size: 28px;
+  font-weight: 500;
+  color: #1e293b;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.data-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to right, #000000, #000000);
+  border-radius: 2px;
+}
+
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.data-item {
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.data-item:hover {
+  background-color: #eff6ff;
+  transform: translateY(-3px);
+}
+
+.data-item .label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #64748b;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.data-item .value {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.data-item .subtext {
+  font-size: 14px;
+  color: #94a3b8;
+  display: block;
+  margin-top: 8px;
+}
+
+/* Chart Container */
+.chart-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  width: 100%; /* เต็มความกว้าง */
+  height: 400px; /* ความสูงเริ่มต้น */
+  position: relative; /* ช่วยให้กราฟวัดขนาดได้ */
+}
+
+/* Color Specifics */
+.users-section .value {
+  color: #2563eb;
+}
+
+.revenue-section .value {
+  color: #16a34a;
+}
+
+.new-users-section .value {
+  color: #d97706;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .container {
-    grid-template-columns: repeat(2, 1fr);
+  .dashboard-main {
+    padding: 15px;
   }
-  
-  .box2 {
-    min-height: 400px;
+
+  .dashboard-container {
+    padding: 25px;
+    margin-top: 70px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 32px;
+  }
+
+  .dashboard-header .subtitle {
+    font-size: 16px;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 15px;
+  }
+
+  .filter-item,
+  .reset-button {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .data-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .data-item {
+    padding: 15px;
+  }
+
+  .data-item .value {
+    font-size: 28px;
+  }
+
+  .data-section h2 {
+    font-size: 24px;
+  }
+
+  .chart-container {
+    padding: 15px;
+    height: 300px; /* ปรับความสูงสำหรับจอเล็ก */
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-    grid-template-columns: 1fr;
+  .dashboard-header h1 {
+    font-size: 28px;
   }
-  
-  .box2 {
-    min-height: 350px;
+
+  .dashboard-header .subtitle {
+    font-size: 14px;
+  }
+
+  .data-section h2 {
+    font-size: 20px;
+  }
+
+  .data-item .value {
+    font-size: 24px;
+  }
+
+  .filter-select,
+  .reset-button {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .chart-container {
+    height: 250px; /* ปรับความสูงสำหรับจอเล็กลง */
   }
 }
