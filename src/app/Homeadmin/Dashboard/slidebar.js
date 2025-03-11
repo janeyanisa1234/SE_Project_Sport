@@ -41,7 +41,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
       {/* เมนู */}
       <ul>
-        <Link href="/Homeadmin/Profile" className="sidebar-link">
+        <Link href="/Homeadmin" className="sidebar-link">
           <li>
             <img src="/pictureAdmin/user.svg" alt="iconprofile" />
             <div>
