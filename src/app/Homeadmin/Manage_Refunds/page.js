@@ -6,25 +6,49 @@ import Sidebar from "../Dashboard/slidebar.js";
 import Link from 'next/link';
 import Tab from "../Tabbar/page.js";
 import Image from "next/image";
-import axios from 'axios';  // Import Axios
 
 export default function Manage_Cash() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
-  const [owners, setOwners] = useState([]);  // State to store fetched owners data
+  const [owners, setOwners] = useState([]);  // State to store owners data
 
-  // Fetch data from the backend
+  // Simulating fetching data with mock data
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/cancleAdmin/bookings');
-        setOwners(response.data);
-      } catch (error) {
-        console.error("Error fetching bookings:", error.response || error.message);
-      }
+    const fetchData = () => {
+      const mockData = [
+        {
+          id: 1,
+          name: "Booking A - กุมภาพันธ์ 2568",
+          Price: 1000,
+          bankAccount: "123-456-7890",
+          status_booking: "โอนแล้ว",
+        },
+        {
+          id: 2,
+          name: "Booking B - มีนาคม 2569",
+          Price: 1500,
+          bankAccount: "234-567-8901",
+          status_booking: "รอคืนเงิน",
+        },
+        {
+          id: 3,
+          name: "Booking C - เมษายน 2570",
+          Price: 2000,
+          bankAccount: "345-678-9012",
+          status_booking: "ไม่อนุมัติคำขอ",
+        },
+        {
+          id: 4,
+          name: "Booking D - กุมภาพันธ์ 2568",
+          Price: 1200,
+          bankAccount: "456-789-0123",
+          status_booking: "รออนุมัติ",
+        },
+      ];
+      
+      setOwners(mockData);
     };
-    
 
     fetchData();
   }, []); // Empty dependency array ensures this runs once on mount
@@ -43,7 +67,7 @@ export default function Manage_Cash() {
 
   const handleApprove = (id) => {
     console.log(`อนุมัติคำขอสำหรับ ID: ${id}`);
-    // Call backend API to approve the request
+    // Add logic to handle approve functionality
   };
 
   // ฟิลเตอร์ข้อมูลตามสถานะ, เดือน, และปี

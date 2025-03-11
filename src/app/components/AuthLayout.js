@@ -56,12 +56,19 @@ export default function AuthLayout({ children }) {
       return;
     }
 
+
     if (isProtectedPath && !isAuthenticated) {
       // Redirect to login if trying to access protected path without auth
       router.push('/Login');
     } else if (isAuthPath && isAuthenticated) {
       // Redirect to homepage if trying to access auth path while authenticated
       router.push('/Homepage');
+    } else if (isAdminPath && (!isAuthenticated || userRole !== 'admin')) {
+      // Redirect non-admin users trying to access admin paths
+      router.push('/Login');
+    } else if (isOwnerPath && (!isAuthenticated || userRole !== 'owner')) {
+      // Redirect non-owner users trying to access owner paths
+      router.push('/Login');
     }
 
     setIsLoading(false);

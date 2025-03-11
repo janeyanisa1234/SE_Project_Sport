@@ -1,150 +1,113 @@
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+}
+ 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #000000;
   }
+ 
   body {
     background-color: var(--background);
     color: var(--foreground);
   }
+ 
   .select-place-container {
     background-color: #1c1c1c;
   }
+ 
   .category-nav button {
     background-color: #333333;
-    color: var(--foreground);
+    color: #ffffff;
   }
+ 
   .category-nav button.active {
     background-color: #555555;
     color: #ffffff;
   }
+ 
   .venue-card {
     background-color: #333333;
-    color: #ffffff;
+    color: var(--foreground);
   }
-  .venue-name, .venue-address {
-    color: #ffffff;
+ 
+  .venue-name,
+  .venue-address {
+    color: var(--foreground);
   }
-  .timeslot-btn.available {
-    background-color: #4BCC58;
-    border-color: #3AA647;
-  }
-  .timeslot-btn.unavailable {
-    background-color: #C02222;
-    border-color: #A01B1B;
-  }
-  .timeslot-btn.selected {
-    background-color: #6D6D6D;
-    color: white;
-  }
+ 
   .confirm-button {
-    background-color: #2196F3;
+    background-color: #2196f3;
   }
+ 
   .confirm-button:hover {
     background-color: darkgreen;
   }
-  .modal-overlay {
-    background-color: rgba(0, 0, 0, 0.7);
+ 
+  .slot-container {
+    background-color: #444444;
   }
-  .modal-container {
-    background-color: #222222;
-    color: #ffffff;
+ 
+  .slot-container h5 {
+    color: var(--foreground);
   }
-  .edit-button {
-    background-color: #D9D9D9;
-    color: #000000;
+ 
+  .slot.available {
+    background-color: #e6ffe6;
   }
-  .edit-button:hover {
-    background-color: darkorange;
-  }
-  .Finalconfirm-button {
-    background-color: #4CAF50;
-    color: white;
-  }
-  .Finalconfirm-button:hover {
-    background-color: #72d572;
+ 
+  .slot.unavailable {
+    background-color: #666666;
   }
 }
-
+ 
 @media (max-width: 768px) {
-  .container, .container2, .container3 {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .category-nav button {
     flex: 1 1 48%;
   }
 }
-
+ 
 @media (max-width: 480px) {
-  .container, .container2, .container3 {
-    grid-template-columns: repeat(1, 1fr);
-  }
   .category-nav {
     flex-direction: column;
     align-items: center;
   }
+ 
   .category-nav button {
     width: 100%;
   }
 }
-
-body {
-  color: var(--foreground);
-  background-color: rgb(207, 206, 206);
-  font-family: Arial, Helvetica, sans-serif;
-  height: 100vh;
-  margin: 0;
-  overflow-y: scroll;
-}
-
+ 
 .select-place-container {
-  padding: 0px;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-}
-
-.banner {
-  height: 250px;
-  background: url('/picturemild/Avocado.svg') center/cover no-repeat;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
   padding: 20px;
-  color: rgb(0, 0, 0);
+  width: 100%;
 }
-
-.Calender {
-  margin-left: 50px;
-  margin-top: 10px;
+ 
+.banner {
+  margin-top: 2%;
+  height: 300px;
+  background-size: cover;
+  padding: 20px;
+  color: white;
 }
-
-.date-picker {
+ 
+.date-picker-container {
+  color: #000000;
   width: 130px;
   padding: 3px;
   font-size: 14px;
   margin-left: 20px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 20px;
 }
-
-.venue-name {
-  border-radius: 5px;
-  margin-left: 20px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
+ 
+.Headdetail {
+  margin-left: 5px;
+  margin-top: 160px;
 }
-
-.venue-address {
-  margin-left: 20px;
-  position: relative;
-  font-size: 16px;
-  color: #ffffff;
-  stroke-width: 1%;
-  stroke: #000000;
-}
-
+ 
 .category-nav {
   display: flex;
   justify-content: center;
@@ -153,7 +116,7 @@ body {
   overflow-x: auto;
   white-space: nowrap;
 }
-
+ 
 .category-nav button {
   color: #ffffff;
   flex: 1 1 auto;
@@ -161,288 +124,230 @@ body {
   border: 1px solid #ddd;
   border-radius: 2px;
   cursor: pointer;
-  background-color: rgb(0, 0, 0);
+  background-color: var(--background);
   font-size: 14px;
   transition: background-color 0.3s ease, color 0.3s ease;
   text-align: center;
-  width: 100%;
 }
-
+ 
 .category-nav button.active {
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
   border: 1px solid rgb(0, 0, 0);
 }
-
+ 
 .category-nav button:hover {
   background-color: rgb(149, 149, 149);
 }
-
+ 
 .venue-list {
-  margin-left: 30px;
-  width: 90%;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-
-.venue-card {
-  margin-left: 50px;
-  margin-bottom: 20px;
-  width: 90%;
-  gap: 10px;
+ 
+.category-list {
   display: flex;
-  align-items: center;
-  background: white;
-  padding: 10px;
+  flex-direction: column;
+  gap: 15px;
+}
+ 
+.venue-card {
+  width: 100%;
+  border: 2px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
-
+ 
 .venue-card:hover {
   transform: scale(1.02);
 }
-
-.venue-image {
-  width: 300px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-right: 20px;
-}
-
-.venue-info {
-  flex: 1;
-}
-
-.venue-info h3 {
-  color: #000000;
-  font-size: 18px;
-  margin-bottom: 5px;
-}
-
-.venue-info p {
-  font-size: 14px;
-  color: #000000;
-  margin-bottom: 10px;
-}
-
-.timeslot-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.timeslot-btn {
-  padding: 10px;
-  font-size: 14px;
-  border-radius: 0px;
-  text-align: center;
-  border: 2px solid transparent;
-  width: 130px;
+ 
+.court-header {
+  padding: 15px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: bold;
-}
-
-.timeslot-btn.available {
-  background-color: #4BCC58;
-  color: rgb(0, 0, 0);
-  border-color: #3AA647;
-}
-
-.timeslot-btn.available:hover {
-  background-color: #3AA647;
-  border-color: #2E8B43;
-}
-
-.timeslot-btn.unavailable {
-  background-color: #C02222;
-  color: rgb(0, 0, 0);
-  border-color: #A01B1B;
-  cursor: not-allowed;
-}
-
-.timeslot-btn.unavailable:hover {
-  background-color: #C02222;
-  border-color: #A01B1B;
-}
-
-.legend-container {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  gap: 15px;
+}
+ 
+.venue-image {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+ 
+.court-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+ 
+.venue-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--foreground);
+}
+ 
+.venue-card p {
+  margin: 0;
   font-size: 14px;
-  font-weight: bold;
+  color: var(--foreground);
 }
-
-.legend-item {
-  margin: 20px 30px;
-  color: #000000;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.legend-color {
-  width: 15px;
-  height: 15px;
-  border-radius: 10%;
-  display: inline-block;
-  border: 2px solid transparent;
-}
-
-.legend-color.available {
-  background-color: #4BCC58;
-  border-color: #3AA647;
-}
-
-.legend-color.unavailable {
-  background-color: #C02222;
-  border-color: #A01B1B;
-}
-
-.timeslot-btn.selected {
-  background-color: #6D6D6D;
-  color: white;
-  font-weight: bold;
-}
-
+ 
 .venue-card.selected {
-  border: 2px solid #007bff;
+  border-color: #007bff;
   background-color: #f0f8ff;
 }
-
-.modal-overlay {
+ 
+.timeslot-container {
+  padding: 15px;
+  pointer-events: none;
+}
+ 
+.slot-container {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fafafa;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+ 
+.slot-container:hover {
+  transform: scale(1.02);
+}
+ 
+.slot-container.selected-slot {
+  border: 2px solid #007bff;
+  background-color: #e6f3ff;
+}
+ 
+.slot-container h5 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: var(--foreground);
+}
+ 
+.time-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ 
+.time-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+ 
+.slot {
+  width: 120px;
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--foreground);
+}
+ 
+.slot.available {
+  background-color: #a1f7a1;
+}
+ 
+.slot.available:hover {
+  background-color: #ccffcc;
+}
+ 
+.slot.selected {
+  background-color: #007bff;
+  color: white;
+}
+ 
+.slot.unavailable {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+ 
+.confirm-button {
+  background-color: #2196f3;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+ 
+.confirm-button:hover {
+  background-color: darkgreen;
+}
+ 
+.booking-footer {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+ 
+.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* ตั้งพื้นหลังมืด */
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
-
-.modal-container {
-  color: #000000;
+ 
+.popup-content {
   background-color: white;
   padding: 20px;
-  border-radius: 8px;
-  width: auto;
-  text-align: center;
+  border-radius: 5px;
+  width: 300px;
+  text-align: center; /* เปลี่ยนเป็น center เพื่อให้ข้อความอยู่ตรงกลาง */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
-.modal-container h2 {
-  color: #000000;
-  font-size: 18px;
-  margin-bottom: 10px;
+ 
+.popup-title {
+  margin: 0;
+  color: #000000; /* ตัวอักษรสีดำ */
+  font-size: 20px;
 }
-
-.modal-content{
-  margin-bottom: 10px;
+ 
+.popup-details {
   text-align: left;
-  margin-left: 20%;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: center; /* จัดให้อยู่ตรงกลาง */
-  gap: 10px; /* ตั้งค่าระยะห่างระหว่างปุ่ม */
-  margin-top: 20px;
-}
-
-.modal-actions button {
-  padding: 10px;
-  background-color: #D9D9D9; /* Neutral gray color for buttons */
-  color: #000000;
-  border: none;
-  cursor: pointer;
-  width: 150px; /* Ensure both buttons have the same width */
-  border-radius: 10px;
-  margin: 0 5px; /* Add margin to separate the buttons */
-}
-
-
-.confirmation button {
-  font-size: 16px;
-  padding: 10px 20px;
-  margin-top: 20px;
   margin-bottom: 20px;
-  margin-left: 90%;
-  gap: 30px;
-  background-color: #4CAF50;
-  color: white;
+}
+ 
+.popup-details p {
+  margin: 5px 0;
+  color: var(--foreground);
+}
+ 
+.popup-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+ 
+.edit-button {
+  background-color: #f0f0f0;
+  color: black;
+  padding: 8px 16px;
   border: none;
-  cursor: pointer;
-  position: flex;
-  border-radius: 5px;
-}
-
-.confirmation button:hover {
-  background-color: #005f02;
-}
-
-.modal {
-  color: #000000;
-  position: fixed; /* Ensure it is fixed on the screen */
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Offset by 50% to truly center */
-  width: 80%; /* You can adjust this as needed */
-  max-width: 500px; /* Optional: limit the maximum width */
-  height: auto;
-  background-color: white; /* White background */
-  border-radius: 8px; /* Rounded corners */
-  padding: 20px; /* Padding inside the modal */
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-  z-index: 1000; /* Ensure it appears on top */
-}
-
-/* Button styles for modal */
-.cancel-button {
-  font-size: 16px;
-  background-color: #D9D9D9; /* Default grey for cancel button */
-  color: #000000;
-  border: none;
-  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  width:10px;
-}
-
-.cancel-button:hover {
-  background-color: darkorange; 
-}
-
-.confirm-button {
-  font-size: 16px;
-  background-color: #4CAF50; 
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 10px; 
-}
-
-.confirm-button:hover {
-  background-color: #72d572; /* Darker green when hovered */
-}
-
-/* Add active state for when buttons are clicked */
-.cancel-button:active {
-  background-color: #FF9800; /* Orange color when clicked */
-}
-
-.confirm-button:active {
-  background-color: #388E3C; /* Darker green when clicked */
 }

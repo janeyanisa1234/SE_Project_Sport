@@ -1,191 +1,355 @@
 "use client";
-
-import Link from "next/link";
-import React, { useState, useEffect } from "react";
+ 
+import React, { useEffect, useState } from "react";
 import "./Select.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Tabbar from "../../../Tab/tab";
 import Headfunction from "@/app/Headfunction/page";
 import axios from "axios";
-
+import { useSearchParams, useRouter } from "next/navigation";
+ 
 const SelectPlace = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [activeCategory, setActiveCategory] = useState("ยอดนิยม");
-  const [selectedSlot, setSelectedSlot] = useState({});
-  const [selectedVenue, setSelectedVenue] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [bookingConfirmed, setBookingConfirmed] = useState(false);
-  const [placeData, setPlaceData] = useState([]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const stadiumName = searchParams.get("stadium_name");
+  const stadiumAddress = searchParams.get("stadium_address");
+ 
+  const [activeCategory, setActiveCategory] = useState("ทั้งหมด");
+  const [stadiumData, setStadiumData] = useState({ name: "", address: "", imageUrl: "" });
+  const [totalVenues, setTotalVenues] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const categories = ["ทั้งหมด", "แบดมินตัน", "ฟุตซอล", "ฟุตบอล", "ปิงปอง"];
-
+  const [categories, setCategories] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedCourt, setSelectedCourt] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedTimes, setSelectedTimes] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [bookingData, setBookingData] = useState({
+    sportType: "",
+    courtNumber: "",
+    date: "",
+    timeSlots: [],
+    price: 0,
+  });
+ 
   useEffect(() => {
-    async function fetchtypesData() {
+    async function fetchTotalVenues() {
       try {
-        const response = await axios.get("http://localhost:5000/api/Booking/court");
-        console.log("📌 Data from API:", response.data);
-
+        const response = await axios.get("http://localhost:5000/api/booking/stadiums");
+        console.log("API Response:", response.data);
         if (response.data && response.data.length > 0) {
-          setPlaceData(response.data); // Set data for courts
-        } else {
-          console.error("No place data received");
+          setTotalVenues(response.data);
+          const stadium = response.data.find((venue) => venue.stadium_name === stadiumName);
+          if (stadium) {
+            setStadiumData({
+              name: stadium.stadium_name,
+              address: stadium.stadium_address,
+              imageUrl: stadium.stadium_image,
+            });
+            const categoriesInVenue = new Set();
+            stadium.courts.forEach((court) => {
+              categoriesInVenue.add(court.court_type);
+            });
+            setCategories(["ทั้งหมด", ...Array.from(categoriesInVenue)]);
+          }
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error.response?.data || error.message);
       } finally {
-        setLoading(false); // Set loading false after fetching data
+        setLoading(false);
       }
     }
-    fetchtypesData();
-  }, []);
-
-  const handleVenueSelect = (venue) => {
-    if (selectedVenue?.title === venue.title) {
-      return;
-    }
-    setSelectedVenue(venue);
-    setSelectedSlot({});
+    fetchTotalVenues();
+  }, [stadiumName]);
+ 
+  const handleCategoryClick = (category) => {
+    setActiveCategory(category);
+    setSelectedCourt(null);
+    setSelectedSlot(null);
+    setSelectedTimes([]);
   };
-
-  const handleTimeslotSelect = (venue, slot) => {
-    if (!selectedVenue) {
-      alert("กรุณาเลือกคอร์ดก่อนเลือกเวลา");
-      return;
+ 
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
+    setBookingData((prev) => ({ ...prev, date: event.target.value }));
+  };
+ 
+  const handleCourtSelection = (court) => {
+    if (selectedCourt && selectedCourt.court_id === court.court_id) {
+      setSelectedCourt(null);
+      setSelectedSlot(null);
+      setSelectedTimes([]);
+      setBookingData({
+        sportType: "",
+        courtNumber: "",
+        date: selectedDate,
+        timeSlots: [],
+        price: 0,
+      });
+    } else {
+      setSelectedCourt(court);
+      setSelectedSlot(null);
+      setSelectedTimes([]);
+      setBookingData({
+        sportType: court.court_type,
+        courtNumber: "",
+        date: selectedDate,
+        timeSlots: [],
+        price: court.final_price,
+      });
+      setActiveCategory(court.court_type);
     }
-
-    setSelectedSlot((prev) => {
-      const updatedTimeslots = prev[venue.title] ? [...prev[venue.title]] : [];
-      if (updatedTimeslots.includes(slot)) {
-        return { ...prev, [venue.title]: updatedTimeslots.filter((time) => time !== slot) };
-      } else {
-        return { ...prev, [venue.title]: [...updatedTimeslots, slot] };
-      }
+  };
+ 
+  const handleSlotSelection = (slotNumber) => {
+    if (selectedSlot === slotNumber) {
+      setSelectedSlot(null);
+      setSelectedTimes([]);
+      setBookingData((prev) => ({
+        ...prev,
+        courtNumber: "",
+        timeSlots: [],
+      }));
+    } else {
+      setSelectedSlot(slotNumber);
+      setSelectedTimes([]);
+      setBookingData((prev) => ({
+        ...prev,
+        courtNumber: slotNumber.toString(),
+        timeSlots: [],
+      }));
+    }
+  };
+ 
+  const handleTimeSelection = (time) => {
+    if (!selectedCourt || !selectedSlot) return;
+ 
+    setSelectedTimes((prevTimes) => {
+      const timeString = `${time.start}-${time.end}`;
+      const newTimes = prevTimes.includes(timeString)
+        ? prevTimes.filter((t) => t !== timeString)
+        : [...prevTimes, timeString];
+      
+      setBookingData((prev) => ({ ...prev, timeSlots: newTimes }));
+      return newTimes;
     });
   };
-
-  const handleConfirm = () => {
-    if (selectedSlot[selectedVenue?.title]?.length > 0 && selectedDate && selectedVenue) {
-      setShowModal(true);
-    } else {
-      alert("กรุณาเลือกข้อมูลทั้งหมด");
+ 
+  const handleBookingConfirmation = () => {
+    if (selectedCourt && selectedSlot && selectedDate && selectedTimes.length > 0) {
+      setActiveCategory(bookingData.sportType);
+      setShowPopup(true);
     }
   };
-
-  const handleCloseModal = () => {
-    setBookingConfirmed(true);
-    setShowModal(false);
+ 
+  const handleEditBooking = () => {
+    setShowPopup(false);
   };
-
-  const calculatePrice = () => {
-    const selectedTimes = selectedSlot[selectedVenue?.title] || [];
-    return selectedTimes.length * selectedVenue?.pricePerHour || 0;
+ 
+  const handleFinalConfirmation = async () => {
+    const bookingPayload = {
+      stadiumId: totalVenues.find(v => v.stadium_name === stadiumName)?.id,
+      courtId: selectedCourt?.court_id,
+      sportType: bookingData.sportType,
+      courtNumber: bookingData.courtNumber,
+      date: bookingData.date,
+      timeSlots: bookingData.timeSlots,
+      price: bookingData.price * bookingData.timeSlots.length,
+    };
+ 
+    console.log("Sending booking payload:", bookingPayload); // Log ก่อนส่ง
+ 
+    // ส่งข้อมูลไป Backend
+    await axios.post("http://localhost:5000/api/booking/bookings", bookingPayload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+ 
+    // ปิด popup หลังส่งข้อมูล
+    setShowPopup(false);
   };
-
+ 
+  const renderPopup = () => {
+    if (!showPopup) return null;
+ 
+    return (
+      <div className="popup-overlay">
+        <div className="popup-content">
+          <h3 className="popup-title">สรุปการจอง</h3>
+          <div className="popup-details">
+            <p>กีฬาที่จอง: {bookingData.sportType}</p>
+            <p>คอร์ด: {bookingData.courtNumber}</p>
+            <p>วันที่: {bookingData.date}</p>
+            <p>เวลา: {bookingData.timeSlots.join(", ")}</p>
+            <p>ราคา: {bookingData.price * bookingData.timeSlots.length} บาท</p>
+          </div>
+          <div className="popup-buttons">
+            <button className="edit-button" onClick={handleEditBooking}>
+              แก้ไขการจอง
+            </button>
+            <button className="confirm-button" onClick={handleFinalConfirmation}>
+              ยืนยัน
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+ 
+  const renderVenueList = () => {
+    const stadium = totalVenues.find((venue) => venue.stadium_name === stadiumName);
+    if (!stadium) return <p>ไม่พบข้อมูลสนาม</p>;
+ 
+    if (activeCategory === "ทั้งหมด") {
+      return (
+        <div className="category-list">
+          {stadium.courts.map((court) => (
+            <div
+              key={`court-${court.court_id}`}
+              className={`venue-card ${selectedCourt?.court_id === court.court_id ? "selected" : ""}`}
+            >
+              <div className="court-header" onClick={() => handleCourtSelection(court)}>
+                <img src={court.court_image} alt={court.court_type} className="venue-image" />
+                <div className="court-info">
+                  <h3>สนาม {court.court_type}</h3>
+                  {court.discount_percentage > 0 && (
+                    <p>โปรโมชั่นลด {court.discount_percentage}%</p>
+                  )}
+                  <p>ราคา: {court.final_price} บาท</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+ 
+    const filteredCourts = stadium.courts.filter((court) => court.court_type === activeCategory);
+ 
+    return (
+      <div className="category-list">
+        {filteredCourts.map((court) => {
+          const courtSlots = Array.from({ length: court.court_quantity }, (_, idx) => idx + 1);
+          const times = court.times || [];
+ 
+          return (
+            <div
+              key={`court-${court.court_id}`}
+              className={`venue-card ${selectedCourt?.court_id === court.court_id ? "selected" : ""}`}
+            >
+              <div className="court-header" onClick={() => handleCourtSelection(court)}>
+                <h3>สนาม {court.court_type}</h3>
+              </div>
+ 
+              {selectedCourt?.court_id === court.court_id && selectedDate && (
+                <div className="timeslot-container">
+                  {courtSlots.map((slotNumber) => (
+                    <div
+                      key={`slot-${slotNumber}`}
+                      className={`slot-container ${selectedSlot === slotNumber ? "selected-slot" : ""}`}
+                    >
+                      <h5
+                        onClick={() => handleSlotSelection(slotNumber)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        คอร์ด {slotNumber}
+                      </h5>
+                      <div className="time-rows">
+                        <div className="time-row">
+                          {times.length > 0 ? (
+                            times.map((time) => (
+                              <div
+                                key={`time-${time.start}-${time.end}`}
+                                className={`slot ${
+                                  time.status === "available"
+                                    ? selectedSlot === slotNumber && selectedTimes.includes(`${time.start}-${time.end}`)
+                                      ? "selected"
+                                      : "available"
+                                    : "unavailable"
+                                }`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (time.status === "available" && selectedSlot === slotNumber) {
+                                    handleTimeSelection(time);
+                                  }
+                                }}
+                              >
+                                {time.start} - {time.end}
+                              </div>
+                            ))
+                          ) : (
+                            <p>ไม่มีช่วงเวลาสำหรับคอร์ดนี้</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+ 
   return (
     <>
       <Tabbar />
       <Headfunction />
       <div className="select-place-container">
-        <div className="banner">
-          <h2 className="venue-name">AVOCADO</h2>
-          <p className="venue-address">55/5 หมู่ 10 ซอย12 บ้านสวน จ.ชลบุรี</p>
-          <div className="Calender">
-            <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-              dateFormat="dd/MM/yyyy"
-              className="date-picker"
-              placeholderText="กรุณาเลือกวันที่"
-              minDate={new Date()}
+        <div className="banner" style={{ backgroundImage: `url('${stadiumData.imageUrl}')` }}>
+          <div className="Headdetail">
+          <h2 className="venue-name">{stadiumName}</h2>
+          <p className="venue-address">{stadiumAddress}</p>
+          <div className="date-picker-container">
+            <label htmlFor="booking-date"></label>
+            <input
+              type="date"
+              id="booking-date"
+              value={selectedDate}
+              onChange={handleDateChange}
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
         </div>
-
-        {/* Categories Navigation */}
+      </div>
+ 
         <nav className="category-nav">
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={activeCategory === category ? "active" : ""}
-              onClick={() => setActiveCategory(category)}
-            >
-              {category}
-            </button>
-          ))}
+          {categories.length > 0 ? (
+            categories.map((category) => (
+              <button
+                key={category}
+                className={activeCategory === category ? "active" : ""}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {category}
+              </button>
+            ))
+          ) : (
+            <p>กำลังโหลดข้อมูล...</p>
+          )}
         </nav>
-
-        {/* Legend for available/unavailable times */}
-        <div className="legend-container">
-          <div className="legend-item">
-            <span className="legend-color available"></span>
-            <span>ว่าง</span>
-            <span className="legend-color unavailable"></span>
-            <span>ไม่ว่าง</span>
-          </div>
+ 
+        <div className="venue-list">
+          {loading ? <p>กำลังโหลดข้อมูล...</p> : renderVenueList()}
         </div>
-
-        {/* All Sports Categories */}
-        {(activeCategory === "ทั้งหมด" || placeData.some(venue => venue.type === activeCategory)) && (
-          <div className="sports-categories">
-
-            {placeData.map((venue, index) => {
-              if (activeCategory === "ทั้งหมด" || venue.type === activeCategory) {
-                return (
-                  <div
-                    className={`venue-card ${selectedVenue?.title === venue.title ? "selected" : ""}`}
-                    key={index}
-                    onClick={() => handleVenueSelect(venue)}
-                  >
-                    <img src={venue.court_image} alt={venue.alt} className="venue-image" />
-                    <div className="venue-info">
-                      
-                      <p>{venue.court_type}</p> {/* แสดงประเภทของสนาม */}
-                      <p>{venue.promotion}</p>
-                      <p>฿{venue.court_price} / ชั่วโมง</p>
-                    </div>
-                  </div>
-                );
-              }
-            })}
-          </div>
-        )}
-
-        {selectedSlot[selectedVenue?.title]?.length > 0 && selectedDate && selectedVenue && (
-          <div className="confirmation">
-            <button onClick={handleConfirm}>ยืนยัน</button>
-          </div>
-        )}
-
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>สรุปการจอง</h3>
-              <div className="modal-content">
-                <p><strong>ประเภทกีฬา : </strong> {activeCategory}</p>
-                <p><strong>คอร์ดที่เลือก : </strong> {selectedVenue?.title}</p>
-                <p><strong>วันที่เลือก : </strong> {selectedDate?.toLocaleDateString("th-TH")}</p>
-                <p><strong>เวลาที่เลือก : </strong> {selectedSlot[selectedVenue?.title]?.join(", ")}</p>
-                <p><strong>ราคา : </strong> ฿{calculatePrice()}</p>
-              </div>
-              <div className="modal-actions">
-                <button className="cancel-button" onClick={() => setShowModal(false)}>
-                  แก้ไขการจอง
-                </button>
-
-                <Link href={"/Homepage/Search/Select/payment-qr"}>
-                  <button className="confirm-button" onClick={handleCloseModal}>
-                    ยืนยัน
-                  </button>
-                </Link>
-              </div>
-            </div>
+ 
+        {selectedCourt && selectedSlot && selectedDate && selectedTimes.length > 0 && (
+          <div className="booking-footer">
+            <>
+            
+            </>
+            
+            <button className="confirm-button" onClick={handleBookingConfirmation}>
+              ยืนยันการจอง
+            </button>
           </div>
         )}
       </div>
+      {renderPopup()}
     </>
   );
 };
-
+ 
 export default SelectPlace;

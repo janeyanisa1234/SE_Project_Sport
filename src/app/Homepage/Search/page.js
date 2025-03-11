@@ -8,16 +8,17 @@ import Headfunction from "../../Headfunction/page";
 import axios from "axios";
 import { useSearchParams } from "next/navigation"; // ใช้เพื่อดึง query parameter
 
-export default function PromotionPlace() {
+export default function SearchPlace() {
   const [placeData, setPlaceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams(); 
   const query = searchParams.get("query") || ""; // ดึงค่าค้นหาจาก URL
+  
 
   useEffect(() => {
     async function fetchPlaceData() {
       try {
-        const response = await axios.get("http://localhost:5000/api/Booking/stadium");
+        const response = await axios.get("http://localhost:5000/api/booking/stadiums");
         console.log("📌 Data from API:", response.data);
 
         if (response.data && response.data.length > 0) {
@@ -70,6 +71,7 @@ export default function PromotionPlace() {
                   </div>
                 </div>
               </Link>
+
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.stadium_address)}`}
                 target="_blank"

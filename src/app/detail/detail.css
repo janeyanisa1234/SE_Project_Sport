@@ -33,315 +33,136 @@
 /* Container สำหรับเนื้อหา */
 .container {
   position: relative;
-  top: 75px; /* ขยับลง 50px */
+  top: 75px;
   margin: 40px auto;
   background-color: white;
-  max-width: 1200px; /* เพิ่มขนาดสูงสุดให้กรอบ */
+  max-width: 1200px;
   min-height: 350px;
-  border-radius: 12px; /* เพิ่มความโค้งมน */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* ปรับเงาให้ดูนุ่มนวล */
-  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
 
-.container:hover {
-  transform: translateY(-10px);
-}
-
-/* ส่วนหัวข้อของ section (ถ้ามี) */
+/* ส่วนหัวข้อของ section */
 .section-title {
-  margin-bottom: 10px;
-  font-size: 20px;
+  margin-bottom: 20px;
+  font-size: 24px;
   font-weight: bold;
-  color: #333;
+  color: #000000;
+  border-bottom: 2px solid #1B9FEC;
+  padding-bottom: 5px;
 }
 
-/* จัดการข้อมูลโปรโมชั่น (ถ้าใช้ตาราง) */
+/* จัดการข้อมูลโปรโมชั่น */
 .promo-info {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 0;
-  border-bottom: 2px solid #ddd;
+  padding: 20px 0;
+  border-bottom: 2px solid #B4B1B1;
+  margin-bottom: 20px;
 }
 
 .info-row {
   display: flex;
   align-items: center;
+  margin-bottom: 15px;
 }
 
 .info-row h3 {
-  margin-right: 20px;
-  color: #333;
+  margin: 0;
   font-size: 18px;
   font-weight: 600;
+  word-break: break-word;
 }
 
-.highlight-text {
-  font-size: 16px;
-  color: #1B9FEC;
+.info-row h3:first-child {
+  color: #000000;
+  min-width: 150px;
+  text-align: left;
+  margin-right: 20px;
   font-weight: bold;
 }
 
+.highlight-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* ปรับสถานะให้ไม่มีกรอบ */
+.กำลังดำเนินการ {
+  /*background-color: #ccffcc;*/
+  color: #00cc00;
+  padding: 0 4px;
+  border-radius: 0;
+}
+
+.หมดอายุแล้ว {
+  /*background-color: #ffcccc;*/
+  color: #ff0000;
+  padding: 0 4px;
+  border-radius: 0;
+}
+
+/* ตารางโปรโมชั่น */
 .promo-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 16px;
   margin-top: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .promo-table th {
-  padding: 12px;
+  padding: 15px;
   font-size: 16px;
-  font-weight: bold;
-  background-color: #f1f1f1;
-  border: 1px solid #B4B1B1;
-  text-align: left;
+  font-weight: 600;
+  /*background: linear-gradient(135deg, #1B9FEC 0%, #48c6ef 100%);*/
+  background-color: #1B9FEC;
+  color: white;
+  text-align: center;
+  border-bottom: 2px solid #B4B1B1;
 }
 
 .promo-table td {
-  border: 1px solid #B4B1B1;
-  height: 50px;
-  padding: 12px;
+  padding: 15px;
   text-align: center;
+  background-color: #fff;
+  border-bottom: 1px solid #B4B1B1;
+  transition: background-color 0.3s ease;
+}
+
+.promo-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.promo-table tr:hover td {
+  background-color: #e6f0fa;
 }
 
 .table-center {
   text-align: center;
 }
 
-.sport-info {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.sport-icon {
-  width: 50px;
-  margin-right: 10px;
-}
-
-/* ฟอร์ม */
-.form-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.form-title {
-  width: 250px;
-  font-size: 18px;
-  color: #333;
-  font-weight: 600;
-}
-
-.input-field {
-  width: 50%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
-}
-
-.input-field:focus {
-  border-color: #1B9FEC;
-}
-
-.date-time-group {
-  display: flex;
-  gap: 10px;
-  width: 70%;
-}
-
 /* ปุ่ม */
-.add-button {
-  width: 150px;
-  height: 50px;
-  border-radius: 10px;
-  border: 2px solid #ccc;
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background-color: #f4f4f4;
-  transition: background-color 0.2s ease-in-out, transform 0.1s;
-}
-
-.add-button:hover {
-  background-color: #e0e0e0;
-  transform: scale(1.05);
-}
-
-.add-button .plusIcon {
-  font-size: 30px;
-  font-weight: bold;
-  color: black;
-  margin-bottom: 5px;
-}
-
-.add-button span {
-  font-size: 16px;
-  color: black;
-}
-
-.button-group,
 .button-container {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.cancel-button,
-.confirm-button {
-  padding: 12px 20px;
-  font-size: 18px;
+.back-button {
+  background-color: #48FF48;;
+  color: black;
+  padding: 10px 15px;
+  font-size: 16px;
   border-radius: 10px;
   cursor: pointer;
-  width: 200px;
+  width: 260px;
   border: none;
-  font-weight: 600;
-  transition: background-color 0.3s, transform 0.3s;
-}
-
-.cancel-button {
-  background-color: #F8F8FF;
-  color: #333;
-}
-
-.confirm-button {
-  background-color: #48FF48;
-  color: #333;
-}
-
-.cancel-button:hover {
-  background-color: #e0e0e0;
-  transform: scale(1.05);
-}
-
-.confirm-button:hover {
-  background-color: #3eeb3e;
-  transform: scale(1.05);
-}
-
-/* ปุ่มกลับ (Back Button) */
-.back-button {
-  position: relative;
-  top: 75px;
-  width: 300px;
-  height: 50px;
-  margin-top: 20px;
-  border-radius: 25px;
-  font-size: 18px;
-  background-color: #48FF48;
-  padding: 12px 20px;
-  color: black;
-  cursor: pointer;
-  border: none;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.3s, box-shadow 0.3s;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .back-button:hover {
-  background-color: #3eeb3e;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal-box {
-  background-color: white;
-  padding: 40px 60px;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
-  max-width: 600px;
-  width: 90%;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.modal-box .icon,
-.modal-icon {
-  background-color: #48FF48;
-  border-radius: 50%;
-  padding: 20px;
-  margin-bottom: 20px;
-  display: inline-block;
-}
-
-.modal-box .icon img {
-  width: 20px;
-  height: 20px;
-}
-
-.modal-box h2 {
-  font-size: 24px;
-  color: #333;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.modal-box p {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 30px;
-}
-
-.modal-button-group {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.modal-button,
-.modal-button-alt {
-  padding: 12px 20px;
-  font-size: 18px;
-  border-radius: 10px;
-  cursor: pointer;
-  width: 250px;
-  border: none;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.modal-button {
-  background-color: #48FF48;
-  color: black;
-}
-
-.modal-button-alt {
-  background-color: #ccc;
-  color: black;
-}
-
-.modal-button:hover,
-.modal-button-alt:hover {
-  transform: scale(1.05);
+  background-color: #1790d8;
 }
