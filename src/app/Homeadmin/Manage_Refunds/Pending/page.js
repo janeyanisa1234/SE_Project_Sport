@@ -14,7 +14,6 @@ export default function TransferForm() {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [isFileUploaded, setIsFileUploaded] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const [bookingData, setBookingData] = useState(null);
   
   const router = useRouter();
@@ -52,12 +51,12 @@ export default function TransferForm() {
     e.preventDefault();
     
     if (!transferDate || !transferTime || !adminName || !file) {
-      setErrorMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+      alert('กรุณากรอกข้อมูลให้ครบถ้วน');
       return;
     }
 
     if (!id_booking) {
-      setErrorMessage('ไม่พบ ID การจอง');
+      alert('ไม่พบ ID การจอง');
       return;
     }
 
@@ -84,7 +83,7 @@ export default function TransferForm() {
         router.push('/Homeadmin/Manage_Refunds');
       }
     } catch (error) {
-      setErrorMessage('เกิดข้อผิดพลาดในการดำเนินการ: ' + error.message);
+      alert('เกิดข้อผิดพลาดในการดำเนินการ: ' + error.message);
       console.error('Error submitting refund:', error);
     }
   };
@@ -108,12 +107,6 @@ export default function TransferForm() {
           )}
 
           <h3 className="evidence-title">แบบหลักฐาน</h3>
-          
-          {errorMessage && (
-            <div style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>
-              {errorMessage}
-            </div>
-          )}
           
           <form onSubmit={handleSubmit}>
             <div className="form-section">

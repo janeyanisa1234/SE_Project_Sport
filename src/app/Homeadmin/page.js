@@ -20,8 +20,8 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchNewUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/new-users-today"); // เปลี่ยนเป็น /new-users-today
-        setNewUsers(response.data); // ปรับตามโครงสร้างจาก routesJane/users.js
+        const response = await axios.get("http://localhost:5000/api/users/new-users-today");
+        setNewUsers(response.data);
       } catch (error) {
         console.error("Error fetching new users with axios:", error);
       }
@@ -54,8 +54,6 @@ export default function Dashboard() {
     },
   };
 
-  // ไม่จำเป็นต้องยิง event resize ซ้ำ เพราะ Chart.js responsive อยู่แล้ว
-  // ถ้าต้องการควบคุมเพิ่มเติม สามารถใช้ state หรือ ref ได้
   useEffect(() => {
     // ไม่ต้องทำอะไรเพิ่มเติม เพราะ responsive: true จัดการให้แล้ว
   }, []);
@@ -63,34 +61,32 @@ export default function Dashboard() {
   return (
     <>
       <Tab />
-      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      <Sidebar />
+      <div className="header-titlehome">
+        <h1>ผู้ใช้ใหม่วันนี้</h1>
+      </div>
+      
       <br/>
-      <p className="summary">
-        <img src="/pictureAdmin/mapeo.svg" className="iconG" alt="group icon" />
-        ผู้ใช้ใหม่วันนี้
-      </p>
-      <br/>
-      <div className="dashboard-container">
-        <div className="stats-container">
-          <div className="stat-box">
+      <div className="dashboard-wrapper">
+        <div className="stats-grid">
+          <div className="stat-item">
             <h3>{newUsers.total}</h3>
             <p>ผู้ใช้ใหม่ทั้งหมด</p>
-            <span className="percentage positive">+{((newUsers.total / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
+            <span className="change-percentage positive">+{((newUsers.total / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
           </div>
-          <div className="stat-box">
+          <div className="stat-item">
             <h3>{newUsers.regular}</h3>
             <p>ผู้ใช้ทั่วไปใหม่</p>
-            <span className="percentage positive">+{((newUsers.regular / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
+            <span className="change-percentage positive">+{((newUsers.regular / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
           </div>
-          <div className="stat-box">
+          <div className="stat-item">
             <h3>{newUsers.owners}</h3>
             <p>ผู้ประกอบการใหม่</p>
-            <span className="percentage positive">+{((newUsers.owners / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
+            <span className="change-percentage positive">+{((newUsers.owners / (newUsers.total || 1)) * 100).toFixed(1)}%</span>
           </div>
         </div>
 
-        {/* กราฟ */}
-        <div className="chart-container">
+        <div className="chart-wrapper">
           <Bar data={chartData} options={chartOptions} />
         </div>
       </div>

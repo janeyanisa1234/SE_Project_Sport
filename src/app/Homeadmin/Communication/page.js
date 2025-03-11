@@ -42,12 +42,9 @@ export default function Communication() {
     <>
       <Sidebar />
       <Tab />
-      <br />
-      <p className="summary">
-        <img src="/pictureAdmin/Commu.svg" className="iconG" alt="group icon" />
-        การสื่อสาร
-      </p>
-      <br />
+      <div className="header-titlecommu">
+        <h1>การสื่อสาร</h1>
+      </div>
       <div className="filter-container">
         <select value={memberType} onChange={(e) => setMemberType(e.target.value)}>
           <option value="all">ทั้งหมด</option>

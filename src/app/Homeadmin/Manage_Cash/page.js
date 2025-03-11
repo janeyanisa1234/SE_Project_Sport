@@ -3,68 +3,91 @@ import "./Cash.css";
 import "../Dashboard/slidebar.css";
 import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
-import Link from 'next/link';
+import Link from "next/link";
 import Tab from "../Tabbar/page.js";
-import axios from 'axios';
+import axios from "axios";
+
+// ฟังก์ชันแปลงวันที่ภาษาไทยเป็น Date object
+const monthNames = {
+  "มกราคม": 0, "กุมภาพันธ์": 1, "มีนาคม": 2, "เมษายน": 3, "พฤษภาคม": 4, "มิถุนายน": 5,
+  "กรกฎาคม": 6, "สิงหาคม": 7, "กันยายน": 8, "ตุลาคม": 9, "พฤศจิกายน": 10, "ธันวาคม": 11
+};
+
+const parseThaiDate = (dateString) => {
+  const [day, month, year] = dateString.split(" ");
+  const dayNum = parseInt(day, 10);
+  const monthNum = monthNames[month];
+  const yearBE = parseInt(year, 10);
+  const yearAD = yearBE - 543;
+  return new Date(yearAD, monthNum, dayNum);
+};
 
 export default function Manage_Cash() {
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [month, setMonth] = useState('');
-  const [year, setYear] = useState('');
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
   const [owners, setOwners] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedTransfer, setSelectedTransfer] = useState(null);
 
   useEffect(() => {
     async function fetchCashData() {
       try {
-        const response = await axios.get('http://localhost:5000/api/cashUpdate/update-cash');
-        setOwners(response.data);
+        const response = await axios.get("http://localhost:5000/api/cashUpdate/update-cash");
+        const sortedData = response.data.sort((a, b) => parseThaiDate(b.date) - parseThaiDate(a.date));
+        setOwners(sortedData);
       } catch (error) {
-        console.error('Error fetching cash data:', error);
+        console.error("Error fetching cash data:", error);
       }
     }
-
     fetchCashData();
   }, []);
 
-  const handleStatusChange = (e) => {
-    setStatusFilter(e.target.value);
-  };
-
-  const handleMonthChange = (e) => {
-    setMonth(e.target.value);
-  };
-
-  const handleYearChange = (e) => {
-    setYear(e.target.value);
-  };
+  const handleStatusChange = (e) => setStatusFilter(e.target.value);
+  const handleMonthChange = (e) => setMonth(e.target.value);
+  const handleYearChange = (e) => setYear(e.target.value);
 
   const filteredOwners = owners.filter((owner) => {
-    const matchesStatus = statusFilter === 'all' || owner.status === statusFilter;
-    const matchesMonth = !month || owner.date.includes(month);
-    const matchesYear = !year || owner.date.includes(year);
+    const date = parseThaiDate(owner.date);
+    const ownerMonth = (date.getMonth() + 1).toString().padStart(2, "0");
+    const ownerYear = (date.getFullYear() + 543).toString();
+
+    const matchesStatus = statusFilter === "all" || owner.status === statusFilter;
+    const matchesMonth = !month || ownerMonth === month;
+    const matchesYear = !year || ownerYear === year;
 
     return matchesStatus && matchesMonth && matchesYear;
   });
 
-  const handleImageClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
+  const handleTransferClick = async (owner) => {
+    try {
+      // ดึงข้อมูลเพิ่มเติมจาก API
+      const response = await axios.get(`http://localhost:5000/api/cashUpdate/transfer-details/${owner.id_owner}`, {
+        params: { date: owner.date }
+      });
+      setSelectedTransfer({
+        slipUrl: owner.slip_url,
+        payDate: response.data.paydate,
+        adminName: response.data.nameadmin
+      });
+    } catch (error) {
+      console.error("Error fetching transfer details:", error);
+      setSelectedTransfer({
+        slipUrl: owner.slip_url,
+        payDate: null,
+        adminName: null
+      });
+    }
   };
 
-  const closeModal = () => {
-    setSelectedImage(null);
-  };
+  const closeModal = () => setSelectedTransfer(null);
 
   return (
     <>
       <Sidebar />
       <Tab />
-      <br />
-      <p className="summary">
-        <img src="/pictureAdmin/Cash.svg" className="iconG" alt="group icon" />
-        รายการโอนเงิน
-      </p>
-      <br />
+      <div className="header-titlecash">
+        <h1>รายการโอนเงิน</h1>
+      </div>
       <div className="filter-container">
         <select className="sport" value={statusFilter} onChange={handleStatusChange}>
           <option value="all">ทั้งหมด</option>
@@ -111,12 +134,8 @@ export default function Manage_Cash() {
                 <td>{index + 1}</td>
                 <td>{owner.user_name}</td>
                 <td>
-                  <div>
-                    <strong>รวม:</strong>{owner.totalIncome}
-                  </div>
-                  <div style={{ color: 'red' }}>
-                    <strong>จ่าย:</strong>{owner.incomeAfter}
-                  </div>
+                  <div><strong>รวม:</strong> {owner.totalIncome}</div>
+                  <div style={{ color: "red" }}><strong>จ่าย:</strong> {owner.incomeAfter}</div>
                 </td>
                 <td>{owner.date}</td>
                 <td>
@@ -124,37 +143,22 @@ export default function Manage_Cash() {
                     <strong>ชื่อบัญชี:</strong> {owner.user_name} <br />
                     <strong>ชื่อธนาคาร:</strong> {owner.bank_name} <br />
                     <strong>เลขที่บัญชี:</strong> {owner.bank_account} <br />
-                    <button onClick={() => handleImageClick(owner.identity_card_url)} className="view-image-btn">
+                    <button onClick={() => setSelectedTransfer({ slipUrl: owner.identity_card_url })} className="view-image-btn">
                       ดูรูปบัญชี
                     </button>
                   </div>
                 </td>
                 <td className="status-cell">
                   {owner.status === "โอนแล้ว" ? (
-                    <div className="status approved">
-                      <span 
-                        onClick={() => handleImageClick(owner.slip_url)} 
-                        style={{ cursor: 'pointer' }}
-                      >
+                    <div className="status-approved">
+                      <span onClick={() => handleTransferClick(owner)} style={{ cursor: "pointer" }}>
                         โอนแล้ว
                       </span>
                     </div>
                   ) : (
                     <div className="status-container">
-                      <div className="status pending">
-                        <Link 
-                          href={{
-                            pathname: "/Homeadmin/Manage_Cash/Pending",
-                            query: { 
-                              id_owner: owner.id_owner,
-                              user_name: owner.user_name,
-                              bank_name: owner.bank_name,
-                              bank_account: owner.bank_account,
-                              date: owner.date
-                            }
-                          }}
-                          passHref
-                        >
+                      <div className="status-pending">
+                        <Link href={{ pathname: "/Homeadmin/Manage_Cash/Pending", query: { id_owner: owner.id_owner, user_name: owner.user_name, bank_name: owner.bank_name, bank_account: owner.bank_account, date: owner.date } }} passHref>
                           <span>รอดำเนินการ</span>
                         </Link>
                       </div>
@@ -166,12 +170,18 @@ export default function Manage_Cash() {
           </tbody>
         </table>
       </div>
-
-      {selectedImage && (
+      {selectedTransfer && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="close-btn" onClick={closeModal}>X</button>
-            <img src={selectedImage} alt="รูปภาพ" className="modal-image" />
+            <img src={selectedTransfer.slipUrl} alt="รูปภาพ" className="modal-image" />
+            {selectedTransfer.payDate && selectedTransfer.adminName && (
+              <div className="transfer-details" style={{ padding: '15px', textAlign: 'center' }}>
+                <p><strong>วันที่โอน:</strong> {new Date(selectedTransfer.payDate).toLocaleDateString('th-TH')}</p>
+                <p><strong>เวลา:</strong> {new Date(selectedTransfer.payDate).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })}</p>
+                <p><strong>ผู้ดำเนินการ:</strong> {selectedTransfer.adminName}</p>
+              </div>
+            )}
           </div>
         </div>
       )}
