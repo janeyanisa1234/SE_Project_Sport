@@ -2,8 +2,8 @@
 .background {
   min-height: 100vh;
   padding-bottom: 20px;
-  background-image: url('/pictureowner/bg.png');
-  background-size: cover;
+  /*background-image: url('/pictureowner/bg.png');*/
+  background:linear-gradient(to bottom, #F5F5F5, #DCE4E8);
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -33,7 +33,7 @@
 .detail-container {
   position: relative;
   top: 45px;
-  margin: 40px auto;
+  margin: 60px auto;
   background-color: white;
   max-width: 1200px;
   min-height: 350px;
