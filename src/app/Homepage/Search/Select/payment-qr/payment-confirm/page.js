@@ -9,24 +9,68 @@ import { useSearchParams, useRouter } from "next/navigation";
 const PaymentForm = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const userIdFromQuery = searchParams.get("userId");
-  const userId = userIdFromQuery || localStorage.getItem("userId");
-  const amount = searchParams.get("amount");
 
+  const userId = searchParams.get("userId") || localStorage.getItem("userId");
+  const bookingId = searchParams.get("bookingId");
+  const price = parseInt(searchParams.get("price"));
+  const stadiumName = searchParams.get("stadiumName");
+  const sportType = searchParams.get("sportType");
+  const courtNumber = parseInt(searchParams.get("courtNumber"));
+  const datePlay = searchParams.get("date");
+  const id_stadium = searchParams.get("id_stadium");
+  const id_court = searchParams.get("id_court");
+  const transactionId = searchParams.get("transactionId"); // รับ Transaction ID
+
+  let timeSlots;
+  try {
+    const encodedTimeSlots = searchParams.get("timeSlots");
+    timeSlots = encodedTimeSlots ? JSON.parse(decodeURIComponent(encodedTimeSlots)) : [];
+  } catch (error) {
+    console.error("Error parsing timeSlots:", error);
+    timeSlots = [];
+  }
+
+  const today = new Date().toISOString().split("T")[0];
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [transferDate, setTransferDate] = useState(today);
+  const [transferTime, setTransferTime] = useState("");
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
+  const [bookingData, setBookingData] = useState({
+    userId: userId,
+    bookingId: bookingId,
+    id_stadium: id_stadium,
+    id_court: id_court,
+    courtNumber: courtNumber,
+    datePlay: datePlay,
+    timeSlots: timeSlots,
+    price: price,
+    stadiumName: stadiumName,
+    sportType: sportType,
+  });
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   useEffect(() => {
     if (!userId) {
       alert("กรุณาเข้าสู่ระบบก่อน");
       router.push("/login");
+      return;
     }
-    console.log("User ID in PaymentForm:", userId);
-  }, [userId, router]);
+    console.log("Initial Booking Data in PaymentForm:", {
+      userId,
+      bookingId,
+      price,
+      stadiumName,
+      sportType,
+      courtNumber,
+      datePlay,
+      timeSlots,
+      id_stadium,
+      id_court,
+      transactionId,
+    });
+  }, [userId, router, bookingId]);
 
   if (!userId) return null;
 
@@ -53,12 +97,31 @@ const PaymentForm = () => {
   }, [preview]);
 
   const handleUpload = async () => {
-    if (!file || !date || !time) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+    if (!file || !transferDate || !transferTime || !transactionId) {
+      alert("กรุณากรอกข้อมูลให้ครบถ้วน (วันที่โอน, เวลาที่โอน, สลิป, และเลขที่รายการ)");
       return;
     }
-    if (!userId) {
-      alert("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบก่อน");
+
+    const requiredFields = [
+      "userId",
+      "bookingId",
+      "id_stadium",
+      "id_court",
+      "courtNumber",
+      "datePlay",
+      "timeSlots",
+      "price",
+    ];
+    for (let field of requiredFields) {
+      if (!bookingData[field]) {
+        alert(`ข้อมูล ${field} หายไป กรุณาตรวจสอบ`);
+        console.error(`Missing field: ${field}`);
+        return;
+      }
+    }
+
+    if (transferDate !== today) {
+      alert("วันที่โอนต้องเป็นวันนี้เท่านั้น");
       return;
     }
 
@@ -66,25 +129,62 @@ const PaymentForm = () => {
     setMessage("");
 
     const formData = new FormData();
-    formData.append("slip", file);
-    formData.append("date", date);
-    formData.append("time", time);
-    formData.append("userId", userId);
-    formData.append("amount", amount);
+    formData.append("slipImage", file);
+    formData.append("user_id", bookingData.userId);
+    formData.append("bookingId", bookingData.bookingId);
+    formData.append("date", transferDate);
+    formData.append("time", transferTime);
+    formData.append("id_stadium", bookingData.id_stadium);
+    formData.append("id_court", bookingData.id_court);
+    formData.append("court_number", bookingData.courtNumber.toString());
+    formData.append("date_play", bookingData.datePlay);
+    formData.append("time_slot", bookingData.timeSlots.join(","));
+    formData.append("totalPrice", bookingData.price);
+    formData.append("transactionId", transactionId); // ส่ง Transaction ID
 
     try {
-      const response = await axios.post("http://localhost:5000/uploadSlip", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/booking/confirm",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          timeout: 10000,
+        }
+      );
       setMessage(response.data.message);
-      alert("อัปโหลดสำเร็จ! " + response.data.message);
-      router.push("/booking-success"); // Redirect ไปหน้าสำเร็จ
+      setShowSuccessPopup(true);
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
-      alert("เกิดข้อผิดพลาดในการอัปโหลดไฟล์: " + (error.response?.data?.message || error.message));
+      console.error("Upload error:", error.response?.data || error);
+      const errorMsg = error.response?.data?.error || error.message || "ไม่ทราบสาเหตุ";
+      alert(`เกิดข้อผิดพลาดในการอัปโหลด: ${errorMsg}`);
+      setMessage(`ข้อผิดพลาด: ${errorMsg}`);
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleConfirmPopup = () => {
+    setShowSuccessPopup(false);
+    router.push(`/Homepage?bookingId=${bookingId}`);
+  };
+
+  const renderSuccessPopup = () => {
+    if (!showSuccessPopup) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+          <h2 className="text-2xl font-bold mb-4">การจองสำเร็จ</h2>
+          <p className="mb-6">การจองของคุณได้รับการยืนยันแล้ว</p>
+          <button
+            onClick={handleConfirmPopup}
+            className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
+          >
+            ยืนยัน
+          </button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -95,21 +195,30 @@ const PaymentForm = () => {
       <Tabbar />
       <div className="flex flex-col sm:flex-row items-center justify-center flex-grow px-4 w-full">
         <div className="bg-white bg-opacity-80 p-10 rounded-lg shadow-lg max-w-2xl w-full text-lg">
-          <h2 className="text-xl font-semibold text-gray-800 mt-4">วันและเวลาที่ทำการชำระเงิน</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mt-4">วันและเวลาที่ทำการโอน</h2>
           <input
             type="date"
             className="bg-gray-300 px-4 py-3 rounded mt-4 w-full text-lg"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+            value={transferDate}
+            min={today}
+            max={today}
+            onChange={(e) => setTransferDate(e.target.value)}
+            readOnly
           />
           <input
             type="time"
             className="bg-gray-300 px-4 py-3 rounded mt-4 w-full text-lg"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
+            value={transferTime}
+            onChange={(e) => setTransferTime(e.target.value)}
           />
-
-          <h2 className="text-xl font-semibold text-gray-800 mt-8">ใบเสร็จการชำระเงิน</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mt-4">เลขที่รายการ</h2>
+          <input
+            type="text"
+            className="bg-gray-300 px-4 py-3 rounded mt-4 w-full text-lg"
+            value={transactionId || ""}
+            readOnly
+          />
+          <h2 className="text-xl font-semibold text-gray-800 mt-8">สลิปการโอน</h2>
           <div className="bg-gray-300 w-full h-40 flex items-center justify-center border-black border-2 mt-4 relative overflow-hidden">
             <input
               type="file"
@@ -121,11 +230,10 @@ const PaymentForm = () => {
               <img src={preview} alt="Receipt Preview" className="w-full h-full object-contain" />
             ) : (
               <button className="flex items-center bg-black text-white px-8 py-3 rounded text-lg">
-                📷 อัปโหลดหลักฐาน
+                📷 อัปโหลดสลิป
               </button>
             )}
           </div>
-
           <div className="mt-6 flex justify-center">
             <button
               onClick={handleUpload}
@@ -135,10 +243,10 @@ const PaymentForm = () => {
               {uploading ? "กำลังอัปโหลด..." : "ยืนยัน"}
             </button>
           </div>
-
           {message && <p className="mt-4 text-center text-lg">{message}</p>}
         </div>
       </div>
+      {renderSuccessPopup()}
     </div>
   );
 };

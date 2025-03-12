@@ -23,6 +23,7 @@ const SelectPlace = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedTimes, setSelectedTimes] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [userId, setUserId] = useState(null);
   const [bookingData, setBookingData] = useState({
     sportType: "",
     courtNumber: "",
@@ -32,10 +33,16 @@ const SelectPlace = () => {
   });
  
   useEffect(() => {
+    const storedUserId = localStorage.getItem("userId"); // ใช้ userId จาก localStorage แทน AuthService
+    if (!storedUserId) {
+      router.push("/Login");
+    } else {
+      setUserId(storedUserId);
+    }
+ 
     async function fetchTotalVenues() {
       try {
         const response = await axios.get("http://localhost:5000/api/booking/stadiums");
-        console.log("API Response:", response.data);
         if (response.data && response.data.length > 0) {
           setTotalVenues(response.data);
           const stadium = response.data.find((venue) => venue.stadium_name === stadiumName);
@@ -59,7 +66,7 @@ const SelectPlace = () => {
       }
     }
     fetchTotalVenues();
-  }, [stadiumName]);
+  }, [stadiumName, router]);
  
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
@@ -79,6 +86,7 @@ const SelectPlace = () => {
       setSelectedSlot(null);
       setSelectedTimes([]);
       setBookingData({
+        stadiumName: "",
         sportType: "",
         courtNumber: "",
         date: selectedDate,
@@ -90,11 +98,12 @@ const SelectPlace = () => {
       setSelectedSlot(null);
       setSelectedTimes([]);
       setBookingData({
+        stadiumName: stadiumName,
         sportType: court.court_type,
         courtNumber: "",
         date: selectedDate,
         timeSlots: [],
-        price: court.final_price,
+        price: parseFloat(court.final_price) || 0,
       });
       setActiveCategory(court.court_type);
     }
@@ -104,19 +113,11 @@ const SelectPlace = () => {
     if (selectedSlot === slotNumber) {
       setSelectedSlot(null);
       setSelectedTimes([]);
-      setBookingData((prev) => ({
-        ...prev,
-        courtNumber: "",
-        timeSlots: [],
-      }));
+      setBookingData((prev) => ({ ...prev, courtNumber: "", timeSlots: [] }));
     } else {
       setSelectedSlot(slotNumber);
       setSelectedTimes([]);
-      setBookingData((prev) => ({
-        ...prev,
-        courtNumber: slotNumber.toString(),
-        timeSlots: [],
-      }));
+      setBookingData((prev) => ({ ...prev, courtNumber: slotNumber.toString(), timeSlots: [] }));
     }
   };
  
@@ -128,7 +129,6 @@ const SelectPlace = () => {
       const newTimes = prevTimes.includes(timeString)
         ? prevTimes.filter((t) => t !== timeString)
         : [...prevTimes, timeString];
-      
       setBookingData((prev) => ({ ...prev, timeSlots: newTimes }));
       return newTimes;
     });
@@ -136,7 +136,6 @@ const SelectPlace = () => {
  
   const handleBookingConfirmation = () => {
     if (selectedCourt && selectedSlot && selectedDate && selectedTimes.length > 0) {
-      setActiveCategory(bookingData.sportType);
       setShowPopup(true);
     }
   };
@@ -146,42 +145,49 @@ const SelectPlace = () => {
   };
  
   const handleFinalConfirmation = async () => {
+    setShowPopup(false);
+ 
+    const totalPrice = bookingData.price * bookingData.timeSlots.length;
     const bookingPayload = {
-      stadiumId: totalVenues.find(v => v.stadium_name === stadiumName)?.id,
-      courtId: selectedCourt?.court_id,
-      sportType: bookingData.sportType,
-      courtNumber: bookingData.courtNumber,
+      userId,
+      stadiumId: totalVenues.find((v) => v.stadium_name === stadiumName)?.id || "",
+      courtId: selectedCourt?.court_id || "",
+      stadiumName: stadiumName,
+      sportType: selectedCourt?.court_type || "",
+      courtNumber: parseInt(bookingData.courtNumber),
       date: bookingData.date,
       timeSlots: bookingData.timeSlots,
-      price: bookingData.price * bookingData.timeSlots.length,
+      price: totalPrice,
     };
  
-    console.log("Sending booking payload:", bookingPayload); // Log ก่อนส่ง
- 
-    // ส่งข้อมูลไป Backend
-    await axios.post("http://localhost:5000/api/booking/bookings", bookingPayload, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
- 
-    // ปิด popup หลังส่งข้อมูล
-    setShowPopup(false);
+    try {
+      const response = await axios.post("http://localhost:5000/api/booking/stadiums", bookingPayload, {
+        headers: { "Content-Type": "application/json" },
+      });
+      router.push(
+        `/Homepage/Search/Select/payment-qr?bookingId=${response.data.bookingId}&price=${totalPrice}&userId=${userId}&stadiumName=${encodeURIComponent(response.data.stadiumName)}&sportType=${encodeURIComponent(response.data.sportType)}&courtNumber=${bookingPayload.courtNumber}&date=${bookingPayload.date}&timeSlots=${encodeURIComponent(JSON.stringify(bookingPayload.timeSlots))}&id_stadium=${bookingPayload.stadiumId}&id_court=${bookingPayload.courtId}`
+      );
+    } catch (error) {
+      console.error("Error submitting booking:", error.response?.data || error.message);
+      alert("เกิดข้อผิดพลาดในการจอง: " + (error.response?.data?.error || error.message));
+    }
   };
  
   const renderPopup = () => {
     if (!showPopup) return null;
  
+    const totalPrice = bookingData.price * bookingData.timeSlots.length;
     return (
       <div className="popup-overlay">
         <div className="popup-content">
           <h3 className="popup-title">สรุปการจอง</h3>
           <div className="popup-details">
+            <p>สนาม: {bookingData.stadiumName}</p>
             <p>กีฬาที่จอง: {bookingData.sportType}</p>
             <p>คอร์ด: {bookingData.courtNumber}</p>
             <p>วันที่: {bookingData.date}</p>
             <p>เวลา: {bookingData.timeSlots.join(", ")}</p>
-            <p>ราคา: {bookingData.price * bookingData.timeSlots.length} บาท</p>
+            <p>ราคา: {totalPrice} บาท</p>
           </div>
           <div className="popup-buttons">
             <button className="edit-button" onClick={handleEditBooking}>
@@ -212,10 +218,8 @@ const SelectPlace = () => {
                 <img src={court.court_image} alt={court.court_type} className="venue-image" />
                 <div className="court-info">
                   <h3>สนาม {court.court_type}</h3>
-                  {court.discount_percentage > 0 && (
-                    <p>โปรโมชั่นลด {court.discount_percentage}%</p>
-                  )}
-                  <p>ราคา: {court.final_price} บาท</p>
+                  {court.discount_percentage > 0 && <p>โปรโมชั่นลด {court.discount_percentage}%</p>}
+                  <p>ราคา: {court.final_price || "ไม่ระบุ"} บาท</p>
                 </div>
               </div>
             </div>
@@ -248,10 +252,7 @@ const SelectPlace = () => {
                       key={`slot-${slotNumber}`}
                       className={`slot-container ${selectedSlot === slotNumber ? "selected-slot" : ""}`}
                     >
-                      <h5
-                        onClick={() => handleSlotSelection(slotNumber)}
-                        style={{ cursor: "pointer" }}
-                      >
+                      <h5 onClick={() => handleSlotSelection(slotNumber)} style={{ cursor: "pointer" }}>
                         คอร์ด {slotNumber}
                       </h5>
                       <div className="time-rows">
@@ -273,6 +274,7 @@ const SelectPlace = () => {
                                     handleTimeSelection(time);
                                   }
                                 }}
+                                style={time.status === "unavailable" ? { pointerEvents: "none" } : {}}
                               >
                                 {time.start} - {time.end}
                               </div>
@@ -300,20 +302,20 @@ const SelectPlace = () => {
       <div className="select-place-container">
         <div className="banner" style={{ backgroundImage: `url('${stadiumData.imageUrl}')` }}>
           <div className="Headdetail">
-          <h2 className="venue-name">{stadiumName}</h2>
-          <p className="venue-address">{stadiumAddress}</p>
-          <div className="date-picker-container">
-            <label htmlFor="booking-date"></label>
-            <input
-              type="date"
-              id="booking-date"
-              value={selectedDate}
-              onChange={handleDateChange}
-              min={new Date().toISOString().split("T")[0]}
-            />
+            <h2 className="venue-name">{stadiumName}</h2>
+            <p className="venue-address">{stadiumAddress}</p>
+            <div className="date-picker-container">
+              <label htmlFor="booking-date"></label>
+              <input
+                type="date"
+                id="booking-date"
+                value={selectedDate}
+                onChange={handleDateChange}
+                min={new Date().toISOString().split("T")[0]}
+              />
+            </div>
           </div>
         </div>
-      </div>
  
         <nav className="category-nav">
           {categories.length > 0 ? (
@@ -331,16 +333,10 @@ const SelectPlace = () => {
           )}
         </nav>
  
-        <div className="venue-list">
-          {loading ? <p>กำลังโหลดข้อมูล...</p> : renderVenueList()}
-        </div>
+        <div className="venue-list">{loading ? <p>กำลังโหลดข้อมูล...</p> : renderVenueList()}</div>
  
         {selectedCourt && selectedSlot && selectedDate && selectedTimes.length > 0 && (
           <div className="booking-footer">
-            <>
-            
-            </>
-            
             <button className="confirm-button" onClick={handleBookingConfirmation}>
               ยืนยันการจอง
             </button>

@@ -1,0 +1,322 @@
+body {
+  font-family: "Prompt", sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+  color: #1f2937;
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 70px 20px 20px;
+  background: url("/pictureping/bg.jpg") no-repeat center/cover;
+  position: relative;
+}
+
+.page-header {
+  width: 100vw;
+  max-width: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 80px;
+  padding: 15px 25px;
+  background: #161616;
+  border-radius: 0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  height: 60px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.header-content h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  text-align: center;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.bookings-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 130px;
+  position: relative;
+}
+
+.table-card {
+  background: #ffffff;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.table-header-wrapper {
+  background: #57595e;
+  padding: 0;
+  position: relative; /* ใช้เป็น reference สำหรับ header-actions */
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1fr;
+  background: #57595e;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 18px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-cell {
+  padding: 12px;
+  font-size: 15px;
+}
+
+.header-actions {
+  position: absolute;
+  top: -30px; /* วางเหนือ table-card */
+  right: 0; /* ติดขอบขวาของ table-header-wrapper */
+  transform: translateY(0); /* ลบ translateY เพราะ top กำหนดตำแหน่งแล้ว */
+}
+
+.finance-link {
+  color: #000000;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 6px 12px;
+ 
+  
+}
+
+
+
+.table-body {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1fr;
+}
+
+.table-row {
+  display: contents;
+}
+
+.cell {
+  padding: 18px;
+  text-align: center;
+  font-size: 15px;
+  color: #4b5563;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.2s ease;
+}
+
+.table-row:nth-child(even) .cell {
+  background: #f9fafb;
+}
+
+.table-row:hover .cell {
+  background: #e0f2fe;
+}
+
+.cancel-btn {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.no-bookings {
+  text-align: center;
+  font-size: 18px;
+  color: #6b7280;
+  margin-top: 40px;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.modal-box {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 15px;
+}
+
+.reasons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.reason-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reason-checkbox {
+  margin: 0;
+}
+
+.warning-msg {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.close-btn,
+.confirm-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.close-btn {
+  background: #6b7280;
+  color: #ffffff;
+}
+
+.close-btn:hover {
+  background: #4b5563;
+}
+
+.confirm-btn {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.confirm-btn:hover {
+  background: #dc2626;
+}
+
+@media (max-width: 1024px) {
+  .table-header,
+  .table-body {
+    grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    padding: 12px 20px;
+    height: 50px;
+  }
+
+  .header-content h1 {
+    font-size: 24px;
+  }
+
+  .table-header,
+  .table-body {
+    grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+  }
+
+  .cell,
+  .header-cell {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .header-actions {
+    top: -35px;
+    right: 14px;
+  }
+
+  .finance-link {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 60px 15px 20px;
+  }
+
+  .table-header,
+  .table-body {
+    grid-template-columns: 1fr;
+  }
+
+  .table-card {
+    overflow-x: auto;
+  }
+
+  .cell,
+  .header-cell {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .header-actions {
+    position: static;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .finance-link {
+    display: inline-block;
+  }
+}
