@@ -1,67 +1,65 @@
 "use client";
 
-import "./globals.css";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Tabbar from "../../../../Tab/tab";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-const QR = ({ width = "950px", height = "600px" }) => {
+export default function QRPaymentPage({ width = "950px", height = "600px" }) {
   const searchParams = useSearchParams();
-  const amount = searchParams.get("amount"); // รับ amount จาก query string
+  const bookingId = searchParams.get("bookingId");
+  const amount = searchParams.get("price");
+  const userId = searchParams.get("userId");
+
   const [qrCodeUrl, setQrCodeUrl] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
   const [error, setError] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(300); // 15 นาที = 900 วินาที
+  const [timeLeft, setTimeLeft] = useState(300);
+  const [transactionId, setTransactionId] = useState(""); // เพิ่ม state สำหรับ Transaction ID
 
-  // Fetch QR Code
   useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (!storedUserId || storedUserId !== userId) {
+      console.error("User ID mismatch or not logged in");
+      setError("User ID ไม่ตรงหรือยังไม่ได้ล็อกอิน");
+      return;
+    }
+
     const fetchQRCode = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/generateQR', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: parseFloat(amount) || 100.50,
-            mobileNumber: '0853186887',
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setQrCodeUrl(data.qr);
-        setTotalAmount(data.amount);
+        const requestAmount = parseFloat(amount);
+        if (!requestAmount) throw new Error("Invalid amount");
+        const response = await axios.post(
+          "http://localhost:5000/generateQR",
+          { amount: requestAmount, mobileNumber: "0853186887" },
+          { headers: { "Content-Type": "application/json" } }
+        );
+        setQrCodeUrl(response.data.qr);
+        setTotalAmount(response.data.amount);
       } catch (error) {
-        console.error('Error fetching QR Code:', error);
-        setError('ไม่สามารถสร้าง QR Code ได้ กรุณาลองใหม่');
+        console.error("Error fetching QR Code:", error);
+        setError(`ไม่สามารถสร้าง QR Code ได้: ${error.response?.data?.message || error.message}`);
       }
     };
 
-    if (amount) fetchQRCode();
-  }, [amount]);
+    fetchQRCode();
+  }, [amount, userId]);
 
-  // Countdown Timer
   useEffect(() => {
-    if (timeLeft <= 0) return; // หยุดเมื่อถึง 0
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1);
-    }, 1000); // อัปเดตทุก 1 วินาที
-
-    // Cleanup interval เมื่อ component unmount หรือ timeLeft เปลี่ยน
+    if (timeLeft <= 0) return;
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  // แปลงวินาทีเป็น MM:SS
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
+  const handleTransactionIdChange = (e) => {
+    setTransactionId(e.target.value);
   };
 
   return (
@@ -76,6 +74,8 @@ const QR = ({ width = "950px", height = "600px" }) => {
             className="bg-white border border-gray-300 rounded-xl p-8 shadow-2xl text-center relative"
             style={{ width, height }}
           >
+
+            
             <button className="absolute top-6 right-6 text-gray-500 text-3xl hover:text-red-500 transition">
               ✖
             </button>
@@ -88,6 +88,13 @@ const QR = ({ width = "950px", height = "600px" }) => {
                 <p className="text-xl text-gray-700 font-semibold">
                   ยอดชำระเงิน: <span className="text-green-500 font-bold">{totalAmount} บาท</span>
                 </p>
+                <input
+                  type="text"
+                  placeholder="กรอกเลขที่รายการจากสลิป"
+                  value={transactionId}
+                  onChange={handleTransactionIdChange}
+                  className="mt-4 p-2 border rounded w-full"
+                />
               </>
             ) : (
               <p className="text-gray-500 my-8">กำลังสร้าง QR Code...</p>
@@ -100,20 +107,37 @@ const QR = ({ width = "950px", height = "600px" }) => {
               </span>
             </p>
 
-            {timeLeft > 0 ? (
-              <Link href="/Homepage/Search/Select/payment-qr/payment-confirm">
+            {timeLeft > 0 && qrCodeUrl && transactionId ? (
+              <Link
+                href={{
+                  pathname: "/Homepage/Search/Select/payment-qr/payment-confirm",
+                  query: {
+                    bookingId,
+                    price: totalAmount,
+                    userId,
+                    stadiumName: searchParams.get("stadiumName"),
+                    sportType: searchParams.get("sportType"),
+                    courtNumber: searchParams.get("courtNumber"),
+                    date: searchParams.get("date"),
+                    timeSlots: searchParams.get("timeSlots"),
+                    id_stadium: searchParams.get("id_stadium"),
+                    id_court: searchParams.get("id_court"),
+                    transactionId, // ส่ง Transaction ID ไปด้วย
+                  },
+                }}
+              >
                 <button className="mt-10 bg-green-500 hover:bg-green-600 text-white text-2xl px-8 py-4 rounded-xl transition">
                   ยืนยัน
                 </button>
               </Link>
             ) : (
-              <p className="mt-10 text-red-500 font-semibold">หมดเวลาชำระเงิน กรุณาเริ่มใหม่</p>
+              <p className="mt-10 text-red-500 font-semibold">
+                {timeLeft <= 0 ? "หมดเวลาชำระเงิน" : "กรุณากรอกเลขที่รายการ"}
+              </p>
             )}
           </div>
         </div>
       </div>
     </>
   );
-};
-
-export default QR;
+}

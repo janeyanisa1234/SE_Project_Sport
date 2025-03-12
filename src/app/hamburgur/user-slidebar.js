@@ -68,14 +68,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         </li>
       </Link>
 
-      <Link href="/Homepage/Search/Select/payment-qr/payment-confirm/history" className="sidebar-link">
+      <Link href="/Homepage/history" className="sidebar-link">
         <li>
         <img src="/picturepalm/history.svg" alt="iconhistory" />
         ประวัติการจอง
         </li>
       </Link>
         
-      <Link href="/cancle" className="sidebar-link" >
+      <Link href="/Homepage/cancle" className="sidebar-link" >
         <li>
           <img src="/picturepalm/cancle.svg" alt="iconbin" />
            ยกเลิกการจองสนาม
