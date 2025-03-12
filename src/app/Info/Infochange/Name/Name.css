@@ -1,24 +1,14 @@
 .name-container {
-    height: 100vh;
-    background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
-    background-size: cover;
-    background-position: center;
-    position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/pictureowner/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   }
   
-  .overlay {
-    position: absolute;
-  
-    inset: 0;
-  
-    background-color: rgba(240, 224, 224, 0.507);
-  
-    display: flex;
-  
-    align-items: center;
-  
-    justify-content: center;
-  }
   
   .name-box {
     background: rgb(252, 251, 251);

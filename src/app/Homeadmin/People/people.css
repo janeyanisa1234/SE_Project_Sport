@@ -19,6 +19,20 @@ body {
   font-weight: bold;
   margin-top: 60px;
 }
+.header-titlepeople {
+  position: relative;
+  top: 55;
+  margin-top: 20px;
+  margin-bottom: 80px;
+  height: 60px;
+  width: 100%;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+}
 
 .iconG {
   width: 50px;
@@ -35,6 +49,7 @@ body {
   align-items: center;
   margin: 0 auto;
   max-width: 1200px;
+  margin-top: 50px;
 }
 
 .filter-container select,

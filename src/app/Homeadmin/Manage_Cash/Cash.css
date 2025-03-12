@@ -19,62 +19,52 @@ body {
   margin-top: 60px;
 }
 
-/* แก้ไขขนาดของ .iconG ที่ถูกซ้ำซ้อน */
 .iconG {
-  width: 50px;  /* กำหนดขนาดใหม่เป็น 50px */
-  height: 50px; /* กำหนดขนาดใหม่เป็น 50px */
+  width: 50px;
+  height: 50px;
   background-color: black;
   border-radius: 10%;
   margin-left: 25px;
 }
 
-/* ขยายช่องค้นหาและดรอปดาวน์ */
 .filter-container {
   display: grid;
   grid-template-columns: 5fr 5fr 6fr;
   gap: 50px;
   align-items: center;
   margin: 0 auto;
-  max-width: 1200px; /* ปรับขนาด */
+  max-width: 1200px;
 }
 
 .filter-container select,
 .filter-container input {
-  padding: 14px; /* เพิ่มขนาด */
-  font-size: 18px; /* ใหญ่ขึ้น */
+  padding: 14px;
+  font-size: 18px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100%;
-  height: 50px; /* เพิ่มความสูง */
+  height: 50px;
 }
 
-/* โฮเวอร์ตาราง */
-tr:hover {
-  background-color: #e0e0e0;
-}
-
-/* ปรับขนาดตาราง */
 .table-container {
   margin: 20px auto;
   max-width: 1200px;
-  overflow-x: auto;  /* เพิ่มเลื่อนซ้ายขวาถ้าจอเล็ก */
+  overflow-x: auto;
   background-color: white;
   border-radius: 10px;
 }
 
-/* ตาราง */
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 1.2rem;
 }
 
-/* เซลล์ */
 th, td {
   padding: 16px;
   text-align: center;
   border: 1px solid #ccc;
-  white-space: nowrap; /* ป้องกันข้อความขึ้นบรรทัดใหม่ */
+  white-space: nowrap;
 }
 
 th {
@@ -91,34 +81,30 @@ tr:nth-child(odd) {
   background-color: #ffffff;
 }
 
-/* Corrected hover effect */
 tr:hover {
   background-color: #f1f0f0;
 }
 
-/* ปุ่มลบ */
-.delete-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* ปรับระยะห่างระหว่างไอคอน */
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.delete-btn img {
-  width: 30px;
-  height: 30px;
-  justify-content: center; /* จัดแนวกลางในแนวนอน */
-  align-items: center; /* จัดแนวกลางในแนวตั้ง */
-}
-
 .sport select:hover {
-  background-color: #807f7f; 
-  color: white;               
+  background-color: #807f7f;
+  color: white;
 }
 
-/* Modal overlay */
+.view-image-btn {
+  background-color: #ccc;
+  color: rgb(0, 0, 0);
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.view-image-btn:hover {
+  background-color: #999;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -132,7 +118,6 @@ tr:hover {
   z-index: 1000;
 }
 
-/* Modal content */
 .modal-content {
   background-color: white;
   padding: 20px;
@@ -142,7 +127,6 @@ tr:hover {
   max-height: 80%;
 }
 
-/* Close button */
 .close-btn {
   position: absolute;
   top: 10px;
@@ -154,7 +138,6 @@ tr:hover {
   color: red;
 }
 
-/* Modal image */
 .modal-image {
   max-width: 100%;
   max-height: 80vh;
@@ -162,40 +145,82 @@ tr:hover {
   display: block;
   margin: 0 auto;
 }
-
-.view-image-btn {
-  background-color: #ccc; /* สีพื้นหลังเทา */
-  color: rgb(0, 0, 0); /* ข้อความเป็นสีขาว */
-  padding: 8px 16px; /* เพิ่มการเว้นระยะรอบ ๆ ข้อความ */
-  border: none; /* ไม่มีขอบ */
-  border-radius: 5px; /* มุมโค้ง */
-  cursor: pointer; /* ให้ปุ่มมีลักษณะเป็นตัวชี้เมาส์ */
-  font-size: 16px; /* ขนาดตัวอักษร */
-  transition: background-color 0.3s ease; /* การเปลี่ยนสีพื้นหลังเมื่อมีการโฮเวอร์ */
+.header-titlecash {
+  position: relative;
+  top: 55;
+  margin-top: 20px;
+  margin-bottom: 80px;
+  height: 60px;
+  width: 100%;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
 }
-
-.view-image-btn:hover {
-  background-color: #999; /* เมื่อโฮเวอร์พื้นหลังจะเปลี่ยนเป็นสีเทาเข้มขึ้น */
-}
-
-/* ปรับการจัดวางข้อมูลบัญชีธนาคาร */
 .account-info {
-  padding-left: 10px;  /* กำหนดระยะห่างจากขอบซ้าย */
-  text-align: left;     /* ข้อความจัดชิดซ้าย */
+  padding-left: 10px;
+  text-align: left;
 }
 
-/* ปุ่มดูรูปบัญชี */
 .view-image-btn {
-  margin-top: 10px; /* เพิ่มระยะห่างจากข้อมูลข้างบน */
+  margin-top: 10px;
   display: inline-block;
 }
 
-/* เพิ่มการเปลี่ยนสีเมื่อโฮเวอร์ */
-.status.pending:hover {
-  color: red;  /* เปลี่ยนสีตัวอักษรเป็นสีแดง */
-  cursor: pointer; /* เปลี่ยนรูปเมาส์เป็นมือเมื่อโฮเวอร์ */
+.status-approved span {
+  color: rgb(31, 133, 31); /* กำหนดสีเป็นสีดำสำหรับ "โอนแล้ว" */
+  cursor: pointer;
+  text-decoration: underline; /* เส้นใต้เพื่อบอกว่าคลิกได้ */
 }
 
-.status.pending:hover span {
-  text-decoration: underline; /* เพิ่มเส้นใต้เมื่อโฮเวอร์ */
+.status-approved span:hover {
+  color: #007bff; /* เปลี่ยนเป็นสีน้ำเงินเมื่อ hover */
+}
+
+.status-pending span {
+  color: black; /* สีเริ่มต้นสำหรับ "รอดำเนินการ" */
+}
+
+.status-pending span:hover {
+  color: red; /* เปลี่ยนเป็นสีแดงเมื่อ hover */
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .filter-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .table-container {
+    margin: 10px;
+  }
+
+  table {
+    font-size: 1rem;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+
+  th {
+    font-size: 1.1rem;
+  }
+
+  .account-info {
+    padding: 8px;
+  }
+}
+.transfer-details {
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+.transfer-details p {
+  margin: 5px 0;
+  font-size: 14px;
 }

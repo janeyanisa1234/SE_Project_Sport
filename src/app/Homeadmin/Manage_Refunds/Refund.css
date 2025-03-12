@@ -19,21 +19,26 @@ body {
   margin-top: 60px;
 }
 
+.header-titlerefund {
+  position: relative;
+  top: 55;
+  margin-top: 20px;
+  margin-bottom: 80px;
+  height: 60px;
+  width: 100%;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+}
 .iconG {
-  width: 50px; /* เปลี่ยนเป็น 50px */
-  height: 50px; /* เปลี่ยนเป็น 50px */
+  width: 50px;
+  height: 50px;
   background-color: black;
   border-radius: 10%;
   margin-left: 25px;
-}
-
-.image-cell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 14px;
 }
 
 .filter-container {
@@ -55,30 +60,22 @@ body {
   height: 50px;
 }
 
-.search-icon {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-}
-
 .table-container {
   margin: 20px auto;
   max-width: 1200px;
-  max-height: 1200px;
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 10px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  border-radius: 10px;
-  overflow: hidden;
-  font-size: 16px;
+  font-size: 1.2rem;
 }
 
 th, td {
   padding: 16px;
-  text-align: center;
   border: 1px solid #ccc;
   vertical-align: middle;
 }
@@ -86,12 +83,24 @@ th, td {
 th {
   background-color: black;
   color: white;
-  font-size: 18px;
-  vertical-align: middle;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+td {
+  text-align: center;
 }
 
 tr:nth-child(even) {
   background-color: #f9f9f9;
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+tr:hover {
+  background-color: #f1f0f0;
 }
 
 .delete-btn {
@@ -106,41 +115,8 @@ tr:nth-child(even) {
 .delete-btn img {
   width: 30px;
   height: 30px;
-}
-
-.delete-btn img {
-  width: 30px;
-  height: 30px;
-}
-
-.status {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 5px;
-  color: black;
-  font-weight: bold;
-}
-
-.status.approved {
-  color: green;
-  white-space: nowrap;
-}
-
-.status.pending {
-  color: rgb(12, 12, 12);
-  white-space: nowrap;
-}
-
-.status img {
-  width: 20px;
-  height: 20px;
-}
-
-.iconG {
-  width: 50px; /* ใช้ขนาด 50px */
-  height: 50px; /* ใช้ขนาด 50px */
-  display: inline-block;
-  vertical-align: middle;
 }
 
 .sport select:hover {
@@ -148,38 +124,161 @@ tr:nth-child(even) {
   color: white;
 }
 
-.rejected {
-  color: red;
+.view-image-btn {
+  background-color: #ccc;
+  color: rgb(0, 0, 0);
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
+.view-image-btn:hover {
+  background-color: #999;
+}
+
+.status.pending:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.status.pending:hover span {
+  text-decoration: underline;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  max-width: 80%;
+  max-height: 80%;
+  overflow: auto;
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background-color: darkred;
+}
+
+.status-cancelled {
+  color: red;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.status-cancelled:hover {
+  color: #4a77f3; /* สีแดงเข้มเมื่อ hover */
+}
+
+
+
+/* ช่องรายละเอียดการจองและข้อมูลบัญชีธนาคาร */
+.booking-details,
+.account-info {
+  text-align: left;
+  padding: 16px;
+}
+
+.booking-details p,
+.account-info p {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+
+.account-info .view-image-btn {
+  margin-top: 10px;
+}
+
+/* Responsive */
 @media (max-width: 600px) {
   .filter-container {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .search-icon {
-    width: 40px;
-    height: 40px;
+  .table-container {
+    margin: 10px;
   }
 
   table {
-    font-size: 14px;
+    font-size: 1rem;
   }
 
   th, td {
     padding: 8px;
-    gap: 8px;
   }
 
-  .profile-pic {
-    width: 40px;
-    height: 40px;
+  th {
+    font-size: 1.1rem;
+  }
+
+  .booking-details,
+  .account-info {
+    padding: 8px;
+  }
+
+  .booking-details p,
+  .account-info p {
+    margin: 4px 0;
+    font-size: 0.9rem;
   }
 
   .delete-btn img {
     width: 25px;
     height: 25px;
-    align-items: center;
   }
+
+  .view-image-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+
+.status-link:hover {
+  color: #007bff; /* เปลี่ยนเป็นสีแดงเมื่อ hover */
+}
+
+.refund-details {
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+.refund-details p {
+  margin: 5px 0;
+  font-size: 14px;
 }

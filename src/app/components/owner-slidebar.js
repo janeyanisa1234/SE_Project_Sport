@@ -40,13 +40,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             <img src="/pictureowner/profile.png" alt="iconprofile" />
             <div>
               <Link
-                href="/Info"
+                href="/ownerProfile"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 {userName || "ผู้ใช้งาน"}
               </Link>
               <br />
+
+              
               <small style={{ color: "white" }}>เจ้าของสนาม</small>
+
             </div>
           </li>
 
@@ -97,16 +100,6 @@ export default function Sidebar({ isOpen, setIsOpen }) {
               style={{ textDecoration: "none", color: "inherit" }}
             >
               การเงิน
-            </Link>
-          </li>
-
-          <li>
-            <img src="/pictureowner/passwd.png" alt="iconpasswd" />
-            <Link
-              href="/EmailInput"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-            เปลี่ยนรหัสผ่าน
             </Link>
           </li>
 

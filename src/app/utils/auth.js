@@ -1,6 +1,6 @@
 // utils/auth.js
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode'; // You'll need to install this: npm install jwt-decode
+import { jwtDecode } from 'jwt-decode';
 
 const API_URL = "http://localhost:5000/api/kong";
 
@@ -51,8 +51,6 @@ export const AuthService = {
       if (response.data.token) {
         AuthService.setToken(response.data.token);
         AuthService.setUser(response.data.user);
-        
-        // Determine and set user role
         AuthService.setUserRole(response.data.user);
       }
       return response.data;
@@ -66,10 +64,11 @@ export const AuthService = {
     try {
       const response = await api.post(`${API_URL}/login`, credentials);
       if (response.data.token) {
+        // Store token
         AuthService.setToken(response.data.token);
-        AuthService.setUser(response.data.user);
         
-        // Determine and set user role
+        // Store user data
+        AuthService.setUser(response.data.user);
         AuthService.setUserRole(response.data.user);
       }
       return response.data;
@@ -93,12 +92,18 @@ export const AuthService = {
 
   // Set user data to localStorage
   setUser: (user) => {
+    // Store the complete user object
     localStorage.setItem('user', JSON.stringify(user));
+    
+    // For convenience, also store individual fields
+    if (user.id) localStorage.setItem('userId', user.id);
+    if (user.name) localStorage.setItem('userName', user.name);
+    if (user.email) localStorage.setItem('userEmail', user.email);
   },
   
   // Determine and set user role
   setUserRole: (user) => {
-    let role = 'user'; // Default role
+    let role = 'user'; // Default to regular user
     
     if (user.isAdmin) {
       role = 'admin';
@@ -107,22 +112,36 @@ export const AuthService = {
     }
     
     localStorage.setItem('userRole', role);
+    
+    // Also store the boolean flags directly
+    localStorage.setItem('isAdmin', user.isAdmin || false);
+    localStorage.setItem('isOwner', user.isOwner || false);
   },
   
   // Get user role
   getUserRole: () => {
     if (typeof window !== 'undefined') {
+      // If not authenticated, return null instead of 'user'
+      if (!AuthService.isAuthenticated()) {
+        return null;
+      }
       return localStorage.getItem('userRole') || 'user';
     }
-    return 'user';
+    return null; // Return null for server-side rendering
   },
 
   // Logout user
   logout: () => {
     if (typeof window !== 'undefined') {
+      // Clear all user-related data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('userRole');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('isOwner');
       window.location.href = '/Login';
     }
   },

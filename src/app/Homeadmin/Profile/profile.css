@@ -1,25 +1,12 @@
 .admin-container {
-  height: 100vh;
-  background-image: url("/pictureice/stadium-bg.png");
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/pictureowner/bg.png');
   background-size: cover;
   background-position: center;
-  position: relative;
-  
-  }
-   
-  .admin-overlay {
-  
-    position: absolute;
-  
-    inset: 0;
-  
-    background-color: rgba(240, 224, 224, 0.507);
-  
-    display: flex;
-  
-    align-items: center;
-  
-    justify-content: center;
+  background-repeat: no-repeat;
   
   }
    

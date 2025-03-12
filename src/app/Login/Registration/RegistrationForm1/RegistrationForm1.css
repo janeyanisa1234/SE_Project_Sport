@@ -1,21 +1,16 @@
 /* ตั้งค่าพื้นหลัง */
 .registration-container {
-  height: 130vh;
-  background: url('/pictureice/stadium-bg.png') no-repeat center center/cover;
+  min-height: 140vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/pictureowner/bg.png');
   background-size: cover;
   background-position: center;
-  position: relative;
+  background-repeat: no-repeat;
 }
 
-/* เพิ่ม overlay */
-.registration-overlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(240, 224, 224, 0.507);
-  display: flex;
-  align-items: center; /* เปลี่ยนจาก flex-start เป็น center */
-  justify-content: center;
-}
+
 
 /* ไอคอนผู้ใช้ */
 .icon-container {
@@ -40,9 +35,9 @@
   color: white;
   width: 500px; /* ลดความกว้างลง */
   height: auto; /* ให้ฟอร์มปรับขนาดอัตโนมัติ */
-  max-height: 950px; /* กำหนดความสูงสูงสุด */
+  max-height: 9900px; /* กำหนดความสูงสูงสุด */
   text-align: center;
-  margin-top: 2rem; /* เพิ่มระยะห่างจากขอบบน */
+ /* เพิ่มระยะห่างจากขอบบน */
 }
 
 /* กล่องอินพุต */

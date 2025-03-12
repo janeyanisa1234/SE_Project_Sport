@@ -72,12 +72,9 @@ export default function Dashboard() {
     <>
       <Sidebar />
       <Tab />
-      <br />
-      <p className="summary">
-        <img src="/pictureAdmin/Frame.svg" className="iconG" alt="group icon" />
-        รายการอนุมัติ
-      </p>
-      <br />
+      <div className="header-titleapprove">
+        <h1>รายการอนุมัติ</h1>
+      </div>
       <div className="filter-container">
         <select className="sport" value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="all">ทั้งหมด</option>
@@ -103,7 +100,14 @@ export default function Dashboard() {
                 <td>{index + 1}</td>
                 <td>{field.owner}</td>
                 <td className="image-cell">
-                  <Image src={field.image} width={100} height={40} alt={field.fieldName} className="field-image" />
+                  <Image 
+                    src={field.image} 
+                    width={100} 
+                    height={100} // ปรับให้สูงเท่ากับกว้างเพื่อความสม่ำเสมอ
+                    alt={field.fieldName} 
+                    className="field-image"
+                    style={{ objectFit: 'cover' }} // ทำให้รูปเต็มกรอบโดยไม่บิดเบี้ยว
+                  />
                   <p className="field-name">ชื่อ : {field.fieldName}</p>
                 </td>
                 <td>{field.location}</td>

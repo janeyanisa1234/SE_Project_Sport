@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import "./EmailInput.css"; 
-import Tabbar from "../../../Tab/tab"; 
+import "./Email.css"; 
+import Tabbar from "../../components/tab";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -36,7 +36,7 @@ export default function EmailInput() {
       
       // Make API request to send-reset-password-email endpoint with auth header
       const response = await axios.post(
-        `${API_URL}/send-reset-password-email`, 
+        `${API_URL}/send-reset`, 
         { email },
         { 
           headers: { 
@@ -57,7 +57,7 @@ export default function EmailInput() {
         
         // Redirect to same page after 3 seconds
         setTimeout(() => {
-          router.push("/Info/Infochange/EmailInput");
+          router.push("/ownerProfile/Email");
         }, 3000);
       } else {
         // If we got a response but it doesn't indicate success

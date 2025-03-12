@@ -10,25 +10,25 @@ import axios from "axios";
 export default function Info() {
   const [showPassword, setShowPassword] = useState(false); // ✅ ต้องมี state มิฉะนั้นจะแตก
   const [userData, setUserData] = useState(null); //ดึง backend
-
+  const API_URL = "http://localhost:5000/api/ice";
   useEffect(() => {
-    async function fetchUserData() {
+    // ดึงข้อมูลเจ้าของ
+    const fetchadmin = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/edit");
-        
-        if (response.data.length > 0) {
-          setUserData(response.data[0]); // ✅ ดึงแค่ object ตัวแรก
-        } else {
-          console.error("No user data received");
-        }
+        const token = localStorage.getItem("token"); // ดึง Token
+        const response = await axios.get(`${API_URL}/owner`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setUser(response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching owner:", error.response?.data?.message || error.message);
       }
-    }
-  
-    fetchUserData();
-  }, []);
-  
+    };
+
+    fetchadmin();
+  }, [])
+
 
   return (
     <>
@@ -47,15 +47,6 @@ export default function Info() {
             <p className="text"><strong>ชื่อ : </strong> {userData?.name || "N/A"} </p>
             <p className="text"><strong>อีเมล : </strong> {userData?.email || "N/A"} </p>
             <p className="text"><strong>เบอร์โทร : </strong> {userData?.phone || "N/A"}</p>
-
-            <div className="password-section">
-              <p className="text">
-                <strong>รหัสผ่าน : </strong> {showPassword ? userData?.password || "N/A" : "********"}
-              </p>
-              <button onClick={() => setShowPassword(!showPassword)} className="toggle-btn">
-                {showPassword ? <EyeOff size={24} className="icon" /> : <Eye size={24} className="icon" />}
-              </button>
-            </div>
 
             <Link href={"/Info/Infochange"}>
               <button className="edit-btn">แก้ไขข้อมูลส่วนตัว</button>

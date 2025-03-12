@@ -1,115 +1,283 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* ฟอนต์และสี */
-/* @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap'); */
-
-body {
-  font-family: 'Prompt', sans-serif;
-  color: #797777;
-  background-color: rgb(207, 206, 206);
-  height: 100vh;
+/* รีเซ็ต CSS พื้นฐาน */
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Prompt', sans-serif; /* ใช้ฟอนต์ Prompt หรือฟอนต์ที่คุณมี */
 }
 
-/* Responsive Grid */
+/* พื้นหลังและเลย์เอาต์หลัก */
+.dashboard-wrapper {
+  min-height: 100vh;
+ /* background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);*/
+ /* background-color: #F5F5F5;*/
+ /*linear-gradient(to bottom, #1B1B1B, #3F2E62)  linear-gradient(to bottom, #1F1F1F, #2E3A59)*/
+ background:linear-gradient(to bottom, #F5F5F5, #DCE4E8);
+ 
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 50 auto;
+  padding: 30px 20px;
+}
+
+.dashboard-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* การโหลดและข้อผิดพลาด */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563EB;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-path {
+  fill: none;
+  stroke: #2563EB;
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.25;
+  animation: spinner-path 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner-path {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+.error-message {
+  background-color: #ffe6e6;
+  color: #d32f2f;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+/* ตัวกรอง */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.filter-select {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+}
+
+.filter-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* สถิติหลัก */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stats-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stats-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stats-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.stats-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stats-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.stats-card.revenue .stats-value {
+  color: #28a745;
+}
+
+.stats-card.rate .stats-value {
+  color: #2563EB;
+}
+
+.stats-card.success .stats-value {
+  color: #17a2b8;
+}
+
+.stats-card.cancel .stats-value {
+  color: #dc3545;
+}
+
+/* การวิเคราะห์ */
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.analysis-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.analysis-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.analysis-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.analysis-value {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* กราฟ */
+.chart-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.chart-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.chart-value {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.chart-wrapper {
+  padding: 10px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .container, .container2, .container3 {
-    grid-template-columns: repeat(2, 1fr);
+  .dashboard-title {
+    font-size: 1.8rem;
+  }
+
+  .filter-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .filter-select {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .stats-value {
+    font-size: 1.2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .container, .container2, .container3 {
-    grid-template-columns: repeat(1, 1fr);
+  .dashboard-container {
+    padding: 20px 10px;
   }
-}
 
-/* สไตล์สำหรับกล่อง */
-.container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  max-width: 1350px;
-  margin: 30px auto 0;
-}
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
 
-.container3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  max-width: 1350px;
-  margin: 30px auto 0;
-}
+  .stats-card {
+    padding: 15px;
+  }
 
-.container2 {
-  display: grid;
-  gap: 30px;
-  grid-template-columns: repeat(1, 1fr);
-  max-width: 1350px;
-  margin: 30px auto 0;
-}
+  .analysis-card {
+    padding: 15px;
+  }
 
-.box, .box2 {
-  background-color: white;
-  padding: 20px;
-  text-align: center;
-  border-radius: 10px;
-  font-size: 20px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* หัวข้อ */
-.history-title,
-.card-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: black; /* หัวข้อสีดำ */
-}
-
-/* หัวข้อของแต่ละหมวดหมู่ */
-.label {
-  font-size: 18px;
-  font-weight: bold;
-  color: black; /* ทำให้สีดำ */
-}
-
-/* การจัดตำแหน่งและขนาดตัวหนังสือ */
-.summary {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 30px;
-  font-weight: bold;
-}
-
-/* ไอคอน */
-.iconG {
-  width: 50px;
-  height: 50px;
-  background-color: black;
-  border-radius: 10%;
-  margin-left: 25px;
-}
-
-.icon-eye {
-  width: 24px;
-  height: 24px;
-  color: #797777;
-}
-
-/* ปรับแต่งกล่องรายการ */
-.card {
-  background-color: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  font-size: 18px;
-  color: black;
-}
-
-.card p {
-  margin: 5px 0;
-  color: #797777;
+  .chart-container {
+    padding: 15px;
+  }
 }
