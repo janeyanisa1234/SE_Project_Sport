@@ -46,7 +46,10 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 {userName || "ผู้ใช้งาน"}
               </Link>
               <br />
-              <small style={{ color: "white" }}>ผู้ประกอบการ</small>
+
+              
+              <small style={{ color: "white" }}>เจ้าของสนาม</small>
+
             </div>
           </li>
 

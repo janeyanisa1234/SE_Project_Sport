@@ -4,14 +4,31 @@ import Image from "next/image";
 import "./profile.css";
 import Tab from "../Tabbar/page.js";
 import "../Dashboard/slidebar.css";
-import React, { useState } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
+import React, { useState, useEffect } from "react";
 import Link from 'next/link';
+import axios from "axios";
 
 export default function Admin() {
-  const [showPassword, setShowPassword] = useState(false);
-  const password = "jane1234";
+  const [adminData, setAdminData] = useState(null);
+  const API_URL = "http://localhost:5000/api/ice";
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      try {
+        const token = localStorage.getItem("token"); // ดึง JWT Token จาก localStorage
+        const response = await axios.get(`${API_URL}/admin`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAdminData(response.data);
+      } catch (error) {
+        console.error("Error fetching admin data:", error);
+      }
+    };
 
+    fetchAdminData();
+  }, []);
+  
+  
   return (
     <>
       <Tab />
@@ -27,24 +44,6 @@ export default function Admin() {
             <p className="admin-text"><strong>ชื่อ : </strong></p>
             <p className="admin-text"><strong>อีเมล : </strong></p>
             <p className="admin-text"><strong>เบอร์โทร : </strong></p>
-
-            <div className="admin-password-container">
-            <p className="admin-text">
-            <strong>รหัสผ่าน : </strong> {showPassword ? "" : "********"}</p>
-            <button onClick={() => setShowPassword(!showPassword)} className="toggle-btn">
-            
-                {showPassword ? (
-                  <EyeOff size={24} className="text-black" />
-                ) : (
-                  <Eye size={24} className="text-black" />
-                )}
-              </button>
-            </div>
-            <Link href="/Homeadmin/Profile/changpass" passHref>
-            <button className="admin-button">
-              เปลี่ยนรหัสผ่าน
-            </button>
-            </Link>
           </div>
         </div>
       </div>

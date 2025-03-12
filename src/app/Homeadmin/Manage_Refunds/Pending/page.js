@@ -1,31 +1,42 @@
 "use client";
-import axios from "axios";
-import { useSearchParams, useRouter } from "next/navigation";
-import Image from "next/image";
-import "./pending.css";
+import React, { useState, useEffect } from "react";
 import Tab from "../../Tabbar/page.js";
 import "../../Dashboard/slidebar.css";
-import React, { useState, useEffect } from "react";
 import Sidebar from "../../Dashboard/slidebar.js";
+import "./pending.css";
+import axios from "axios";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function TransferForm() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  
-  // ดึงข้อมูลที่ส่งมาจากหน้า Manage_Cash
-  const id_owner = searchParams.get('id_owner');
-  const user_name = searchParams.get('user_name');
-  const bank_name = searchParams.get('bank_name');
-  const bank_account = searchParams.get('bank_account');
-  const date = searchParams.get('date');
-  
   const [transferDate, setTransferDate] = useState('');
   const [transferTime, setTransferTime] = useState('');
   const [adminName, setAdminName] = useState('');
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [isFileUploaded, setIsFileUploaded] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [bookingData, setBookingData] = useState(null);
+  
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id_booking = searchParams.get('id');
+
+  useEffect(() => {
+    const fetchBookingData = async () => {
+      if (id_booking) {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/cancle/cancle-booking`);
+          const booking = response.data.data.find(item => item.id_booking === id_booking);
+          setBookingData(booking);
+          console.log('Fetched booking data:', booking);
+        } catch (error) {
+          console.error("Error fetching booking data:", error);
+        }
+      } else {
+        console.error('No id_booking found in URL');
+      }
+    };
+    fetchBookingData();
+  }, [id_booking]);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -39,68 +50,61 @@ export default function TransferForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // ตรวจสอบข้อมูลที่จำเป็น
     if (!transferDate || !transferTime || !adminName || !file) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน');
       return;
     }
-    
+
+    if (!id_booking) {
+      alert('ไม่พบ ID การจอง');
+      return;
+    }
+
     try {
-      setIsSubmitting(true);
-      
-      // สร้าง FormData สำหรับส่งไฟล์
       const formData = new FormData();
+      formData.append('id_booking', id_booking);
+      formData.append('date', `${transferDate} ${transferTime}`);
+      formData.append('name', adminName);
       formData.append('slipImage', file);
-      formData.append('id_owner', id_owner);
-      formData.append('date', date);
-      
-      // สร้าง timestamp จากข้อมูลวันที่และเวลา
-      const payDateTime = `${transferDate}T${transferTime}:00`;
-      formData.append('paydate', payDateTime);
-      formData.append('nameadmin', adminName);
-      
-      // ส่งข้อมูลไปยัง API
-      const response = await axios.post('http://localhost:5000/api/cashUpdate/complete-transfer', 
-        formData, 
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-      
-      // ถ้าสำเร็จให้ redirect กลับไปยังหน้าหลัก
+
+      console.log('Submitting refund with data:', {
+        id_booking,
+        date: `${transferDate} ${transferTime}`,
+        name: adminName,
+        fileName: file.name
+      });
+
+      const response = await axios.post('http://localhost:5000/api/cancle/process-refund', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
       if (response.status === 200) {
-        alert('ดำเนินการสำเร็จ');
-        router.push('/Homeadmin/Manage_Cash');
+        alert("ดำเนินการสำเร็จ");
+        router.push('/Homeadmin/Manage_Refunds');
       }
     } catch (error) {
-      console.error('Error submitting transfer:', error);
-      alert('เกิดข้อผิดพลาดในการดำเนินการ กรุณาลองใหม่อีกครั้ง');
-    } finally {
-      setIsSubmitting(false);
+      alert('เกิดข้อผิดพลาดในการดำเนินการ: ' + error.message);
+      console.error('Error submitting refund:', error);
     }
   };
 
   return (
     <>
       <Tab />
-      <Sidebar/>
+      <Sidebar />
       <div className="Container">
         <div className="Box">
           <h2 className="title">ดำเนินการโอนเงิน</h2>
-          <p className="section-title">ข้อมูลผู้รับ</p>
           
-          <div className="receiver-info">
-            <b>ชื่อผู้รับ :</b>
-            <span>{user_name || 'ไม่พบข้อมูล'}</span>
-            <b>ชื่อธนาคาร :</b>
-            <span>{bank_name || 'ไม่พบข้อมูล'}</span>
-            <b>เลขบัญชี :</b>
-            <span>{bank_account || 'ไม่พบข้อมูล'}</span>
-            <b>วันที่ตัดยอด :</b>
-            <span>{date || 'ไม่พบข้อมูล'}</span>
-          </div>
+          {bookingData && (
+            <div className="booking-info">
+              <h3>ข้อมูลการจอง</h3>
+              <p>ชื่อผู้จอง: {bookingData.user_name}</p>
+              <p>ธนาคาร: {bookingData.bank}</p>
+              <p>หมายเลขบัญชี: {bookingData.bank_number}</p>
+              <p>ยอดคืน: {bookingData.totalPrice}</p>
+            </div>
+          )}
 
           <h3 className="evidence-title">แบบหลักฐาน</h3>
           
@@ -111,7 +115,6 @@ export default function TransferForm() {
                 <input 
                   type="date" 
                   className="input-field"
-                  placeholder="วว/ดด/ปปปป"
                   value={transferDate}
                   onChange={(e) => setTransferDate(e.target.value)}
                   required
@@ -123,7 +126,6 @@ export default function TransferForm() {
                 <input 
                   type="time" 
                   className="input-field"
-                  placeholder="--:--"
                   value={transferTime}
                   onChange={(e) => setTransferTime(e.target.value)}
                   required
@@ -135,7 +137,6 @@ export default function TransferForm() {
                 <input 
                   type="text" 
                   className="input-field"
-                  placeholder="ระบุชื่อผู้ดำเนินการ"
                   value={adminName}
                   onChange={(e) => setAdminName(e.target.value)}
                   required
@@ -166,12 +167,8 @@ export default function TransferForm() {
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              className="submit-btn" 
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'กำลังดำเนินการ...' : 'ดำเนินการ'}
+            <button type="submit" className="submit-btn">
+              ดำเนินการ
             </button>
           </form>
         </div>

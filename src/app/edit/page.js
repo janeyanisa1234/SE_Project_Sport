@@ -6,169 +6,165 @@ import Tabbar from "../components/tab";
 import axios from "axios";
 import "./edit.css";
 
+// Component หลักสำหรับแก้ไขโปรโมชัน
 export default function EditPromotion() {
-  const [showModal, setShowModal] = useState(false);
-  const [promotionName, setPromotionName] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [discount, setDiscount] = useState("");
-  const [location, setLocation] = useState("");
-  const [sports, setSports] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // State การจัดการข้อมูลและ UI
+  const [showModal, setShowModal] = useState(false); // ควบคุมการแสดง modal
+  const [promotionName, setPromotionName] = useState(""); // ชื่อโปรโมชัน
+  const [startDate, setStartDate] = useState(""); // วันที่เริ่ม
+  const [startTime, setStartTime] = useState(""); // เวลาเริ่ม
+  const [endDate, setEndDate] = useState(""); // วันที่สิ้นสุด
+  const [endTime, setEndTime] = useState(""); // เวลาสิ้นสุด
+  const [discount, setDiscount] = useState(""); // ส่วนลด
+  const [stadiumName, setStadiumName] = useState(""); // สถานที่
+  const [sports, setSports] = useState([]); // รายการกีฬา
+  const [loading, setLoading] = useState(true); // สถานะการโหลด
+  const [error, setError] = useState(null); // ข้อผิดพลาด
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  // Hooks การนำทางและพารามิเตอร์
+  const router = useRouter(); // อินสแตนซ์ของ router
+  const searchParams = useSearchParams(); // ดึง query parameters
+  const id = searchParams.get("id"); // ดึง ID จาก URL
 
+  // Effect hook สำหรับโหลดข้อมูลเมื่อเริ่มต้น
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
-      alert("กรุณาเข้าสู่ระบบก่อนแก้ไขโปรโมชั่น");
-      router.push("/Login");
+      alert("กรุณาเข้าสู่ระบบก่อนแก้ไขโปรโมชัน"); // แจ้งเตือนถ้าไม่มี token
+      router.push("/Login"); // ไปหน้า login
       return;
     }
 
-    console.log("ID from query:", id, "URL:", window.location.href);
-    if (!id) {
-      console.error("No ID provided for editing, redirecting to /promotion");
-      alert("ไม่พบ ID โปรโมชั่นใน URL กรุณาตรวจสอบ");
-      router.push("/promotion");
+    if (!id) { // ตรวจสอบ ID
+      console.error("No ID provided"); // log ถ้าไม่มี ID
+      alert("ไม่พบ ID โปรโมชันใน URL"); // แจ้งเตือน
+      router.push("/promotion"); // ไปหน้าโปรโมชัน
       return;
     }
 
-    fetchPromotionDetails(token);
+    console.log("ID:", id, "URL:", window.location.href); // log ข้อมูล URL
+    fetchPromotionDetails(token); // ดึงข้อมูลโปรโมชัน
   }, [id, router]);
 
+  // ฟังก์ชันดึงข้อมูลโปรโมชันจาก API
   const fetchPromotionDetails = async (token) => {
     try {
-      setLoading(true);
+      setLoading(true); // เริ่มโหลด
       const response = await axios.get(`http://localhost:5000/api/promotions/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        timeout: 10000,
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, // header สำหรับ API
+        timeout: 10000, // timeout 10 วินาที
       });
-      console.log("API Response:", response.data, "Status:", response.status);
-      const promo = Array.isArray(response.data) ? response.data[0] : response.data;
-      if (!promo) throw new Error("Promotion not found");
 
-      const start = new Date(promo.start_datetime);
-      const end = new Date(promo.end_datetime);
+      console.log("API Response:", response.data); // log ข้อมูลที่ได้
+      const promo = Array.isArray(response.data) ? response.data[0] : response.data; // จัดการข้อมูลที่อาจเป็น array
+      if (!promo) throw new Error("Promotion not found"); // ถ้าไม่มีข้อมูล โยน error
 
-      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        throw new Error("Invalid date format in promotion data");
-      }
+      const start = new Date(promo.start_datetime); // วันที่เริ่ม
+      const end = new Date(promo.end_datetime); // วันที่สิ้นสุด
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) throw new Error("Invalid date format"); // ตรวจสอบวันที่
 
-      setPromotionName(promo.promotion_name || "");
-      setStartDate(start.toISOString().split("T")[0] || "");
-      setStartTime(start.toTimeString().slice(0, 5) || "");
-      setEndDate(end.toISOString().split("T")[0] || "");
-      setEndTime(end.toTimeString().slice(0, 5) || "");
-      setDiscount(promo.discount_percentage?.toString() || "");
-      setLocation(promo.location || "ไม่ระบุ");
-      setSports(promo.sports || []);
+      setPromotionName(promo.promotion_name || ""); // ตั้งชื่อ
+      setStartDate(start.toISOString().split("T")[0] || ""); // ตั้งวันที่เริ่ม
+      setStartTime(start.toTimeString().slice(0, 5) || ""); // ตั้งเวลาเริ่ม
+      setEndDate(end.toISOString().split("T")[0] || ""); // ตั้งวันที่สิ้นสุด
+      setEndTime(end.toTimeString().slice(0, 5) || ""); // ตั้งเวลาสิ้นสุด
+      setDiscount(promo.discount_percentage?.toString() || ""); // ตั้งส่วนลด
+      setStadiumName(promo.stadium_name || "ไม่ระบุ"); // ตั้งชื่อสนามจากข้อมูล API
+      setSports(promo.sports || []); // ตั้งรายการกีฬา
     } catch (error) {
-      console.error("Error fetching promotion details:", {
-        message: error.message,
-        response: error.response?.data,
-      });
-      if (error.response?.status === 401) {
-        alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
-        router.push("/Login");
+      console.error("Fetch error:", error.message, error.response?.data); // log ข้อผิดพลาด
+      if (error.response?.status === 401) { // ถ้า token หมดอายุ
+        alert("เซสชันหมดอายุ"); // แจ้งเตือน
+        router.push("/Login"); // ไปหน้า login
       } else {
-        setError("ไม่สามารถโหลดข้อมูลโปรโมชั่นได้: " + (error.response?.data?.error || error.message));
-        alert("เกิดข้อผิดพลาดในการโหลดข้อมูลโปรโมชั่น: " + (error.response?.data?.error || error.message));
-        router.push("/promotion");
+        setError("ไม่สามารถโหลดข้อมูลได้: " + (error.response?.data?.error || error.message)); // ตั้ง error
+        alert("เกิดข้อผิดพลาด: " + (error.response?.data?.error || error.message)); // แจ้งเตือน
+        router.push("/promotion"); // ไปหน้าโปรโมชัน
       }
     } finally {
-      setLoading(false);
+      setLoading(false); // หยุดโหลด
     }
   };
 
+  // ฟังก์ชันบันทึกการแก้ไข
   const handleSave = async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
-      alert("กรุณาเข้าสู่ระบบก่อนบันทึกการแก้ไข");
-      router.push("/Login");
+      alert("กรุณาเข้าสู่ระบบก่อน"); // แจ้งเตือนถ้าไม่มี token
+      router.push("/Login"); // ไปหน้า login
       return;
     }
 
-    if (!startDate || !startTime || !endDate || !endTime) {
-      alert("กรุณากรอกวันที่และเวลาให้ครบถ้วน");
-      return;
-    }
-    if (new Date(`${startDate} ${startTime}`) >= new Date(`${endDate} ${endTime}`)) {
-      alert("วันที่เริ่มต้นต้องมาก่อนวันที่สิ้นสุด");
+    if (!startDate || !startTime || !endDate || !endTime) { // ตรวจสอบข้อมูล
+      alert("กรุณากรอกวันที่และเวลาให้ครบ"); // แจ้งเตือนถ้าขาดข้อมูล
       return;
     }
 
-    const updatedPromotion = {
+    if (new Date(`${startDate} ${startTime}`) >= new Date(`${endDate} ${endTime}`)) { // ตรวจสอบวันที่
+      alert("วันที่เริ่มต้องมาก่อนวันที่สิ้นสุด"); // แจ้งเตือนถ้าผิดลำดับ
+      return;
+    }
+
+    const updatedPromotion = { // ข้อมูลที่อัปเดต
       start_datetime: `${startDate} ${startTime}:00`,
       end_datetime: `${endDate} ${endTime}:00`,
     };
 
     try {
       const response = await axios.put(`http://localhost:5000/api/promotions/${id}`, updatedPromotion, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        timeout: 10000,
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, // header สำหรับ API
+        timeout: 10000, // timeout 10 วินาที
       });
-      console.log("Updated promotion:", response.data, "Status:", response.status);
-      setShowModal(true);
+
+      console.log("Updated:", response.data); // log ข้อมูลที่อัปเดต
+      setShowModal(true); // แสดง modal
     } catch (error) {
-      console.error("Error updating promotion:", {
-        message: error.message,
-        response: error.response?.data,
-      });
-      if (error.response?.status === 401) {
-        alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
-        router.push("/Login");
+      console.error("Update error:", error.message, error.response?.data); // log ข้อผิดพลาด
+      if (error.response?.status === 401) { // ถ้า token หมดอายุ
+        alert("เซสชันหมดอายุ"); // แจ้งเตือน
+        router.push("/Login"); // ไปหน้า login
       } else {
-        alert("เกิดข้อผิดพลาดในการอัปเดตโปรโมชั่น: " + (error.response?.data?.error || error.message));
+        alert("เกิดข้อผิดพลาด: " + (error.response?.data?.error || error.message)); // แจ้งเตือนข้อผิดพลาดอื่น
       }
     }
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    router.push("/promotion");
+  // ฟังก์ชันจัดการ UI และการนำทาง
+  const handleCloseModal = () => { // ปิด modal
+    setShowModal(false); // ซ่อน modal
+    router.push("/promotion"); // ไปหน้าโปรโมชัน
   };
 
-  const handleViewDetail = () => {
+  const handleViewDetail = () => { // ดูรายละเอียด
     if (!id) {
-      console.error("No promotion ID available");
-      alert("ไม่พบข้อมูลโปรโมชั่นที่เลือก กรุณาลองใหม่อีกครั้ง");
+      console.error("No promotion ID"); // log ถ้าไม่มี ID
+      alert("ไม่พบข้อมูลโปรโมชัน"); // แจ้งเตือน
       return;
     }
-    setShowModal(false);
-    router.push(`/detail?id=${id}`);
+    setShowModal(false); // ซ่อน modal
+    router.push(`/detail?id=${id}`); // ไปหน้ารายละเอียด
   };
 
-  if (loading) return <div>กำลังโหลดข้อมูล...</div>;
-  if (error) return <div>{error}</div>;
+  // ส่วนแสดงผล UI
+  if (loading) return <div>กำลังโหลดข้อมูล...</div>; // แสดงขณะโหลด
+  if (error) return <div>{error}</div>; // แสดงข้อผิดพลาด
 
   return (
     <div className="background">
       <Tabbar />
-      <div className="header-title">
-        <h1>แก้ไขโปรโมชั่นส่วนลด</h1>
+      <div className="edit-header-title">
+        <h1>แก้ไขโปรโมชันส่วนลด</h1>
       </div>
 
-      <div className="container">
-        {/* หัวข้อรายละเอียดโปรโมชั่น */}
-        <h2 className="form-title promo-details-title">รายละเอียดโปรโมชั่น</h2>
-        {/* ตารางรายละเอียดโปรโมชั่น */}
+      <div className="edit-container"> {/* แก้ไขจาก .edit-container เป็น edit-container (ลบจุดหน้า) */}
+        {/* หัวข้อรายละเอียดโปรโมชัน */}
+        <h2 className="form-title promo-details-title">รายละเอียดโปรโมชัน</h2>
+        {/* ตารางรายละเอียดโปรโมชัน */}
         <div className="promo-details-table">
           <table>
             <tbody>
               <tr>
-                <th>ชื่อโปรโมชั่น</th>
+                <th>ชื่อโปรโมชัน</th>
                 <td>{promotionName}</td>
               </tr>
               <tr>
@@ -177,7 +173,7 @@ export default function EditPromotion() {
               </tr>
               <tr>
                 <th>สนามที่เข้าร่วม</th>
-                <td>{location}</td>
+                <td>{stadiumName}</td>
               </tr>
               <tr>
                 <th>กีฬาที่เข้าร่วม</th>
@@ -186,7 +182,7 @@ export default function EditPromotion() {
                     <ul className="sports-list">
                       {sports.map((sport, index) => (
                         <li key={index}>
-                          {sport.name} (ราคา: ฿{sport.price}, ลดเหลือ: ฿{sport.discountPrice || Math.round(sport.price * (1 - discount / 100))})
+                          {sport.name} (ราคา ฿{sport.price} ลดเหลือ ฿{sport.discountPrice || Math.round(sport.price * (1 - discount / 100))})
                         </li>
                       ))}
                     </ul>
@@ -201,7 +197,7 @@ export default function EditPromotion() {
 
         {/* ฟอร์มสำหรับแก้ไขระยะเวลา */}
         <div className="form-row">
-          <h2 className="form-title">วันที่เริ่มโปรโมชั่น</h2>
+          <h2 className="form-title">วันที่เริ่มโปรโมชัน</h2>
           <div className="date-time-group">
             <input
               type="date"
@@ -221,7 +217,7 @@ export default function EditPromotion() {
         </div>
 
         <div className="form-row">
-          <h2 className="form-title">วันที่สิ้นสุดโปรโมชั่น</h2>
+          <h2 className="form-title">วันที่สิ้นสุดโปรโมชัน</h2>
           <div className="date-time-group">
             <input
               type="date"
@@ -254,14 +250,14 @@ export default function EditPromotion() {
         <div className="modal-overlay">
           <div className="modal-box">
             <img src="/pictureowner/correct.png" alt="Success Icon" className="modal-icon" />
-            <h2>แก้ไขโปรโมชั่นสำเร็จ</h2>
+            <h2>แก้ไขโปรโมชันสำเร็จ</h2>
             <p>
-              โปรโมชั่นส่วนลดนี้จะเริ่มเวลา {startDate} {startTime}{" "}
+              โปรโมชันส่วนลดนี้จะเริ่มเวลา {startDate} {startTime}{" "}
               และสิ้นสุดเวลา {endDate} {endTime}
             </p>
             <div className="modal-button-group">
               <button onClick={handleCloseModal} className="modal-button">
-                กลับไปยังรายการโปรโมชั่น
+                กลับไปยังรายการโปรโมชัน
               </button>
               <button onClick={handleViewDetail} className="modal-button-alt">
                 ดูรายละเอียด
