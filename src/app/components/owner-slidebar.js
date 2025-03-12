@@ -102,6 +102,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
               การเงิน
             </Link>
           </li>
+
           <li>
             <img src="/pictureowner/about.png" alt="iconabout" />
             <Link
