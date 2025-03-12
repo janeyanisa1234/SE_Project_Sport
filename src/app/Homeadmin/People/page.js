@@ -104,12 +104,10 @@ export default function Dashboard() {
     <>
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <Tab />
-      <br/>
-      <p className="summary">
-        <img src="/pictureAdmin/mapeo.svg" className="iconG" alt="group icon" />
-        รายการข้อมูลสมาชิก
-      </p>
-      <br/>
+      
+      <div className="header-titlepeople">
+        <h1>รายการข้อมูลสมาชิก</h1>
+      </div>
       <div className="filter-container">
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="">ทั้งหมด</option>

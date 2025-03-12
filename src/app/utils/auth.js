@@ -1,6 +1,6 @@
 // utils/auth.js
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode'; // You'll need to install this: npm install jwt-decode
+import { jwtDecode } from 'jwt-decode';
 
 const API_URL = "http://localhost:5000/api/kong";
 
@@ -51,8 +51,6 @@ export const AuthService = {
       if (response.data.token) {
         AuthService.setToken(response.data.token);
         AuthService.setUser(response.data.user);
-        
-        // Determine and set user role
         AuthService.setUserRole(response.data.user);
       }
       return response.data;
@@ -71,8 +69,6 @@ export const AuthService = {
         
         // Store user data
         AuthService.setUser(response.data.user);
-        
-        // Determine and set user role
         AuthService.setUserRole(response.data.user);
       }
       return response.data;
@@ -107,7 +103,7 @@ export const AuthService = {
   
   // Determine and set user role
   setUserRole: (user) => {
-    let role = 'user'; // Default role
+    let role = 'user'; // Default to regular user
     
     if (user.isAdmin) {
       role = 'admin';
@@ -125,9 +121,13 @@ export const AuthService = {
   // Get user role
   getUserRole: () => {
     if (typeof window !== 'undefined') {
+      // If not authenticated, return null instead of 'user'
+      if (!AuthService.isAuthenticated()) {
+        return null;
+      }
       return localStorage.getItem('userRole') || 'user';
     }
-    return 'user';
+    return null; // Return null for server-side rendering
   },
 
   // Logout user
