@@ -1,10 +1,10 @@
 "use client";
- 
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Tabbar from "../../components/tab";
 import axios from "axios";
- 
+
 const AddSportsField = () => {
   const router = useRouter();
   const [sportsFieldName, setSportsFieldName] = useState("");
@@ -16,7 +16,7 @@ const AddSportsField = () => {
   const [ownerId, setOwnerId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
- 
+
   useEffect(() => {
     const storedOwnerId = localStorage.getItem("userId");
     console.log("Retrieved Owner ID from localStorage:", storedOwnerId);
@@ -27,7 +27,7 @@ const AddSportsField = () => {
       router.push("/login");
     }
   }, [router]);
- 
+
   useEffect(() => {
     return () => {
       if (imagePreview) {
@@ -35,19 +35,29 @@ const AddSportsField = () => {
       }
     };
   }, [imagePreview]);
- 
+
   const handleImageUpload = (event) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Check if the file is an image
       if (!file.type.startsWith("image/")) {
-        setErrorMessage("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น");
+        setErrorMessage("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น (เช่น JPG, PNG, GIF)");
         return;
       }
+
+      // Check file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         setErrorMessage("ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB");
         return;
       }
- 
+
+      // Check if file name is in English (ASCII characters only)
+      const englishFileNameRegex = /^[a-zA-Z0-9._-]+$/;
+      if (!englishFileNameRegex.test(file.name.split('.').slice(0, -1).join('.'))) {
+        setErrorMessage("ชื่อไฟล์ต้องเป็นภาษาอังกฤษเท่านั้น (a-z, A-Z, 0-9, ._-)");
+        return;
+      }
+
       setImageFile(file);
       setFileName(file.name);
       setIsFileUploaded(true);
@@ -59,28 +69,28 @@ const AddSportsField = () => {
       setErrorMessage("");
     }
   };
- 
+
   const handleSubmit = async () => {
     if (!sportsFieldName || !address || !imageFile || !ownerId) {
       setErrorMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
- 
+
     setIsSubmitting(true);
     setErrorMessage("");
- 
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("No authentication token found");
       }
- 
+
       const formData = new FormData();
       formData.append("owner_id", ownerId);
       formData.append("stadium_name", sportsFieldName);
       formData.append("stadium_address", address);
       formData.append("slipImage", imageFile);
- 
+
       const response = await axios.post(
         "http://localhost:5000/api/sox/add_stadium",
         formData,
@@ -91,7 +101,7 @@ const AddSportsField = () => {
           },
         }
       );
- 
+
       alert("เพิ่มสนามกีฬาสำเร็จ กรุณารอการตรวจสอบจากแอดมิน");
       router.push("/my-stadium");
     } catch (error) {
@@ -103,7 +113,7 @@ const AddSportsField = () => {
       setIsSubmitting(false);
     }
   };
- 
+
   return (
     <div
       className="relative w-full h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col"
@@ -124,7 +134,7 @@ const AddSportsField = () => {
                 <span className="font-medium">{errorMessage}</span>
               </div>
             )}
- 
+
             {/* Sports Field Name */}
             <label className="block text-gray-800 font-semibold mb-2">ชื่อสนาม</label>
             <input
@@ -132,20 +142,20 @@ const AddSportsField = () => {
               value={sportsFieldName}
               onChange={(e) => setSportsFieldName(e.target.value)}
               placeholder="ใส่ชื่อสนามของคุณ"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 shadow-sm"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 shadow-sm text-black disabled:text-black"
               disabled={isSubmitting}
             />
- 
+
             {/* Address */}
             <label className="block text-gray-800 font-semibold mt-6 mb-2">ที่ตั้ง</label>
             <textarea
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="รายละเอียดที่อยู่, ตำบล, อำเภอ, จังหวัด, รหัสไปรษณีย์"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 shadow-sm resize-y h-32"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 shadow-sm resize-y h-32 text-black disabled:text-black"
               disabled={isSubmitting}
             />
- 
+
             {/* Image Upload */}
             <label className="block text-gray-800 font-semibold mt-6 mb-2">
               รูปสนามกีฬา
@@ -195,7 +205,7 @@ const AddSportsField = () => {
                 </p>
               )}
             </div>
- 
+
             {/* Buttons */}
             <div className="flex justify-between mt-8 gap-4">
               <button
@@ -206,11 +216,10 @@ const AddSportsField = () => {
                 ยกเลิก
               </button>
               <button
-                className={`${
-                  isSubmitting
-                    ? "bg-green-300"
-                    : "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
-                } px-6 py-2.5 rounded-lg text-white font-semibold disabled:bg-green-300 transition-all duration-200 shadow-md`}
+                className={`${isSubmitting
+                  ? "bg-green-300"
+                  : "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
+                  } px-6 py-2.5 rounded-lg text-white font-semibold disabled:bg-green-300 transition-all duration-200 shadow-md`}
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
@@ -223,5 +232,5 @@ const AddSportsField = () => {
     </div>
   );
 };
- 
+
 export default AddSportsField;
