@@ -12,7 +12,6 @@ export default function TransferForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
-  // ดึงข้อมูลที่ส่งมาจากหน้า Manage_Cash
   const id_owner = searchParams.get('id_owner');
   const user_name = searchParams.get('user_name');
   const bank_name = searchParams.get('bank_name');
@@ -29,7 +28,30 @@ export default function TransferForm() {
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
+    
     if (selectedFile) {
+      // 1. ตรวจสอบว่าเป็นไฟล์รูปภาพเท่านั้น (JPEG, PNG, SVG)
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
+      if (!validImageTypes.includes(selectedFile.type)) {
+        alert('กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น (JPEG, PNG, SVG)');
+        return;
+      }
+
+      // 2. ตรวจสอบว่าชื่อไฟล์ไม่มีภาษาไทย
+      const thaiCharRegex = /[ก-๙]/;
+      if (thaiCharRegex.test(selectedFile.name)) {
+        alert('ชื่อไฟล์ต้องไม่มีภาษาไทย');
+        return;
+      }
+
+      // 3. ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024 bytes)
+      const maxSizeInBytes = 5 * 1024 * 1024;
+      if (selectedFile.size > maxSizeInBytes) {
+        alert('ขนาดไฟล์ต้องไม่เกิน 5MB');
+        return;
+      }
+
+      // ถ้าผ่านทุกเงื่อนไขแล้วจึง set state
       setFile(selectedFile);
       setFileName(selectedFile.name);
       setIsFileUploaded(true);
@@ -39,7 +61,6 @@ export default function TransferForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // ตรวจสอบข้อมูลที่จำเป็น
     if (!transferDate || !transferTime || !adminName || !file) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน');
       return;
@@ -48,18 +69,15 @@ export default function TransferForm() {
     try {
       setIsSubmitting(true);
       
-      // สร้าง FormData สำหรับส่งไฟล์
       const formData = new FormData();
       formData.append('slipImage', file);
       formData.append('id_owner', id_owner);
       formData.append('date', date);
       
-      // สร้าง timestamp จากข้อมูลวันที่และเวลา
       const payDateTime = `${transferDate}T${transferTime}:00`;
       formData.append('paydate', payDateTime);
       formData.append('nameadmin', adminName);
       
-      // ส่งข้อมูลไปยัง API
       const response = await axios.post('http://localhost:5000/api/cashUpdate/complete-transfer', 
         formData, 
         {
@@ -69,7 +87,6 @@ export default function TransferForm() {
         }
       );
       
-      // ถ้าสำเร็จให้ redirect กลับไปยังหน้าหลัก
       if (response.status === 200) {
         alert('ดำเนินการสำเร็จ');
         router.push('/Homeadmin/Manage_Cash');

@@ -1,6 +1,5 @@
 "use client";
 import "./Approved.css";
-import "../Dashboard/slidebar.css";
 import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/slidebar.js";
 import Tab from "../Tabbar/page.js";
@@ -30,9 +29,10 @@ export default function Dashboard() {
         id: stadium.id,
         owner: stadium.owner_name,
         fieldName: stadium.stadium_name,
-        image: stadium.stadium_image || "/pictureAdmin/default.svg",
+        image: stadium.stadium_image ,
         location: stadium.stadium_address,
-        status: stadium.stadium_status
+        status: stadium.stadium_status,
+        dateAdd: stadium.date_add // เปลี่ยนจาก createdAt เป็น dateAdd
       }));
       setFields(stadiums);
     } catch (error) {
@@ -103,10 +103,10 @@ export default function Dashboard() {
                   <Image 
                     src={field.image} 
                     width={100} 
-                    height={100} // ปรับให้สูงเท่ากับกว้างเพื่อความสม่ำเสมอ
+                    height={100}
                     alt={field.fieldName} 
                     className="field-image"
-                    style={{ objectFit: 'cover' }} // ทำให้รูปเต็มกรอบโดยไม่บิดเบี้ยว
+                    style={{ objectFit: 'cover' }}
                   />
                   <p className="field-name">ชื่อ : {field.fieldName}</p>
                 </td>

@@ -1,8 +1,8 @@
 body {
-  color: black;
-  background-color: rgb(207, 206, 206);
-  font-family: Arial, Helvetica, sans-serif;
-  height: 100vh;
+  color: #000000; /* Darker, modern slate color */
+  background: linear-gradient(135deg, #F5F5F5, #DCE4E8); /* Softer gradient to match header */
+  font-family: 'Inter', Arial, Helvetica, sans-serif; /* Modern font */
+  min-height: 100vh;
   margin: 0;
 }
 
@@ -99,17 +99,18 @@ body {
   gap: 50px;
   align-items: center;
   margin: 0 auto;
-  max-width: 1200px; /* ปรับขนาด */
+  max-width: 1200px;
+  margin-top: 50px;
 }
 
 .filter-container select,
 .filter-container input {
-  padding: 14px; /* เพิ่มขนาด */
-  font-size: 18px; /* ใหญ่ขึ้น */
+  padding: 14px;
+  font-size: 18px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100%;
-  height: 50px; /* เพิ่มความสูง */
+  height: 50px;
 }
 
 /* ขยายขนาดไอคอนค้นหา */
@@ -119,39 +120,63 @@ body {
   cursor: pointer;
 }
 
+/* โฮเวอร์ตาราง */
+tr:hover {
+  background-color: #e0e0e0;
+}
+
 /* ปรับขนาดตาราง */
 .table-container {
   margin: 20px auto;
-  max-width: 1200px;  /* ขยายตาราง */
-  max-height: 1200px;
+  max-width: 1200px;
+  overflow-x: auto;  /* เพิ่มเลื่อนซ้ายขวาถ้าจอเล็ก */
+  background-color: white;
+  border-radius: 10px;
 }
 
+/* ตาราง */
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  border-radius: 10px;
-  overflow: hidden;
-  font-size: 1.2rem; /* ขยายตัวอักษร */
+  font-size: 1.2rem;
 }
 
-/* ปรับขนาดเซลล์ */
+/* เซลล์ */
 th, td {
-  padding: 16px; /* เพิ่ม padding */
+  padding: 16px;
   text-align: center;
   border: 1px solid #ccc;
+  white-space: nowrap; /* ป้องกันข้อความขึ้นบรรทัดใหม่ */
 }
 
 th {
   background-color: black;
   color: white;
-  font-size: 1.3rem; 
+  font-size: 1.3rem;
 }
 
 tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Corrected hover effect */
+tr:hover {
+  background-color: #e0e0e0;
+}
+
+
+/* Optionally, if you want to target even or odd rows for hover */
+tr:nth-child(even):hover {
+  background-color: #e0e0e0;
+}
+
+tr:nth-child(odd):hover {
+  background-color: #e0e0e0;
+}
 /* ปุ่มลบ */
 .delete-btn {
   display: flex;

@@ -24,7 +24,7 @@ export default function TransferForm() {
     const fetchBookingData = async () => {
       if (id_booking) {
         try {
-          const response = await axios.get(`http://localhost:5000/api/cancle/cancle-booking`);
+          const response = await axios.get(`http://localhost:5000/api/cancleAdmin/cancle-booking`);
           const booking = response.data.data.find(item => item.id_booking === id_booking);
           setBookingData(booking);
           console.log('Fetched booking data:', booking);
@@ -40,7 +40,30 @@ export default function TransferForm() {
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
+    
     if (selectedFile) {
+      // 1. ตรวจสอบว่าเป็นไฟล์รูปภาพเท่านั้น (JPEG, PNG, SVG)
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
+      if (!validImageTypes.includes(selectedFile.type)) {
+        alert('กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น (JPEG, PNG, SVG)');
+        return;
+      }
+
+      // 2. ตรวจสอบว่าชื่อไฟล์ไม่มีภาษาไทย
+      const thaiCharRegex = /[ก-๙]/;
+      if (thaiCharRegex.test(selectedFile.name)) {
+        alert('ชื่อไฟล์ต้องไม่มีภาษาไทย');
+        return;
+      }
+
+      // 3. ตรวจสอบขนาดไฟล์ (5MB = 5 * 1024 * 1024 bytes)
+      const maxSizeInBytes = 5 * 1024 * 1024;
+      if (selectedFile.size > maxSizeInBytes) {
+        alert('ขนาดไฟล์ต้องไม่เกิน 5MB');
+        return;
+      }
+
+      // ถ้าผ่านทุกเงื่อนไขแล้วจึง set state
       setFile(selectedFile);
       setFileName(selectedFile.name);
       setIsFileUploaded(true);
@@ -74,7 +97,7 @@ export default function TransferForm() {
         fileName: file.name
       });
 
-      const response = await axios.post('http://localhost:5000/api/cancle/process-refund', formData, {
+      const response = await axios.post('http://localhost:5000/api/cancleAdmin/process-refund', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -98,7 +121,7 @@ export default function TransferForm() {
           
           {bookingData && (
             <div className="booking-info">
-              <h3>ข้อมูลการจอง</h3>
+              <h3>ข้อมูลคืนเงิน</h3>
               <p>ชื่อผู้จอง: {bookingData.user_name}</p>
               <p>ธนาคาร: {bookingData.bank}</p>
               <p>หมายเลขบัญชี: {bookingData.bank_number}</p>
@@ -152,7 +175,7 @@ export default function TransferForm() {
                   <input
                     id="fileInput"
                     type="file"
-                    accept="image/*"
+                    accept=".jpg,.jpeg,.png,.svg"
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                   />

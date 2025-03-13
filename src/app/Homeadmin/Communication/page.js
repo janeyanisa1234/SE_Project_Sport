@@ -9,6 +9,7 @@ export default function Communication() {
   const [search, setSearch] = useState("");
   const [memberType, setMemberType] = useState("all");
   const [members, setMembers] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(-1); // ค่าเริ่มต้นเป็น "แสดงทั้งหมด"
 
   // ดึงข้อมูลจาก Backend
   useEffect(() => {
@@ -33,10 +34,13 @@ export default function Communication() {
     fetchUsers();
   }, [memberType]); // โหลดใหม่เมื่อเปลี่ยนประเภทผู้ใช้
 
-  // กรองข้อมูลตามคำค้นหา (ชื่อ)
-  const filteredMembers = members.filter((member) =>
-    member.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // กรองและเรียงข้อมูลตาม created_at จากล่าสุดไปเก่าสุด
+  const filteredMembers = members
+    .filter((member) =>
+      member.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, itemsPerPage === -1 ? undefined : itemsPerPage); // ถ้าเป็น -1 แสดงทั้งหมด
 
   return (
     <>
@@ -50,6 +54,15 @@ export default function Communication() {
           <option value="all">ทั้งหมด</option>
           <option value="user">ผู้ใช้</option>
           <option value="business">ผู้ประกอบการ</option>
+        </select>
+        <select
+          value={itemsPerPage}
+          onChange={(e) => setItemsPerPage(Number(e.target.value))}
+        >
+          <option value={-1}>ทั้งหมด</option>
+          <option value={10}> 10 รายการ</option>
+          <option value={20}> 20 รายการ</option>
+          <option value={50}> 50 รายการ</option>
         </select>
         <input
           type="text"
@@ -79,9 +92,18 @@ export default function Communication() {
                 <td>{member.name}</td>
                 <td>{member.phone || "N/A"}</td>
                 <td className="icon">
-                  <a href={`mailto:${member.email}`} target="_blank" rel="noopener noreferrer" className="email-link">
+                  <a
+                    href={`mailto:${member.email}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="email-link"
+                  >
                     {member.email}
-                    <img src="/pictureAdmin/email.svg" className="email-icon" alt="Email Icon" />
+                    <img
+                      src="/pictureAdmin/email.svg"
+                      className="email-icon"
+                      alt="Email Icon"
+                    />
                   </a>
                 </td>
               </tr>
