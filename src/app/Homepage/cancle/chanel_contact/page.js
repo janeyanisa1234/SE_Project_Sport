@@ -4,8 +4,9 @@ import "./chanel.css";
 import { useState, useEffect } from "react";
 import Tabbar from "../../../Tab/tab";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // เพิ่ม useRouterimport axios from "axios";
 import axios from "axios";
+
 
 export default function ChanelContact() {
   const [nameInput, setNameInput] = useState("");
@@ -19,6 +20,7 @@ export default function ChanelContact() {
   const bookingId = searchParams.get("bookingId");
   const reasonsFromQuery = searchParams.get("reasons");
   const token = localStorage.getItem("token");
+  const router = useRouter(); // กำหนด router
 
   useEffect(() => {
     if (reasonsFromQuery) {
@@ -101,7 +103,7 @@ export default function ChanelContact() {
     formData.append("bankimges", file);
 
     try {
-      const response = await axios.post("http://localhost:5000/refund", formData, {
+      const response = await axios.post("http://localhost:5000/cancle/refund", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -109,7 +111,8 @@ export default function ChanelContact() {
       });
       console.log("ข้อมูลที่ส่งไป backend:", response.data);
       alert("ส่งข้อมูลสำเร็จ!");
-      // ถ้าต้องการ redirect ไปหน้าอื่นหลังสำเร็จ ให้เพิ่ม router.push ที่นี่
+      router.push(`/Homepage`);
+
     } catch (error) {
       console.error("เกิดข้อผิดพลาด:", error);
       alert("ไม่สามารถส่งข้อมูลได้: " + (error.response?.data?.error || error.message));
