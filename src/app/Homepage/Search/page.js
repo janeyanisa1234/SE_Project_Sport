@@ -1,43 +1,55 @@
 "use client";
  
+import { useState, useEffect } from "react";
 import "./Search.css";
 import Link from "next/link";
 import Tabbar from "../../Tab/tab";
-import { useState, useEffect } from "react";
 import Headfunction from "../../Headfunction/page";
 import axios from "axios";
-import { useSearchParams } from "next/navigation"; // ใช้เพื่อดึง query parameter
+import { useSearchParams } from "next/navigation";
  
 export default function SearchPlace() {
   const [placeData, setPlaceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
-  const query = searchParams.get("query") || ""; // ดึงค่าค้นหาจาก URL
- 
+  const query = searchParams.get("query") || "";
+  const category = searchParams.get("category") || "";
  
   useEffect(() => {
     async function fetchPlaceData() {
       try {
-        const response = await axios.get("http://localhost:5000/api/booking/stadiums");
+        let url = "http://localhost:5000/booking/stadiums";
+        if (category) {
+          const decodedCategory = decodeURIComponent(category); // Decode category
+          console.log("Fetching filtered stadiums for category:", decodedCategory);
+          url = `http://localhost:5000/booking/filtered-stadiums?sportType=${encodeURIComponent(decodedCategory)}`;
+        }
+        const response = await axios.get(url, { timeout: 10000 });
         console.log("📌 Data from API:", response.data);
  
         if (response.data && response.data.length > 0) {
           setPlaceData(response.data);
         } else {
-          console.error("No place data received");
+          console.warn("No place data received or empty array");
+          setPlaceData([]);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+        if (error.response) {
+          console.log("Response Data:", error.response.data);
+          console.log("Response Status:", error.response.status);
+        }
+        setPlaceData([]);
       } finally {
         setLoading(false);
       }
     }
     fetchPlaceData();
-  }, []);
+  }, [category]);
  
-  // กรองข้อมูลสนามที่มีชื่อที่ตรงกับคำค้นหา
   const filteredPlaces = placeData.filter(place =>
-    (place.stadium_name || "").toLowerCase().includes(query.toLowerCase())
+    (place.stadium_name || "").toLowerCase().includes(query.toLowerCase()) ||
+    (place.stadium_address || "").toLowerCase().includes(query.toLowerCase())
   );
  
   return (
@@ -89,4 +101,3 @@ export default function SearchPlace() {
     </>
   );
 }
- 
