@@ -2,7 +2,7 @@
 
 import "./Search.css";
 import Link from "next/link";
-import Tabbar from "../../Tab/tab";
+import Tabbar from "../../components/tab";
 import { useState, useEffect } from "react";
 import Headfunction from "../../Headfunction/page";
 import axios from "axios";

@@ -2,7 +2,7 @@
  
 import React, { useEffect, useState } from "react";
 import "./Select.css";
-import Tabbar from "../../../Tab/tab";
+import Tabbar from "../../../components/tab";
 import Headfunction from "@/app/Headfunction/page";
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";

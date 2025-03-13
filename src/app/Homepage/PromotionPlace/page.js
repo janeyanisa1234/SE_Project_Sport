@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Headfunction from "../../Headfunction/page";
-import Tabbar from "../../Tab/tab";
+import Tabbar from "../../components/tab";
 import "./Promotion.css";
 
 export default function PromotionPlace() {

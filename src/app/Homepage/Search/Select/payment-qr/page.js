@@ -2,7 +2,7 @@
 
 import "./globals.css";
 import React, { useState, useEffect } from "react";
-import Tabbar from "../../../../Tab/tab";
+import Tabbar from "../../../../components/tab";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
