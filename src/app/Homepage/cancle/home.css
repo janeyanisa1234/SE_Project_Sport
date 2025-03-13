@@ -1,8 +1,9 @@
 body {
   font-family: "Prompt", sans-serif;
   margin: 0;
-  background: #f5f5f5;
+  background: #f5f5f5; /* พื้นหลังเริ่มต้น */
   color: #1f2937;
+  height: 100vh;
 }
 
 .page-wrapper {
@@ -11,9 +12,10 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 70px 20px 20px;
-  background: url("/pictureping/bg.jpg") no-repeat center/cover;
+  background: url("/pictureping/bg.jpg") no-repeat center/cover; 
   position: relative;
 }
+
 
 .page-header {
   width: 100vw;

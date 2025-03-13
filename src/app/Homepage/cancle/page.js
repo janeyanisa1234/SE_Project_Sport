@@ -40,14 +40,16 @@ export default function Page() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/cancel",
+        "http://localhost:5000/api/cancle/cancel",
         { booking_id: bookingIdToCancel, reasons: selectedReasons },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setBookings(bookings.filter((b) => b.id_booking !== bookingIdToCancel));
-      alert("ส่งคำขอยกเลิกการจองสำเร็จ!");
+      console.log("Sending to chanel_contact:", { bookingIdToCancel, selectedReasons }); // เพิ่ม log เพื่อตรวจสอบ
+      alert("ส่งคำขอยกเลิก!");
       router.push(`/Homepage/cancle/chanel_contact?bookingId=${bookingIdToCancel}&reasons=${encodeURIComponent(selectedReasons.join(", "))}`);
+
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการยกเลิก:", error);
       alert("ไม่สามารถยกเลิกการจองได้: " + (error.response?.data?.error || error.message));
@@ -64,24 +66,31 @@ export default function Page() {
         const response = await axios.get(`http://localhost:5000/history?user_id=${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Raw data from /history:", response.data);
-
+        console.log("ข้อมูลดิบจาก /history:", response.data);
+  
         let data = response.data;
         if (!Array.isArray(data)) {
-          console.error("Data is not an array:", data);
+          console.error("ข้อมูลไม่ใช่ array:", data);
           setBookings([]);
           return;
         }
-
-        // กรองเฉพาะ status_booking เป็น "ยืนยัน"
+  
+        // กรองการจองตามสถานะและวันที่
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // รีเซ็ตเวลาเป็นเที่ยงคืนเพื่อเปรียบเทียบวันที่อย่างเดียว
+  
         data = data.filter((booking) => {
-          console.log("Booking:", booking);
-          return booking.status_booking === "ยืนยัน";
+          const bookingDate = new Date(booking.date_play || booking.date);
+          const isConfirmed = booking.status_booking === "ยืนยัน";
+          const isNotPast = bookingDate >= today; // ไม่เลยวันเข้าใช้งาน
+          const isNotTomorrowOrToday = (bookingDate - today) / (1000 * 60 * 60 * 24) > 1; // มากกว่า 1 วันจากวันนี้
+          return isConfirmed && isNotPast && isNotTomorrowOrToday;
         });
-        console.log("Filtered data:", data);
-
+        console.log("ข้อมูลที่กรองแล้ว:", data);
+  
+        // เรียงลำดับตามวันที่จากล่าสุดไปเก่าสุด
         data = data.sort((a, b) => new Date(b.date || b.date_play) - new Date(a.date || a.date_play));
-
+  
         if (bookingId && data.length > 0) {
           const latestBooking = data.find((b) => b.id_booking === bookingId);
           if (latestBooking) {
@@ -97,7 +106,7 @@ export default function Page() {
         alert("ไม่สามารถดึงข้อมูลการจองได้: " + (error.response?.data?.error || error.message));
       }
     };
-
+  
     fetchBookings();
     const interval = setInterval(fetchBookings, 5000);
     return () => clearInterval(interval);
@@ -167,14 +176,14 @@ export default function Page() {
                   ปิด
                 </button>
 
-                <Link href="/Homepage/cancle/chanel_contact">
+                
                   <button
                     onClick={() => handleCancelBooking(bookings[isPopupOpen].id_booking)}
                     className="confirm-btn"
                   >
                     ยืนยันการยกเลิก
                   </button>
-                </Link>
+                
                
               </div>
             </div>
