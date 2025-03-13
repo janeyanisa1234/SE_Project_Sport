@@ -55,39 +55,6 @@ export default function PromotionPlace() {
       <main className="places-list">
         <h3 className="section-title">สนามที่เข้าร่วมโปรโมชั่น</h3>
 
-        {/* Dropdown เลือกจำนวนที่จะแสดง และระยะเวลา */}
-        <div className="dropdown-container">
-          <select
-            id="display-count"
-            className="dropdown"
-            value={displayCount}
-            onChange={(e) => setDisplayCount(e.target.value)}
-          >
-            <option value="" disabled hidden>
-              จำนวนในการแสดง
-            </option>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
-          </select>
-
-          <select
-            id="duration"
-            className="dropdown"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-          >
-            <option value="" disabled hidden>
-              ระยะเวลา
-            </option>
-            <option value="1">1 เดือน</option>
-            <option value="3">3 เดือน</option>
-            <option value="6">6 เดือน</option>
-            <option value="12">12 เดือน</option>
-          </select>
-        </div>
-
         {/* แสดงรายการสนามจาก API */}
         {loading ? (
           <p className="loading-text">กำลังโหลด...</p>

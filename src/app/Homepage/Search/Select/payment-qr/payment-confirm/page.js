@@ -19,10 +19,7 @@ const PaymentForm = () => {
   const datePlay = searchParams.get("date");
   const id_stadium = searchParams.get("id_stadium");
   const id_court = searchParams.get("id_court");
-
   const stadiumAddress = searchParams.get("stadiumAddress");
-  const transactionId = searchParams.get("transactionId"); // รับ Transaction ID
-
 
   let timeSlots;
   try {
@@ -105,7 +102,7 @@ const PaymentForm = () => {
   }, [preview]);
 
   const handleUpload = async () => {
-    if (!file || !transferDate || !transferTime ) {
+    if (!file || !transferDate || !transferTime) {
       alert("กรุณากรอกข้อมูลให้ครบถ้วน (วันที่โอน, เวลาที่โอน, สลิป)");
       return;
     }
@@ -130,7 +127,7 @@ const PaymentForm = () => {
     formData.append("date_play", bookingData.datePlay);
     formData.append("time_slot", bookingData.timeSlots.join(","));
     formData.append("totalPrice", String(bookingData.price));
-  
+
     console.log("FormData being sent:", [...formData.entries()]);
 
     try {
@@ -145,30 +142,27 @@ const PaymentForm = () => {
       setMessage(response.data.message);
       setShowSuccessPopup(true);
 
-      // เก็บ bookedSlots เพื่อส่งกลับไปยัง SelectPlace
+      // เก็บ bookedSlots เพื่อส่งกลับไปยัง SelectPlace (ถ้าต้องการในอนาคต)
       const bookedSlots = response.data.bookedSlots || [];
       localStorage.setItem("bookedSlots", JSON.stringify(bookedSlots));
     } catch (error) {
       console.error("Full upload error:", error);
-    const errorMsg =
-      error.response?.data?.error ||
-      error.message ||
-      "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
-    const errorDetails = error.response?.data?.details || error.code || "";
-    alert(`เกิดข้อผิดพลาด: ${errorMsg}${errorDetails ? ` - ${errorDetails}` : ""}`);
-    setMessage(`ข้อผิดพลาด: ${errorMsg}`);
-  } finally {
-    setUploading(false);
-  }
-};
+      const errorMsg =
+        error.response?.data?.error ||
+        error.message ||
+        "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+      const errorDetails = error.response?.data?.details || error.code || "";
+      alert(`เกิดข้อผิดพลาด: ${errorMsg}${errorDetails ? ` - ${errorDetails}` : ""}`);
+      setMessage(`ข้อผิดพลาด: ${errorMsg}`);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleConfirmPopup = () => {
     setShowSuccessPopup(false);
-    const bookedSlots = encodeURIComponent(localStorage.getItem("bookedSlots") || "[]");
-    // Redirect กลับไปยัง SelectPlace พร้อม bookedSlots
-    router.push(
-      `/Homepage/Search/Select?stadium_name=${encodeURIComponent(stadiumName)}&stadium_address=${encodeURIComponent(stadiumAddress)}&bookedSlots=${bookedSlots}`
-    );
+    // Redirect ไปที่ /Homepage แทน
+    router.push("/Homepage");
   };
 
   const renderSuccessPopup = () => {
@@ -182,7 +176,7 @@ const PaymentForm = () => {
             onClick={handleConfirmPopup}
             className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
           >
-            กลับไปเลือกสนาม
+            กลับไปหน้าแรก
           </button>
         </div>
       </div>
@@ -212,7 +206,7 @@ const PaymentForm = () => {
             value={transferTime}
             onChange={(e) => setTransferTime(e.target.value)}
           />
-          
+
           <h2 className="text-xl font-semibold text-gray-800 mt-8">สลิปการโอน</h2>
           <div className="bg-gray-300 w-full h-40 flex items-center justify-center border-black border-2 mt-4 relative overflow-hidden">
             <input

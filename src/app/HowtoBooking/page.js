@@ -1,7 +1,6 @@
 "use client";
 
 import Tabbar from "../tabbar-nologin/tab.js";
-
 import "./Howto.css";
 
 export default function Howto() {
@@ -10,53 +9,52 @@ export default function Howto() {
       <Tabbar />
 
       <main className="howto-container">
-        <h2 className="howto-header">คู่มือแนะนำการจองสนามกีฬา</h2>
+        <h2 className="howto-header">คู่มือการจองสนามกีฬา</h2>
 
         <section className="step">
-          <h3>1. เข้าสู่ระบบ</h3>
-          <p>เข้าสู่ระบบก่อนทำการจอง เพื่อจัดเก็บข้อมูลการใช้งาน</p>
-          <p>หากยังไม่มีบัญชีผู้ใช้ ให้คลิกเลือกปุ่มลงทะเบียน เพื่อทำการลงทะเบียนก่อนเข้าสู่ระบบ</p>
-          <img src="/picturemild/Howto2.png" alt="เข้าสู่ระบบ" className="step-image" />
-          <img src="/picturemild/Howto3.png" alt="เข้าสู่ระบบ" className="step-image" />
+          <h3>เข้าสู่ระบบ</h3>
+          <p>เข้าสู่ระบบเพื่อบันทึกข้อมูลการจองของคุณ</p>
+          <p>หากยังไม่มีบัญชี คลิก "ลงทะเบียน" เพื่อสมัครสมาชิกก่อน</p>
+          <img src="/picturemild/Howto2.png" alt="หน้าเข้าสู่ระบบ" className="step-image" />
+          <img src="/picturemild/Howto3.png" alt="หน้าลงทะเบียน" className="step-image" />
         </section>
 
         <section className="step">
-          <h3>2. ค้นหาสถานที่</h3>
-          <p> หลังจากเข้าสู่ระบบแล้ว ใช้แถบค้นหาเพื่อค้นหาสถานที่หรือสนามกีฬาที่ต้องการ </p>
-          <p> และสามารถใช้แถบประเภทกีฬาเพื่อเลือกประเภทกีฬาที่สนใจเข้าจองได้ </p>
-          <img src="/picturemild/Howto4.png" alt="ค้นหาสถานที่" className="step-image" />
+          <h3>ค้นหาสถานที่</h3>
+          <p>ใช้แถบค้นหาเพื่อหาสนามกีฬาที่ต้องการ</p>
+          <p>หรือเลือกประเภทกีฬาที่สนใจจากแถบประเภทกีฬา</p>
+          <img src="/picturemild/Howto4.png" alt="หน้าค้นหาสถานที่" className="step-image" />
         </section>
 
         <section className="step">
-          <h3>3. เลือกสนามที่ต้องการ</h3>
-          <p>ดูรายละเอียดสถานที่สนามกีฬาที่ค้นหา และคลิกเลือกสถานที่ของสนามที่ต้องการเข้าจอง</p>
-          <img src="/picturemild/Howto5.png" alt="เลือกสนาม" className="step-image" />
+          <h3>เลือกสนามที่ต้องการ</h3>
+          <p>ดูรายละเอียดสถานที่และคลิกเลือกสนามที่ต้องการจอง</p>
+          <img src="/picturemild/Howto5.png" alt="หน้าเลือกสนาม" className="step-image" />
         </section>
 
         <section className="step">
-          <h3>4. เลือกวันที่และเวลา</h3>
-          <p>เมื่อเลือกสถานที่แล้ว ให้เลือกวันที่ต้องการเข้าใช้งานสนามและเลือกประเภทกีฬาที่ต้องการ</p>
-          <p>จากนั้นเลือกคอร์ดและช่วงเวลาที่ต้องการเข้าใช้สนาม</p>
-          <img src="/picturemild/Howto6.png" alt="เลือกวัน" className="step-image" />
-          <img src="/picturemild/Howto7.png" alt="เลือกเวลา" className="step-image" />
+          <h3>เลือกวันที่และเวลา</h3>
+          <p>เลือกวันที่และประเภทกีฬาที่ต้องการ</p>
+          <p>จากนั้นเลือกคอร์ทและช่วงเวลาที่สะดวก</p>
+          <img src="/picturemild/Howto6.png" alt="หน้าเลือกวันที่" className="step-image" />
+          <img src="/picturemild/Howto7.png" alt="หน้าเลือกเวลา" className="step-image" />
         </section>
 
         <section className="step">
-          <h3>5. ยืนยันการจอง</h3>
-          <p>ตรวจสอบรายละเอียดการจองและกดปุ่มยืนยัน</p>
-          <p>ตรวจสอบรายละเอียดข้อมูลสรุปการจองอีกครั้ง เมื่อมั่นใจแล้วให้กดปุ่ม <strong>ยืนยัน</strong> อีกครั้ง </p>
-          <img src="/picturemild/Howto8.png" alt="ยืนยันการจอง" className="step-image" />
+          <h3>ยืนยันการจอง</h3>
+          <p>ตรวจสอบรายละเอียดการจอง แล้วกด <strong>ยืนยัน</strong></p>
+          <p>ตรวจสอบข้อมูลสรุปอีกครั้ง หากถูกต้องให้กด <strong>ยืนยัน</strong> อีกครั้ง</p>
+          <img src="/picturemild/Howto8.png" alt="หน้ายืนยันการจอง" className="step-image" />
         </section>
 
         <section className="step">
-          <h3>6. ยืนยันการโอน</h3>
-          <p>ตรวจสอบรายละเอียดคิวอาร์โค้ดที่แสดงว่าราคาแสดงถูกต้องหรือไม่ จึงค่อยทำการโอน</p>
-          <p>เมื่อโอนสำเร็จแล้วให้กดปุ่ม <strong>ยืนยัน</strong> จากนั้นให้กรอกข้อมูลวันที่และเวลาที่ชำระเงิน</p>
-          <p>ต่อมาให้ทำการแนบหลักฐานการโอน เมื่อกรอกทุกอย่างเสร็จสิ้นให้กดปุ่ม <strong>ยืนยัน</strong> นั่นคือการทำการ <strong>จองสำเร็จ!</strong></p>
-          <img src="/picturemild/Howto9.png" alt="ยืนยันการจอง" className="step-image" />
-          <img src="/picturemild/Howto10.png" alt="ยืนยันการจอง" className="step-image" />
+          <h3>ชำระเงินและยืนยัน</h3>
+          <p>ตรวจสอบ QR Code และยอดชำระให้ถูกต้องก่อนโอนเงิน</p>
+          <p>เมื่อโอนแล้ว กด <strong>ยืนยัน</strong> แล้วกรอกวันที่และเวลาที่ชำระ</p>
+          <p>แนบหลักฐานการโอน จากนั้นกด <strong>ยืนยัน</strong> เพื่อจองสำเร็จ!</p>
+          <img src="/picturemild/Howto9.png" alt="หน้าชำระเงิน" className="step-image" />
+          <img src="/picturemild/Howto10.png" alt="หน้ายืนยันการชำระ" className="step-image" />
         </section>
-
       </main>
     </>
   );

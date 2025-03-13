@@ -211,14 +211,14 @@ const SelectPlace = () => {
 
   const handleTimeSelection = (time) => {
     if (!selectedCourt || !selectedSlot) return;
-
+  
     const timeString = `${time.start}-${time.end}`.trim();
     const courtSlots = bookedSlots[selectedSlot] || [];
     const isBooked = courtSlots.includes(timeString);
     const isPast = isPastTime(time.start);
-
+  
     if (isBooked || isPast) return;
-
+  
     setSelectedTimes((prevTimes) => {
       const newTimes = prevTimes.includes(timeString)
         ? prevTimes.filter((t) => t !== timeString)
@@ -226,6 +226,7 @@ const SelectPlace = () => {
       setBookingData((prev) => ({ ...prev, timeSlots: newTimes }));
       return newTimes;
     });
+  ;
   };
 
   const handleBookingConfirmation = () => {
@@ -261,7 +262,7 @@ const SelectPlace = () => {
         headers: { "Content-Type": "application/json" },
       });
       router.push(
-        `/Homepage/Search/Select/payment-qr/payment-confirm?bookingId=${response.data.bookingId}&price=${totalPrice}&userId=${userId}&stadiumName=${encodeURIComponent(response.data.stadiumName)}&sportType=${encodeURIComponent(response.data.sportType)}&courtNumber=${bookingPayload.courtNumber}&date=${bookingPayload.date}&timeSlots=${encodeURIComponent(JSON.stringify(bookingPayload.timeSlots))}&id_stadium=${bookingPayload.stadiumId}&id_court=${bookingPayload.courtId}&stadiumAddress=${encodeURIComponent(stadiumAddress)}`
+        `/Homepage/Search/Select/payment-qr?bookingId=${response.data.bookingId}&price=${totalPrice}&userId=${userId}&stadiumName=${encodeURIComponent(response.data.stadiumName)}&sportType=${encodeURIComponent(response.data.sportType)}&courtNumber=${bookingPayload.courtNumber}&date=${bookingPayload.date}&timeSlots=${encodeURIComponent(JSON.stringify(bookingPayload.timeSlots))}&id_stadium=${bookingPayload.stadiumId}&id_court=${bookingPayload.courtId}&stadiumAddress=${encodeURIComponent(stadiumAddress)}`
       );
     } catch (error) {
       console.error("Error submitting booking:", error.response?.data || error.message);
@@ -291,9 +292,11 @@ const SelectPlace = () => {
             <button className="edit-button" onClick={handleEditBooking}>
               แก้ไขการจอง
             </button>
+
             <button className="confirm-button" onClick={handleFinalConfirmation}>
               ยืนยัน
             </button>
+            
           </div>
         </div>
       </div>
@@ -499,6 +502,7 @@ const SelectPlace = () => {
 
         {selectedCourt && selectedSlot && selectedDate && selectedTimes.length > 0 && (
           <div className="booking-footer">
+
             <button className="confirm-button" onClick={handleBookingConfirmation}>
               ยืนยันการจอง
             </button>
