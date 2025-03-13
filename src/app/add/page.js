@@ -6,9 +6,9 @@ import Tabbar from "../components/tab";
 import axios from "axios";
 import "./add.css";
 
-// Component หลักสำหรับเพิ่มกีฬาในโปรโมชัน
+
 export default function Add() {
-  // Hooks การนำทางและพารามิเตอร์
+
   const router = useRouter(); // อินสแตนซ์ของ router
   const searchParams = useSearchParams(); // ดึง query parameters
 
@@ -17,12 +17,12 @@ export default function Add() {
   const discount = parseFloat(searchParams.get("discount")) || 0; // ดึงส่วนลด
   const initialSelectedSports = JSON.parse(decodeURIComponent(searchParams.get("sports") || "[]")); // ดึงกีฬาที่เคยเลือก
 
-  // State การจัดการข้อมูลและ UI
+  // State จัดการข้อมูลและ UI
   const [sports, setSports] = useState([]); // เก็บรายการกีฬา
   const [selectedCount, setSelectedCount] = useState(0); // จำนวนกีฬาที่เลือก
   const [stadiumName, setStadiumName] = useState("ไม่ระบุ"); // ชื่อสนาม
 
-  // Effect hook สำหรับโหลดข้อมูลกีฬาเมื่อเริ่มต้น
+  // โหลดข้อมูลกีฬาเมื่อเริ่มต้น
   useEffect(() => {
     const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
@@ -38,10 +38,10 @@ export default function Add() {
       return;
     }
 
-    fetchSports(token); // ดึงข้อมูลกีฬา
+    fetchSports(token); 
   }, [stadiumId, router]);
 
-  // ฟังก์ชันดึงข้อมูลกีฬาจาก API
+  // ดึงข้อมูลกีฬาจาก API
   const fetchSports = async (token) => {
     try {
       console.log("Fetching sports for stadiumId:", stadiumId); // log การดึงข้อมูล
@@ -76,14 +76,14 @@ export default function Add() {
     }
   };
 
-  // ฟังก์ชันคำนวณราคาหลังลด
+  //คำนวณราคาหลังลด
   const calculateDiscountPrice = (price) => {
     const discountPercentage = discount / 100; // คำนวณเปอร์เซ็นต์ส่วนลด
     return Math.round(price * (1 - discountPercentage)); // คืนค่าราคาหลังลด
   };
 
-  // ฟังก์ชันจัดการการเปลี่ยนแปลงและการนำทาง
-  const handleCheckboxChange = (event, index) => { // อัปเดต checkbox
+  // อัปเดตการเลือกกีฬา
+  const handleCheckboxChange = (event, index) => { 
     const updatedSports = sports.map((sport, i) =>
       i === index ? { ...sport, checked: event.target.checked } : sport // อัปเดตเฉพาะกีฬาที่เลือก
     );
@@ -91,7 +91,8 @@ export default function Add() {
     setSelectedCount((prevCount) => (event.target.checked ? prevCount + 1 : prevCount - 1)); // อัปเดตจำนวน
   };
 
-  const handleConfirm = () => { // ยืนยันการเลือก
+  // ยืนยันการเลือก
+  const handleConfirm = () => { 
     const checkedSports = sports
       .filter((sport) => sport.checked) // กรองกีฬาที่เลือก
       .map((sport) => ({
@@ -110,7 +111,7 @@ export default function Add() {
     router.push(`/create-promotion${query}`); // ไปหน้าสร้างโปรโมชันพร้อมข้อมูล
   };
 
-  // ส่วนแสดงผล UI
+  // UI
   return (
     <div className="background">
       <Tabbar />

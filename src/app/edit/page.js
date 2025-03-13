@@ -6,7 +6,7 @@ import Tabbar from "../components/tab";
 import axios from "axios";
 import "./edit.css";
 
-// Component หลักสำหรับแก้ไขโปรโมชัน
+
 export default function EditPromotion() {
   // State การจัดการข้อมูลและ UI
   const [showModal, setShowModal] = useState(false); // ควบคุมการแสดง modal
@@ -21,12 +21,12 @@ export default function EditPromotion() {
   const [loading, setLoading] = useState(true); // สถานะการโหลด
   const [error, setError] = useState(null); // ข้อผิดพลาด
 
-  // Hooks การนำทางและพารามิเตอร์
+  
   const router = useRouter(); // อินสแตนซ์ของ router
   const searchParams = useSearchParams(); // ดึง query parameters
   const id = searchParams.get("id"); // ดึง ID จาก URL
 
-  // Effect hook สำหรับโหลดข้อมูลเมื่อเริ่มต้น
+  // โหลดข้อมูลโปรโมชันตอนเริ่ม
   useEffect(() => {
     const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
@@ -129,13 +129,14 @@ export default function EditPromotion() {
     }
   };
 
-  // ฟังก์ชันจัดการ UI และการนำทาง
-  const handleCloseModal = () => { // ปิด modal
+  // ปิด modal
+  const handleCloseModal = () => { 
     setShowModal(false); // ซ่อน modal
     router.push("/promotion"); // ไปหน้าโปรโมชัน
   };
 
-  const handleViewDetail = () => { // ดูรายละเอียด
+  // ดูรายละเอียด
+  const handleViewDetail = () => { 
     if (!id) {
       console.error("No promotion ID"); // log ถ้าไม่มี ID
       alert("ไม่พบข้อมูลโปรโมชัน"); // แจ้งเตือน
@@ -145,8 +146,8 @@ export default function EditPromotion() {
     router.push(`/detail?id=${id}`); // ไปหน้ารายละเอียด
   };
 
-  // ส่วนแสดงผล UI
-  if (loading) return <div>กำลังโหลดข้อมูล...</div>; // แสดงขณะโหลด
+  // UI
+  if (loading) return <div>กำลังโหลดข้อมูล...</div>; 
   if (error) return <div>{error}</div>; // แสดงข้อผิดพลาด
 
   return (

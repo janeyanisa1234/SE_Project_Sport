@@ -217,13 +217,14 @@ export default function Promotion() {
     }
   };
 
-  const handleCloseModal = () => { // ปิด modal
+  // ปิด modal
+  const handleCloseModal = () => { 
     setShowConfirmModal(false);
     setShowSuccessModal(false);
     if (showSuccessModal) fetchPromotions(); // รีเฟรชข้อมูลหลังลบสำเร็จ
   };
  
-    // Effect hooks
+    // โหลดข้อมูลตอนเริ่ม จัดการการเปลี่ยนหน้า
   useEffect(() => {
     fetchPromotions();
     window.scrollTo(0, 0);

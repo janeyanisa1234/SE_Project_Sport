@@ -7,9 +7,8 @@ import Tabbar from "../components/tab";
 import axios from "axios";
 import "./createpromotion.css";
 
-// Component หลักสำหรับสร้างโปรโมชัน
 export default function CreatePromotion() {
-  // Hooks การนำทางและพารามิเตอร์
+
   const router = useRouter(); // อินสแตนซ์ของ router
   const searchParams = useSearchParams(); // ดึง query parameters
 
@@ -31,7 +30,7 @@ export default function CreatePromotion() {
   const [showModal, setShowModal] = useState(false); // ควบคุมการแสดง modal
   const [promotionId, setPromotionId] = useState(null); // ID โปรโมชันที่สร้าง
 
-  // Effect hook สำหรับโหลดข้อมูลสนามเมื่อเริ่มต้น
+  // โหลดข้อมูลสนามเมื่อเริ่มต้น
   useEffect(() => {
     const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
@@ -59,7 +58,7 @@ export default function CreatePromotion() {
       });
   }, [router]);
 
-  // Effect hook อัปเดตราคากีฬาเมื่อส่วนลดเปลี่ยน
+  // อัปเดตราคากีฬาเมื่อส่วนลดเปลี่ยน
   useEffect(() => {
     const updatedSports = selectedSports.map((sport) => ({
       ...sport,
@@ -68,14 +67,14 @@ export default function CreatePromotion() {
     setSelectedSports(updatedSports); // อัปเดต state
   }, [discount]);
 
-  // ฟังก์ชันคำนวณราคาหลังลด
+  // คำนวณราคาหลังลด
   const calculateDiscountPrice = (price, discount) => {
     const discountNum = parseFloat(discount) || 0; // แปลงส่วนลดเป็นตัวเลข
     const discountPercentage = discountNum / 100; // คำนวณเปอร์เซ็นต์
     return Math.round(price * (1 - discountPercentage)); // คืนค่าราคาหลังลด
   };
 
-  // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูล
+  // เปลี่ยนแปลงข้อมูล
   const handleDiscountChange = (e) => {
     setDiscount(e.target.value); // อัปเดตส่วนลด
   };
@@ -84,13 +83,14 @@ export default function CreatePromotion() {
     setSelectedStadium(e.target.value); // อัปเดตสนามที่เลือก
   };
 
-  // ฟังก์ชันจัดการการนำทางและบันทึก
-  const handleAddSports = () => { // เพิ่มกีฬา
+  // เพิ่มกีฬา
+  const handleAddSports = () => { 
     const query = `?promotionName=${encodeURIComponent(promotionName)}&startDate=${encodeURIComponent(startDate)}&startTime=${encodeURIComponent(startTime)}&endDate=${encodeURIComponent(endDate)}&endTime=${encodeURIComponent(endTime)}&discount=${encodeURIComponent(discount)}&location=${encodeURIComponent(selectedStadium)}&sports=${encodeURIComponent(JSON.stringify(selectedSports))}`; // สร้าง query string
     router.push(`/add${query}`); // ไปหน้าเพิ่มกีฬา
   };
 
-  const handleSubmit = async () => { // บันทึกโปรโมชัน
+  // บันทึกโปรโมชัน
+  const handleSubmit = async () => { 
     const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
       alert("กรุณาเข้าสู่ระบบก่อนสร้างโปรโมชั่น"); // แจ้งเตือนถ้าไม่มี token
@@ -129,7 +129,7 @@ export default function CreatePromotion() {
     }
   };
 
-  // ส่วนแสดงผล UI
+  // แสดงผล UI
   if (loadingStadiums) return <div>กำลังโหลดข้อมูลสนาม...</div>; // แสดงขณะโหลด
 
   return (
