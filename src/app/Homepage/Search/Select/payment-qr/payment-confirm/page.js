@@ -19,8 +19,10 @@ const PaymentForm = () => {
   const datePlay = searchParams.get("date");
   const id_stadium = searchParams.get("id_stadium");
   const id_court = searchParams.get("id_court");
+
   const stadiumAddress = searchParams.get("stadiumAddress");
   const transactionId = searchParams.get("transactionId"); // รับ Transaction ID
+
 
   let timeSlots;
   try {
@@ -39,16 +41,16 @@ const PaymentForm = () => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [bookingData, setBookingData] = useState({
-    userId: userId,
-    bookingId: bookingId,
-    id_stadium: id_stadium,
-    id_court: id_court,
-    courtNumber: courtNumber,
-    datePlay: datePlay,
-    timeSlots: timeSlots,
-    price: price,
-    stadiumName: stadiumName,
-    sportType: sportType,
+    userId,
+    bookingId,
+    id_stadium,
+    id_court,
+    courtNumber,
+    datePlay,
+    timeSlots,
+    price,
+    stadiumName,
+    sportType,
   });
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
@@ -56,26 +58,27 @@ const PaymentForm = () => {
     if (!userId) {
       alert("กรุณาเข้าสู่ระบบก่อน");
       router.push("/login");
-      return;
     }
-    console.log("Initial Booking Data in PaymentForm:", {
-      userId,
-      bookingId,
-      price,
-      stadiumName,
-      sportType,
-      courtNumber,
-      datePlay,
-      timeSlots,
-      id_stadium,
-      id_court,
-      transactionId,
-    });
-  }, [userId, router, bookingId]);
+  }, [userId, router]);
 
   if (!userId) return null;
 
-  const handleFileChange = (event) => {
+  const checkImageQuality = (file) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (img.width < 300 || img.height < 300) {
+          alert("กรุณาอัปโหลดภาพที่มีความละเอียดสูงกว่านี้ (ขั้นต่ำ 300x300 พิกเซล)");
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      };
+    });
+  };
+
+  const handleFileChange = async (event) => {
     const selectedFile = event.target.files[0];
     if (!selectedFile) return;
     if (!selectedFile.type.startsWith("image/")) {
@@ -86,6 +89,10 @@ const PaymentForm = () => {
       alert("ขนาดไฟล์ต้องไม่เกิน 5MB");
       return;
     }
+
+    const isValid = await checkImageQuality(selectedFile);
+    if (!isValid) return;
+
     if (preview) URL.revokeObjectURL(preview);
     setFile(selectedFile);
     setPreview(URL.createObjectURL(selectedFile));
@@ -98,27 +105,9 @@ const PaymentForm = () => {
   }, [preview]);
 
   const handleUpload = async () => {
-    if (!file || !transferDate || !transferTime || !transactionId) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วน (วันที่โอน, เวลาที่โอน, สลิป, และเลขที่รายการ)");
+    if (!file || !transferDate || !transferTime ) {
+      alert("กรุณากรอกข้อมูลให้ครบถ้วน (วันที่โอน, เวลาที่โอน, สลิป)");
       return;
-    }
-
-    const requiredFields = [
-      "userId",
-      "bookingId",
-      "id_stadium",
-      "id_court",
-      "courtNumber",
-      "datePlay",
-      "timeSlots",
-      "price",
-    ];
-    for (let field of requiredFields) {
-      if (!bookingData[field]) {
-        alert(`ข้อมูล ${field} หายไป กรุณาตรวจสอบ`);
-        console.error(`Missing field: ${field}`);
-        return;
-      }
     }
 
     if (transferDate !== today) {
@@ -137,11 +126,12 @@ const PaymentForm = () => {
     formData.append("time", transferTime);
     formData.append("id_stadium", bookingData.id_stadium);
     formData.append("id_court", bookingData.id_court);
-    formData.append("court_number", bookingData.courtNumber.toString());
+    formData.append("court_number", String(bookingData.courtNumber));
     formData.append("date_play", bookingData.datePlay);
     formData.append("time_slot", bookingData.timeSlots.join(","));
-    formData.append("totalPrice", bookingData.price);
-    formData.append("transactionId", transactionId); // ส่ง Transaction ID
+    formData.append("totalPrice", String(bookingData.price));
+  
+    console.log("FormData being sent:", [...formData.entries()]);
 
     try {
       const response = await axios.post(
@@ -149,7 +139,7 @@ const PaymentForm = () => {
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
-          timeout: 10000,
+          timeout: 30000, // เพิ่ม timeout เป็น 30 วินาทีเพื่อรองรับ OCR
         }
       );
       setMessage(response.data.message);
@@ -159,14 +149,18 @@ const PaymentForm = () => {
       const bookedSlots = response.data.bookedSlots || [];
       localStorage.setItem("bookedSlots", JSON.stringify(bookedSlots));
     } catch (error) {
-      console.error("Upload error:", error.response?.data || error);
-      const errorMsg = error.response?.data?.error || error.message || "ไม่ทราบสาเหตุ";
-      alert(`เกิดข้อผิดพลาดในการอัปโหลด: ${errorMsg}`);
-      setMessage(`ข้อผิดพลาด: ${errorMsg}`);
-    } finally {
-      setUploading(false);
-    }
-  };
+      console.error("Full upload error:", error);
+    const errorMsg =
+      error.response?.data?.error ||
+      error.message ||
+      "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+    const errorDetails = error.response?.data?.details || error.code || "";
+    alert(`เกิดข้อผิดพลาด: ${errorMsg}${errorDetails ? ` - ${errorDetails}` : ""}`);
+    setMessage(`ข้อผิดพลาด: ${errorMsg}`);
+  } finally {
+    setUploading(false);
+  }
+};
 
   const handleConfirmPopup = () => {
     setShowSuccessPopup(false);
@@ -179,7 +173,6 @@ const PaymentForm = () => {
 
   const renderSuccessPopup = () => {
     if (!showSuccessPopup) return null;
-
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg shadow-lg text-center">
@@ -211,7 +204,6 @@ const PaymentForm = () => {
             value={transferDate}
             min={today}
             max={today}
-            onChange={(e) => setTransferDate(e.target.value)}
             readOnly
           />
           <input
@@ -220,13 +212,7 @@ const PaymentForm = () => {
             value={transferTime}
             onChange={(e) => setTransferTime(e.target.value)}
           />
-          <h2 className="text-xl font-semibold text-gray-800 mt-4">เลขที่รายการ</h2>
-          <input
-            type="text"
-            className="bg-gray-300 px-4 py-3 rounded mt-4 w-full text-lg"
-            value={transactionId || ""}
-            readOnly
-          />
+          
           <h2 className="text-xl font-semibold text-gray-800 mt-8">สลิปการโอน</h2>
           <div className="bg-gray-300 w-full h-40 flex items-center justify-center border-black border-2 mt-4 relative overflow-hidden">
             <input

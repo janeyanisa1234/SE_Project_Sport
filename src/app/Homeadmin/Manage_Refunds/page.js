@@ -16,7 +16,7 @@ export default function Manage_Refunds() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/cancle/cancle-booking');
+      const response = await axios.get('http://localhost:5000/api/cancleAdmin/cancle-booking');
       if (response.data && response.data.data) {
         setOwners(response.data.data);
       } else {

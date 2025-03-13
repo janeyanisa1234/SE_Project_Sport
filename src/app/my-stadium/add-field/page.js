@@ -1,11 +1,11 @@
 "use client";
-
+ 
 import React, { useState, useEffect } from "react";
 import { FaBars, FaPlus, FaTrash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Tabbar from "../../components/tab";
 import axios from "axios";
-
+ 
 const AddSportField = () => {
   const router = useRouter();
   const [imageFile, setImageFile] = useState(null);
@@ -21,10 +21,10 @@ const AddSportField = () => {
   const [stadiumId, setStadiumId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+ 
   const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, "0"));
   const minutes = ["00", "15", "30", "45"];
-
+ 
   useEffect(() => {
     const storedStadiumId = localStorage.getItem("stadium_id");
     console.log("Retrieved Stadium ID from localStorage:", storedStadiumId);
@@ -40,15 +40,15 @@ const AddSportField = () => {
       }
     }
   }, []);
-
+ 
   const addTimeSlot = () => {
     setTimeSlots([...timeSlots, { startHour: "00", startMinute: "00", endHour: "00", endMinute: "00" }]);
   };
-
+ 
   const removeTimeSlot = (index) => {
     setTimeSlots(timeSlots.filter((_, i) => i !== index));
   };
-
+ 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -59,11 +59,11 @@ const AddSportField = () => {
       setIsFileUploaded(true);
     }
   };
-
+ 
   const handleImageClick = () => {
     document.getElementById("imageUpload").click();
   };
-
+ 
   const handleSubmit = async () => {
     const sportType = selectedSport === "อื่นๆ" ? customSport : selectedSport;
     if (!sportType || !fieldCount || !price || timeSlots.length === 0 || !imageFile) {
@@ -74,10 +74,19 @@ const AddSportField = () => {
       setErrorMessage("ไม่พบรหัสสนาม กรุณาเข้าสู่ระบบใหม่");
       return;
     }
-
+ 
+    for (const slot of timeSlots) {
+      const startTime = `${slot.startHour}:${slot.startMinute}`;
+      const endTime = `${slot.endHour}:${slot.endMinute}`;
+      if (startTime === endTime) {
+        setErrorMessage("เวลาเริ่มต้นและสิ้นสุดของช่วงเวลาต้องไม่เท่ากัน");
+        return;
+      }
+    }
+ 
     setIsSubmitting(true);
     setErrorMessage("");
-
+ 
     try {
       const token = localStorage.getItem("token");
       const formattedTimeSlots = timeSlots.map((slot) => ({
@@ -93,11 +102,11 @@ const AddSportField = () => {
       if (imageFile) {
         formData.append("fieldImage", imageFile);
       }
-
+ 
       for (let pair of formData.entries()) {
         console.log(pair[0] + ":", pair[1]);
       }
-
+ 
       console.log("Sending request to: http://localhost:5000/api/field/add_field");
       const response = await axios.post("http://localhost:5000/api/field/add_field", formData, {
         headers: {
@@ -105,7 +114,7 @@ const AddSportField = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+ 
       console.log("Response received:", response.data);
       alert("เพิ่มสนามกีฬาสำเร็จ");
       router.push("/my-stadium");
@@ -116,32 +125,32 @@ const AddSportField = () => {
       setIsSubmitting(false);
     }
   };
-
+ 
   return (
     <div
-      className="relative w-full h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col"
+      className="relative w-full min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col"
       style={{
-        backgroundImage: "url('/pictureowner/bg.png'), linear-gradient(to bottom right, #1a1a1a, #000000, #404040)",
+        backgroundImage: "url('/pictureowner/bg.png'), linear-gradient(to bottom right,rgb(255, 255, 255),rgb(160, 159, 159),rgb(128, 128, 128))",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
       }}
     >
       <Tabbar />
-      <div className="flex flex-col items-center justify-center flex-grow px-4 sm:px-6 lg:px-8">
+      <br></br><br></br>
+      <div className="flex flex-col items-center justify-center flex-grow px-4 sm:px-6 lg:px-8 py-12">
         <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
           <div className="bg-gradient-to-r from-black to-gray-900 text-white text-center py-4 text-lg font-semibold rounded-t-2xl">
             เพิ่มจำนวนสนาม
           </div>
           <div className="p-6 space-y-6">
-            {/* Error Message */}
             {errorMessage && (
               <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg shadow-md animate-slide-in">
                 <span className="font-medium">{errorMessage}</span>
               </div>
             )}
-
-            {/* Sport Type */}
+ 
             <div className="space-y-2">
               <label className="block text-gray-800 font-semibold">ประเภทกีฬา</label>
               <select
@@ -156,8 +165,7 @@ const AddSportField = () => {
                 ))}
               </select>
             </div>
-
-            {/* Custom Sport */}
+ 
             {selectedSport === "อื่นๆ" && (
               <div className="space-y-2">
                 <label className="block text-gray-800 font-semibold">เพิ่มกีฬา</label>
@@ -171,8 +179,7 @@ const AddSportField = () => {
                 />
               </div>
             )}
-
-            {/* Field Count */}
+ 
             <div className="space-y-2">
               <label className="block text-gray-800 font-semibold">จำนวนสนาม</label>
               <input
@@ -184,8 +191,7 @@ const AddSportField = () => {
                 disabled={isSubmitting}
               />
             </div>
-
-            {/* Price */}
+ 
             <div className="space-y-2">
               <label className="block text-gray-800 font-semibold">ราคา</label>
               <input
@@ -197,8 +203,7 @@ const AddSportField = () => {
                 disabled={isSubmitting}
               />
             </div>
-
-            {/* Time Slots */}
+ 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <label className="block text-gray-800 font-semibold">ช่วงเวลา</label>
@@ -281,8 +286,7 @@ const AddSportField = () => {
                 </div>
               ))}
             </div>
-
-            {/* Image Upload */}
+ 
             <div className="space-y-2">
               <label className="block text-gray-800 font-semibold">รูปสนาม</label>
               <div
@@ -316,8 +320,7 @@ const AddSportField = () => {
                 </p>
               )}
             </div>
-
-            {/* Buttons */}
+ 
             <div className="flex justify-end space-x-4 mt-8">
               <button
                 className="bg-gray-200 px-6 py-2 rounded-lg text-gray-700 font-semibold hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 transition-all duration-200 shadow-md"
@@ -341,8 +344,10 @@ const AddSportField = () => {
           </div>
         </div>
       </div>
+      {/* เพิ่ม div ว่างเพื่อสร้างระยะห่างด้านล่าง */}
+      <div className="h-16"></div>
     </div>
   );
 };
-
+ 
 export default AddSportField;

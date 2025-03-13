@@ -15,17 +15,26 @@ export default function SearchPlace() {
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
   const category = searchParams.get("category") || "";
+
   const promoted = searchParams.get("promoted") === "true";
+
 
   useEffect(() => {
     async function fetchPlaceData() {
       try {
         let url = "http://localhost:5000/booking/stadiums";
+
         if (promoted) {
           console.log("Fetching promoted stadiums...");
           url = "http://localhost:5000/booking/promoted-stadiums";
         } else if (category) {
           const decodedCategory = decodeURIComponent(category);
+          console.log("Fetching filtered stadiums for category:", decodedCategory);
+          url = `http://localhost:5000/booking/filtered-stadiums?sportType=${encodeURIComponent(decodedCategory)}`;
+        }
+
+        if (category) {
+          const decodedCategory = decodeURIComponent(category); // Decode category
           console.log("Fetching filtered stadiums for category:", decodedCategory);
           url = `http://localhost:5000/booking/filtered-stadiums?sportType=${encodeURIComponent(decodedCategory)}`;
         }
@@ -44,9 +53,11 @@ export default function SearchPlace() {
         if (error.response) {
           console.log("Response Data:", error.response.data);
           console.log("Response Status:", error.response.status);
+
           setError(`เกิดข้อผิดพลาด: ${error.response.data.error || error.message}`);
         } else {
           setError("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+
         }
         setPlaceData([]);
       } finally {
@@ -54,7 +65,9 @@ export default function SearchPlace() {
       }
     }
     fetchPlaceData();
+
   }, [category, promoted]);
+
 
   const filteredPlaces = placeData.filter(place =>
     (place.stadium_name || "").toLowerCase().includes(query.toLowerCase()) ||

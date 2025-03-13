@@ -16,7 +16,6 @@ export default function QRPaymentPage({ width = "950px", height = "600px" }) {
   const [totalAmount, setTotalAmount] = useState(null);
   const [error, setError] = useState(null);
   const [timeLeft, setTimeLeft] = useState(300);
-  const [transactionId, setTransactionId] = useState(""); // เพิ่ม state สำหรับ Transaction ID
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -74,8 +73,6 @@ export default function QRPaymentPage({ width = "950px", height = "600px" }) {
             className="bg-white border border-gray-300 rounded-xl p-8 shadow-2xl text-center relative"
             style={{ width, height }}
           >
-
-            
             <button className="absolute top-6 right-6 text-gray-500 text-3xl hover:text-red-500 transition">
               ✖
             </button>
@@ -88,13 +85,6 @@ export default function QRPaymentPage({ width = "950px", height = "600px" }) {
                 <p className="text-xl text-gray-700 font-semibold">
                   ยอดชำระเงิน: <span className="text-green-500 font-bold">{totalAmount} บาท</span>
                 </p>
-                <input
-                  type="text"
-                  placeholder="กรอกเลขที่รายการจากสลิป"
-                  value={transactionId}
-                  onChange={handleTransactionIdChange}
-                  className="mt-4 p-2 border rounded w-full"
-                />
               </>
             ) : (
               <p className="text-gray-500 my-8">กำลังสร้าง QR Code...</p>
@@ -107,7 +97,7 @@ export default function QRPaymentPage({ width = "950px", height = "600px" }) {
               </span>
             </p>
 
-            {timeLeft > 0 && qrCodeUrl && transactionId ? (
+            {timeLeft > 0 && qrCodeUrl && (  
               <Link
                 href={{
                   pathname: "/Homepage/Search/Select/payment-qr/payment-confirm",
@@ -122,7 +112,6 @@ export default function QRPaymentPage({ width = "950px", height = "600px" }) {
                     timeSlots: searchParams.get("timeSlots"),
                     id_stadium: searchParams.get("id_stadium"),
                     id_court: searchParams.get("id_court"),
-                    transactionId, // ส่ง Transaction ID ไปด้วย
                   },
                 }}
               >
@@ -130,10 +119,6 @@ export default function QRPaymentPage({ width = "950px", height = "600px" }) {
                   ยืนยัน
                 </button>
               </Link>
-            ) : (
-              <p className="mt-10 text-red-500 font-semibold">
-                {timeLeft <= 0 ? "หมดเวลาชำระเงิน" : "กรุณากรอกเลขที่รายการ"}
-              </p>
             )}
           </div>
         </div>

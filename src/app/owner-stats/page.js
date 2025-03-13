@@ -18,11 +18,11 @@ const Dashboard = () => {
     bookingRate: 0,
     successfulBookings: 0,
     cancellations: 0,
-    mostBookedCourt: { name: '', count: 0 },
-    leastBookedCourt: { name: '', count: 0 },
-    mostBookedSport: { name: '', count: 0 },
-    highestRevenueSport: { name: '', revenue: 0 },
-    monthlyTrends: [],
+    mostBookedCourt: { name: 'N/A', count: 0 },
+    leastBookedCourt: { name: 'N/A', count: 0 },
+    mostBookedSport: { name: 'N/A', count: 0 },
+    highestRevenueSport: { name: 'N/A', revenue: 0 },
+    monthlyTrends: [], // Empty array as default
     yoyGrowth: 0,
   });
   const [filter, setFilter] = useState({ timeRange: '', month: '', year: '' });
@@ -37,9 +37,8 @@ const Dashboard = () => {
 
     try {
       const token = localStorage.getItem("token") || "your-test-token-here";
-      let userId = localStorage.getItem("userId"); // เปลี่ยนเป็น userId
+      let userId = localStorage.getItem("userId") || null;
 
-      // ถ้าไม่มี userId ลองคีย์อื่น ๆ ที่เป็นไปได้
       if (!userId) {
         const possibleKeys = ["user_id", "owner_id", "ownerId"];
         for (const key of possibleKeys) {
@@ -48,31 +47,19 @@ const Dashboard = () => {
         }
       }
 
-      // ตรวจสอบข้อมูลใน localStorage โดยสร้าง Object ด้วยวิธีที่ถูกต้อง
-      const localStorageData = {};
-      for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key)) {
-          localStorageData[key] = localStorage.getItem(key);
-        }
-      }
-      console.log('LocalStorage content:', localStorageData);
-
       if (!userId) {
         throw new Error("กรุณาล็อกอินเพื่อดูข้อมูลแดชบอร์ด: ไม่พบ userId ใน localStorage");
       }
 
-      console.log('Fetching data with userId:', userId, 'and filter:', filter);
-
       const response = await axios.get("http://localhost:5000/api/owner-stats", {
         params: { 
-          userId: userId,
+          userId,
           timeRange: filter.timeRange || undefined,
           month: filter.month || undefined,
           year: filter.year || undefined,
         },
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Data received from API:', response.data);
 
       setStats({
         totalRevenue: response.data.totalRevenue || 0,
@@ -87,8 +74,8 @@ const Dashboard = () => {
         yoyGrowth: response.data.yoyGrowth || 0,
       });
     } catch (error) {
-      console.error('Error fetching data:', error.message, 'Response:', error.response?.data);
-      setError(`${error.message} - ${error.response?.data?.error || 'No additional details'}`);
+      console.error('Error fetching data:', error);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -96,13 +83,19 @@ const Dashboard = () => {
 
   const colors = ['#FF6B8A', '#6BA5FF', '#2563EB', '#48BB78', '#8B5CF6'];
 
+  // Skeleton placeholder for charts when data is empty
+  const renderChartPlaceholder = () => (
+    <div className="chart-placeholder" style={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
+      ไม่มีข้อมูลสำหรับแสดง
+    </div>
+  );
+
   return (
     <div className="dashboard-wrapper">
       <Tabbar />
       <div className="dashboard-container">
         <h1 className="dashboard-title">ติดตามการใช้งานสนาม อัตราการจอง และแนวโน้มทางธุรกิจของคุณ</h1>
 
-        {/* แสดงสถานะการโหลดและข้อผิดพลาด */}
         {isLoading && (
           <div className="loading">
             <svg className="spinner" viewBox="0 0 24 24">
@@ -117,7 +110,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* ตัวกรอง */}
+        {/* Filters */}
         <div className="filter-container">
           <select
             value={filter.timeRange}
@@ -155,7 +148,7 @@ const Dashboard = () => {
           </select>
         </div>
 
-        {/* สถิติหลัก */}
+        {/* Main Stats */}
         <div className="stats-grid">
           <div className="stats-card revenue">
             <div className="stats-content">
@@ -195,7 +188,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* การวิเคราะห์สนาม */}
+        {/* Court Analysis */}
         <div className="analysis-grid">
           <div className="stats-card">
             <p className="analysis-label">สนามที่ถูกใช้เยอะที่สุด</p>
@@ -207,7 +200,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* การวิเคราะห์กีฬา */}
+        {/* Sport Analysis */}
         <div className="analysis-grid">
           <div className="stats-card">
             <p className="analysis-label">กีฬายอดนิยม</p>
@@ -219,23 +212,27 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* การจองรายเดือน */}
+        {/* Monthly Bookings Chart */}
         <div className="chart-container">
           <p className="chart-label">การจองรายเดือน</p>
           <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={stats.monthlyTrends}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="bookings" fill="#2563EB" />
-              </BarChart>
-            </ResponsiveContainer>
+            {stats.monthlyTrends.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={stats.monthlyTrends}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="bookings" fill="#2563EB" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              renderChartPlaceholder()
+            )}
           </div>
         </div>
 
-        {/* เปรียบเทียบปีต่อปี */}
+        {/* Year-over-Year Comparison */}
         <div className="chart-container">
           <p className="chart-label">เปรียบเทียบปีต่อปี</p>
           <p className="chart-value">การเติบโต: {stats.yoyGrowth}%</p>

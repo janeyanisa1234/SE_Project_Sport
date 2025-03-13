@@ -1,10 +1,10 @@
 "use client";
-
+ 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Tabbar from "../../components/tab";
 import axios from "axios";
-
+ 
 const AddSportsField = () => {
   const router = useRouter();
   const [sportsFieldName, setSportsFieldName] = useState("");
@@ -16,7 +16,7 @@ const AddSportsField = () => {
   const [ownerId, setOwnerId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+ 
   useEffect(() => {
     const storedOwnerId = localStorage.getItem("userId");
     console.log("Retrieved Owner ID from localStorage:", storedOwnerId);
@@ -27,7 +27,7 @@ const AddSportsField = () => {
       router.push("/login");
     }
   }, [router]);
-
+ 
   useEffect(() => {
     return () => {
       if (imagePreview) {
@@ -35,7 +35,7 @@ const AddSportsField = () => {
       }
     };
   }, [imagePreview]);
-
+ 
   const handleImageUpload = (event) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -47,7 +47,7 @@ const AddSportsField = () => {
         setErrorMessage("ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB");
         return;
       }
-
+ 
       setImageFile(file);
       setFileName(file.name);
       setIsFileUploaded(true);
@@ -59,28 +59,28 @@ const AddSportsField = () => {
       setErrorMessage("");
     }
   };
-
+ 
   const handleSubmit = async () => {
     if (!sportsFieldName || !address || !imageFile || !ownerId) {
       setErrorMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
-
+ 
     setIsSubmitting(true);
     setErrorMessage("");
-
+ 
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("No authentication token found");
       }
-
+ 
       const formData = new FormData();
       formData.append("owner_id", ownerId);
       formData.append("stadium_name", sportsFieldName);
       formData.append("stadium_address", address);
       formData.append("slipImage", imageFile);
-
+ 
       const response = await axios.post(
         "http://localhost:5000/api/sox/add_stadium",
         formData,
@@ -91,7 +91,7 @@ const AddSportsField = () => {
           },
         }
       );
-
+ 
       alert("เพิ่มสนามกีฬาสำเร็จ กรุณารอการตรวจสอบจากแอดมิน");
       router.push("/my-stadium");
     } catch (error) {
@@ -103,13 +103,14 @@ const AddSportsField = () => {
       setIsSubmitting(false);
     }
   };
-
+ 
   return (
     <div
       className="relative w-full h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col"
-      style={{ backgroundImage: "url('/pictureowner/bg.png'), linear-gradient(to bottom right, #1a1a1a, #000000, #404040)", backgroundSize: "cover", backgroundPosition: "center" }}
+      style={{ backgroundImage: "url('/pictureowner/bg.png'), linear-gradient(to bottom right,rgb(255, 255, 255),rgb(160, 159, 159),rgb(128, 128, 128))", backgroundSize: "cover", backgroundPosition: "center" }}
     >
       <Tabbar />
+      <br></br><br></br>
       <div className="flex flex-col items-center justify-center flex-grow px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full transform transition-all duration-300 hover:shadow-2xl">
           {/* Header */}
@@ -123,7 +124,7 @@ const AddSportsField = () => {
                 <span className="font-medium">{errorMessage}</span>
               </div>
             )}
-
+ 
             {/* Sports Field Name */}
             <label className="block text-gray-800 font-semibold mb-2">ชื่อสนาม</label>
             <input
@@ -134,7 +135,7 @@ const AddSportsField = () => {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 shadow-sm"
               disabled={isSubmitting}
             />
-
+ 
             {/* Address */}
             <label className="block text-gray-800 font-semibold mt-6 mb-2">ที่ตั้ง</label>
             <textarea
@@ -144,7 +145,7 @@ const AddSportsField = () => {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 shadow-sm resize-y h-32"
               disabled={isSubmitting}
             />
-
+ 
             {/* Image Upload */}
             <label className="block text-gray-800 font-semibold mt-6 mb-2">
               รูปสนามกีฬา
@@ -194,7 +195,7 @@ const AddSportsField = () => {
                 </p>
               )}
             </div>
-
+ 
             {/* Buttons */}
             <div className="flex justify-between mt-8 gap-4">
               <button
@@ -222,5 +223,5 @@ const AddSportsField = () => {
     </div>
   );
 };
-
+ 
 export default AddSportsField;

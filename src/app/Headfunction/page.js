@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import { useState, useEffect, useRef } from "react";
 import "./Headfunction.css";
 import Link from "next/link";
@@ -51,7 +51,7 @@ export default function Headfunction() {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
-
+ 
   return (
     <nav className="nav-container">
       <div className="filter-dropdown-group" ref={dropdownRef}>

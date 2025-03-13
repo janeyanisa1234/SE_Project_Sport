@@ -5,9 +5,9 @@ import axios from "axios";
 import Image from "next/image";
 import Tabbar from "../components/tab";
 import { useRouter } from "next/navigation";
-
+ 
 const API_BASE_URL = "http://localhost:5000/api/ping";
-
+ 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [summaryData, setSummaryData] = useState({
@@ -18,92 +18,91 @@ const Page = () => {
   const [paymentStatus, setPaymentStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [selectedMonth] = useState("02"); // Fixed to February
+  const [selectedYear] = useState(() => {
+    return new Date().getFullYear();
+  });
+ 
   const router = useRouter();
-
+ 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
     document.body.classList.toggle("sidebar-open", !isSidebarOpen);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const now = new Date();
-        const currentMonth = String(now.getMonth() + 1).padStart(2, '0'); // Format as 01, 02, etc.
-        const currentYear = now.getFullYear();
-        
-        // Get userId from localStorage
-        const userId = localStorage.getItem("userId");
-        
-        if (!userId) {
-          console.error("User ID not found");
-          setError("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบใหม่");
-          return;
-        }
-        
-        // Fetch summary data
-        const summaryResult = await axios.get(`${API_BASE_URL}/summary`, {
-          params: { month: currentMonth, year: currentYear, ownerId: userId }
-        });
-        
-        setSummaryData(summaryResult.data);
-        
-        // Fetch payment status data
-        const statusResult = await axios.get(`${API_BASE_URL}/payment-status`, {
-          params: { ownerId: userId }
-        });
-        
-        // Filter for matching owner ID (even though backend should already filter)
-        const filteredData = statusResult.data.filter(item => item.id_owner === userId);
-        setPaymentStatus(filteredData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("เกิดข้อผิดพลาดในการดึงข้อมูล: " + (error.response?.data?.error || error.message));
-      } finally {
-        setLoading(false);
+ 
+  const fetchData = async (month, year) => {
+    try {
+      setLoading(true);
+      const userId = localStorage.getItem("userId");
+     
+      if (!userId) {
+        console.error("User ID not found");
+        setError("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบใหม่");
+        return;
       }
-    };
-    
-    fetchData();
-  }, []);
-  
+     
+      // Fetch summary data
+      const summaryResult = await axios.get(`${API_BASE_URL}/summary`, {
+        params: { month, year, ownerId: userId }
+      });
+     
+      setSummaryData(summaryResult.data);
+     
+      // Fetch payment status data
+      const statusResult = await axios.get(`${API_BASE_URL}/payment-status`, {
+        params: { month, year, ownerId: userId }
+      });
+     
+      const filteredData = statusResult.data.filter(item => item.id_owner === userId);
+      setPaymentStatus(filteredData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("เกิดข้อผิดพลาดในการดึงข้อมูล: " + (error.response?.data?.error || error.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+ 
+  useEffect(() => {
+    fetchData(selectedMonth, selectedYear);
+  }, [selectedMonth, selectedYear]);
+ 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("th-TH").format(amount);
   };
-
-  const getCurrentMonth = () => {
+ 
+  const getMonthName = (month) => {
     const months = [
       "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
       "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
     ];
-    const thaiYear = new Date().getFullYear() + 543;
-    return `${months[new Date().getMonth()]} ${thaiYear}`;
+    return months[parseInt(month) - 1];
   };
-
-  // ฟังก์ชันตรวจสอบค่าวันที่และแสดงผลอย่างเหมาะสม
+ 
   const displayDate = (dateValue) => {
     if (!dateValue || dateValue === "-" || dateValue === "null" || dateValue === "undefined") {
       return "-";
     }
     return dateValue;
   };
-
+ 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex flex-col font-inter">
       <Tabbar />
-
+ 
       <main className="w-full mx-auto p-8 flex-grow">
         <br />
         <br />
-        <h1 className="text-2xl font-bold mb-4">สรุปยอดประจำเดือน {getCurrentMonth()}</h1>
-
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">สรุปยอดประจำเดือน {getMonthName(selectedMonth)} {parseInt(selectedYear) + 543}</h1>
+        </div>
+ 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             <p>{error}</p>
           </div>
         )}
-
+ 
         {loading ? (
           <div className="flex justify-center items-center p-8">
             <p className="text-xl">กำลังโหลดข้อมูล...</p>
@@ -118,54 +117,49 @@ const Page = () => {
                 </tr>
               </thead>
               <tbody>
-  {paymentStatus && paymentStatus.length > 0 ? (
-    (() => {
-      // คำนวณผลรวมของ totalBeforeFee และ totalAfterFee
-      const totalSummary = paymentStatus.reduce(
-        (acc, payment) => {
-          acc.totalBeforeFee += payment.totalBeforeFee || 0;
-          acc.totalAfterFee += payment.totalAfterFee || 0;
-          return acc;
-        },
-        { totalBeforeFee: 0, totalAfterFee: 0 }
-      );
-
-      // คำนวณค่าหัก 10% จาก totalBeforeFee
-      const calculatedServiceFee = totalSummary.totalBeforeFee * 0.1;
-
-      return (
-        <React.Fragment>
-          <tr>
-            <td className="border border-gray-800 p-2">ยอดจองสนามรวม</td>
-            <td className="border border-gray-800 p-2">{formatCurrency(totalSummary.totalBeforeFee)}</td>
-          </tr>
-          <tr>
-            <td className="border border-gray-800 p-2">หัก 10%</td>
-            <td className="border border-gray-800 p-2">-{formatCurrency(calculatedServiceFee)}</td>
-          </tr>
-          <tr className="font-bold">
-            <td className="border border-gray-800 p-2">รวมทั้งหมด</td>
-            <td className="border border-gray-800 p-2">{formatCurrency(totalSummary.totalBeforeFee - calculatedServiceFee)}</td>
-          </tr>
-        </React.Fragment>
-      );
-    })()
-  ) : (
-    <tr>
-      <td className="border border-gray-800 p-2" colSpan="2">ไม่มีข้อมูลการชำระเงิน</td>
-    </tr>
-  )}
-</tbody>
-
-
+                {paymentStatus && paymentStatus.length > 0 ? (
+                  (() => {
+                    const totalSummary = paymentStatus.reduce(
+                      (acc, payment) => {
+                        acc.totalBeforeFee += payment.totalBeforeFee || 0;
+                        acc.totalAfterFee += payment.totalAfterFee || 0;
+                        return acc;
+                      },
+                      { totalBeforeFee: 0, totalAfterFee: 0 }
+                    );
+ 
+                    const calculatedServiceFee = totalSummary.totalBeforeFee * 0.1;
+ 
+                    return (
+                      <React.Fragment>
+                        <tr>
+                          <td className="border border-gray-800 p-2">ยอดจองสนามรวม</td>
+                          <td className="border border-gray-800 p-2">{formatCurrency(totalSummary.totalBeforeFee)}</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gray-800 p-2">หัก 10%</td>
+                          <td className="border border-gray-800 p-2">-{formatCurrency(calculatedServiceFee)}</td>
+                        </tr>
+                        <tr className="font-bold">
+                          <td className="border border-gray-800 p-2">รวมทั้งหมด</td>
+                          <td className="border border-gray-800 p-2">{formatCurrency(totalSummary.totalBeforeFee - calculatedServiceFee)}</td>
+                        </tr>
+                      </React.Fragment>
+                    );
+                  })()
+                ) : (
+                  <tr>
+                    <td className="border border-gray-800 p-2" colSpan="2">ไม่มีข้อมูลการชำระเงิน</td>
+                  </tr>
+                )}
+              </tbody>
             </table>
-
+ 
             <p className="text-red-500 font-bold mt-2">
-              หมายเหตุ: ระบบจะทำการโอนเงินหลังจากหักค่าบริการหลังการขาย ภายในวันที่ 1-15 ของทุกเดือน 
+              หมายเหตุ: ระบบจะทำการโอนเงินหลังจากหักค่าบริการหลังการขาย ภายในวันที่ 1-15 ของทุกเดือน
               โดยระบบจะทำการโอนเงินเข้าบัญชีธนาคารของท่านที่ได้ลงทะเบียนไว้ในระบบเท่านั้น
             </p>
-
-            {/* Payment tracking table */}
+ 
             <h2 className="text-xl font-bold mt-6">ติดตามสถานะการโอนเงิน</h2>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-800 mt-4">
@@ -216,5 +210,5 @@ const Page = () => {
     </div>
   );
 };
-
+ 
 export default Page;
