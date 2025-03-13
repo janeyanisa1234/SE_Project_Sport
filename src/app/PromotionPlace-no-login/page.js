@@ -1,36 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Headfunction from "../Headfunction/page";
 import Tabbar from "../tabbar-nologin/tab.js";
 import "./PromotionPlace.css";
+import axios from "axios";
 
 export default function PromotionPlacenologin() {
   const [displayCount, setDisplayCount] = useState("");
   const [duration, setDuration] = useState("");
+  const [promotedStadiums, setPromotedStadiums] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const places = [
-    {
-      name: "AVOCADO",
-      address: "55/5 หมู่ 10 ซอย 12 บ้านสวน จ.ชลบุรี",
-      image: "/picturemild/Avocado.svg",
-    },
-    {
-      name: "MAREENONT",
-      address: "326 หมู่ 4 ถนนสุขุมวิท บางละมุง จ.ชลบุรี",
-      image: "/picturemild/Mareenont.svg",
-    },
-    {
-      name: "SING STD",
-      address: "88/15 หมู่ 1 ถนนบ้านบึง จ.ชลบุรี",
-      image: "/picturemild/Sing.svg",
-    },
-    {
-      name: "ศรีราชาสปอร์ต",
-      address: "312 หมู่ 4 ถนนงามวงศ์วาน ศิริวรินทร์ จ.ชลบุรี",
-      image: "/picturemild/Sriracha.svg",
-    },
-  ];
+  useEffect(() => {
+    async function fetchPromotedStadiums() {
+      try {
+        const response = await axios.get("http://localhost:5000/api/booking/promoted-stadiums", {
+          timeout: 10000,
+        });
+        console.log("Promoted stadiums data:", response.data);
+        if (response.data && Array.isArray(response.data)) {
+          setPromotedStadiums(response.data);
+        } else {
+          console.warn("Data is not an array:", response.data);
+          setPromotedStadiums([]);
+          setError("ข้อมูลที่ได้รับไม่ถูกต้อง");
+        }
+      } catch (error) {
+        console.error("Error fetching promoted stadiums:", error);
+        if (error.response) {
+          console.log("Response Data:", error.response.data);
+          console.log("Response Status:", error.response.status);
+          setError(`เกิดข้อผิดพลาด: ${error.response.data.error || error.message}`);
+        } else {
+          setError("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+        }
+        setPromotedStadiums([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPromotedStadiums();
+  }, []);
 
   const generateGoogleMapsLink = (address) => {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
@@ -41,7 +53,7 @@ export default function PromotionPlacenologin() {
       <Tabbar />
       <Headfunction />
       <main className="places-list">
-        <h3 style={{color: "black"}}>สนามที่เข้าร่วมโปรโมชั่น</h3>
+        <h3 className="section-title">สนามที่เข้าร่วมโปรโมชั่น</h3>
 
         {/* Dropdown เลือกจำนวนที่จะแสดง และระยะเวลา */}
         <div className="dropdown-container">
@@ -76,20 +88,42 @@ export default function PromotionPlacenologin() {
           </select>
         </div>
 
-        {/* แสดงรายการสนามโดยจำกัดจำนวนตาม displayCount */}
-        {places.slice(0, parseInt(displayCount) || places.length).map((place, index) => (
-          <div key={index} className="place-card">
-            <img src={place.image} alt={place.name} className="place-image" />
-            <div className="place-info">
-              <h3 className="place-name">{place.name}</h3>
-              <p className="place-address">
-              <a style={{color: "black"}}href={generateGoogleMapsLink(place.address)} target="_blank" rel="noopener noreferrer">
-                  {place.address}
-                </a>
-              </p>
-            </div>
-          </div>
-        ))}
+        {/* แสดงรายการสนามจาก API */}
+        {loading ? (
+          <p className="loading-text">กำลังโหลด...</p>
+        ) : error ? (
+          <p className="error-text">{error}</p>
+        ) : promotedStadiums.length > 0 ? (
+          promotedStadiums
+            .slice(0, parseInt(displayCount) || promotedStadiums.length)
+            .map((place, index) => (
+              <div key={place.id || index} className="place-card">
+                <img
+                  src={place.stadium_image || "/picturemild/default.svg"}
+                  alt={place.stadium_name}
+                  className="place-image"
+                />
+                <div className="place-info">
+                  <h3 className="place-name">{place.stadium_name}</h3>
+                  <p className="place-address">
+                    <a
+                      href={generateGoogleMapsLink(place.stadium_address)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "black" }}
+                    >
+                      {place.stadium_address}
+                    </a>
+                  </p>
+                  {place.promotion && (
+                    <p className="grid-promo">ส่วนลด: {place.promotion.discount_percentage}%</p>
+                  )}
+                </div>
+              </div>
+            ))
+        ) : (
+          <p className="no-data-text">ไม่มีสนามที่เข้าร่วมโปรโมชั่น</p>
+        )}
       </main>
     </>
   );

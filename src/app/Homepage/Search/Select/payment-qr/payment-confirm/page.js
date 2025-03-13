@@ -20,6 +20,9 @@ const PaymentForm = () => {
   const id_stadium = searchParams.get("id_stadium");
   const id_court = searchParams.get("id_court");
 
+  const stadiumAddress = searchParams.get("stadiumAddress");
+  const transactionId = searchParams.get("transactionId"); // รับ Transaction ID
+
 
   let timeSlots;
   try {
@@ -141,6 +144,10 @@ const PaymentForm = () => {
       );
       setMessage(response.data.message);
       setShowSuccessPopup(true);
+
+      // เก็บ bookedSlots เพื่อส่งกลับไปยัง SelectPlace
+      const bookedSlots = response.data.bookedSlots || [];
+      localStorage.setItem("bookedSlots", JSON.stringify(bookedSlots));
     } catch (error) {
       console.error("Full upload error:", error);
     const errorMsg =
@@ -157,7 +164,11 @@ const PaymentForm = () => {
 
   const handleConfirmPopup = () => {
     setShowSuccessPopup(false);
-    router.push(`/Homepage?bookingId=${bookingId}`);
+    const bookedSlots = encodeURIComponent(localStorage.getItem("bookedSlots") || "[]");
+    // Redirect กลับไปยัง SelectPlace พร้อม bookedSlots
+    router.push(
+      `/Homepage/Search/Select?stadium_name=${encodeURIComponent(stadiumName)}&stadium_address=${encodeURIComponent(stadiumAddress)}&bookedSlots=${bookedSlots}`
+    );
   };
 
   const renderSuccessPopup = () => {
@@ -171,7 +182,7 @@ const PaymentForm = () => {
             onClick={handleConfirmPopup}
             className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
           >
-            ยืนยัน
+            กลับไปเลือกสนาม
           </button>
         </div>
       </div>

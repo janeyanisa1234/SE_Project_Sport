@@ -4,13 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import "./Headfunction.css";
 import Link from "next/link";
 import axios from "axios";
- 
+
 export default function Headfunction() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [categories, setCategories] = useState([]);
   const dropdownRef = useRef(null);
- 
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -41,7 +41,7 @@ export default function Headfunction() {
     };
     fetchCategories();
   }, []);
- 
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -55,6 +55,7 @@ export default function Headfunction() {
   return (
     <nav className="nav-container">
       <div className="filter-dropdown-group" ref={dropdownRef}>
+
         <button
           className="nav-button"
           onClick={(e) => {
@@ -86,7 +87,7 @@ export default function Headfunction() {
           </ul>
         )}
       </div>
- 
+
       <div className="search-bar">
         <input
           type="text"

@@ -89,6 +89,7 @@
   }
   
   .search-input {
+    color: #000;
     display: flex;
     padding: 5px;
     border-radius: 20px;
