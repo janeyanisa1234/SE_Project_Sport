@@ -12,7 +12,8 @@
  /* background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);*/
  /* background-color: #F5F5F5;*/
  /*linear-gradient(to bottom, #1B1B1B, #3F2E62)  linear-gradient(to bottom, #1F1F1F, #2E3A59)*/
- background:linear-gradient(to bottom, #F5F5F5, #DCE4E8);
+ /*background:linear-gradient(to bottom, #F5F5F5, #DCE4E8);*/
+ background: linear-gradient(135deg, #F5F5F5, #DCE4E8);
  
 }
 

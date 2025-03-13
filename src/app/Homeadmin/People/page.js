@@ -75,13 +75,8 @@ export default function Dashboard() {
     
     setIsDeleting(true);
     try {
-      // เรียกใช้ API เพื่อลบผู้ใช้
       await axios.delete(`http://localhost:5000/api/users/${selectedUser.id}`);
-      
-      // อัปเดต state เพื่อแสดงผลการลบ
       setUsers(users.filter(user => user.id !== selectedUser.id));
-      
-      // ปิด popup
       setShowDeletePopup(false);
       setSelectedUser(null);
     } catch (err) {
@@ -145,7 +140,6 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {/* ตอนนี้จะแสดงแค่หัวตารางขณะที่กำลังโหลด ไม่มีข้อความ "กำลังโหลดข้อมูล..." */}
             {!loading && limitedUsers.length === 0 && (
               <tr>
                 <td colSpan="6" style={{ textAlign: "center" }}>ไม่พบข้อมูลผู้ใช้</td>
