@@ -5,70 +5,92 @@ import Headfunction from "./Headfunction/page.js";
 import Tabbar from "./tabbar-nologin/tab.js";
 import Link from "next/link";
 import "./globals.css";
+import axios from "axios";
 
 export default function Home() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [promotedStadiums, setPromotedStadiums] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const carouselImages = ["/picturemild/Hit.png", "/picturemild/Avocado.svg", "/picturemild/Mareenont.svg"];
-
-  // Change image every 5 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % carouselImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [carouselImages.length]);
+    async function fetchPromotedStadiums() {
+      try {
+        const response = await axios.get("http://localhost:5000/api/booking/promoted-stadiums", {
+          timeout: 10000,
+        });
+        console.log("Promoted stadiums data:", response.data);
+        if (response.data && Array.isArray(response.data)) {
+          setPromotedStadiums(response.data);
+        } else {
+          console.warn("Data is not an array:", response.data);
+          setPromotedStadiums([]);
+          setError("ข้อมูลที่ได้รับไม่ถูกต้อง");
+        }
+      } catch (error) {
+        console.error("Error fetching promoted stadiums:", error);
+        if (error.response) {
+          console.log("Response Data:", error.response.data);
+          console.log("Response Status:", error.response.status);
+          setError(`เกิดข้อผิดพลาด: ${error.response.data.error || error.message}`);
+        } else {
+          setError("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+        }
+        setPromotedStadiums([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPromotedStadiums();
+  }, []);
 
   return (
     <>
-      <Tabbar /> 
+      <Tabbar />
       <Headfunction />
 
       <main className="content">
         {/* Carousel */}
         <div className="carousel">
-          <img src={carouselImages[currentImageIndex]} alt="Carousel" className="hit" />
+          <Link href="/HowtoBooking">
+            <img src="/picturemild/GuideToBooking.png" alt="Howto" className="carousel-image" />
+          </Link>
         </div>
 
         {/* สนามที่เข้าร่วมโปรโมชั่น */}
         <section className="promotion-section">
-          <h3>สนามที่เข้าร่วมโปรโมชั่น</h3>
+          <h3 className="section-title">สนามที่เข้าร่วมโปรโมชั่น</h3>
           <div className="grid-container">
-            {[
-              { name: "SING STD", image: "/picturemild/Sing.svg" },
-              { name: "AVOCADO", image: "/picturemild/Avocado.svg" },
-              { name: "MAREENONT", image: "/picturemild/Mareenont.svg" },
-              { name: "ศรีราชาสปอร์ต", image: "/picturemild/Sriracha.svg" },
-            ].map((item, index) => (
-              <div key={index} className="grid-item">
-                <img src={item.image} alt={item.name} className="grid-image" />
-                <p className="grid-title">{item.name}</p>
-              </div>
-            ))}
+            {loading ? (
+              <p className="loading-text">กำลังโหลด...</p>
+            ) : error ? (
+              <p className="error-text">{error}</p>
+            ) : promotedStadiums.length > 0 ? (
+              promotedStadiums.map((item, index) => (
+                <Link
+                  key={item.id || index}
+                  href={`/Search-nologin/Select-nologin?stadium_name=${encodeURIComponent(item.stadium_name)}&stadium_address=${encodeURIComponent(item.stadium_address)}`}
+                >
+                  <div className="grid-item">
+                    <img
+                      src={item.stadium_image || "/picturemild/default.svg"}
+                      alt={item.stadium_name}
+                      className="grid-image"
+                    />
+                    <p className="grid-title">{item.stadium_name}</p>
+                    {item.promotion && (
+                      <p className="grid-promo">
+                        ส่วนลด: {item.promotion.discount_percentage}%
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <p className="no-data-text">ไม่มีสนามที่เข้าร่วมโปรโมชั่น</p>
+            )}
           </div>
           <Link href="/PromotionPlace-no-login">
-          <button className="view-more-button">ดูเพิ่มเติม</button>
-          </Link>
-        </section>
-
-        {/* อันดับสนามกีฬายอดนิยม */}
-        <section className="popular-section">
-          <h3>อันดับสนามกีฬายอดนิยม</h3>
-          <div className="grid-container">
-            {[
-              { name: "ทัศนาสปอร์ต", image: "/picturemild/Tasana.svg" },
-              { name: "AVOCADO", image: "/picturemild/Avocado.svg" },
-              { name: "MAREENONT", image: "/picturemild/Mareenont.svg" },
-              { name: "SING STD", image: "/picturemild/Sing.svg" },
-            ].map((item, index) => (
-              <div key={index} className="grid-item">
-                <img src={item.image} alt={item.name} className="grid-image" />
-                <p className="grid-title">{item.name}</p>
-              </div>
-            ))}
-          </div>
-          <Link href="/HitPlace-no-login">
-          <button className="view-more-button">ดูเพิ่มเติม</button>
+            <button className="view-more-button">ดูเพิ่มเติม</button>
           </Link>
         </section>
       </main>

@@ -1,414 +1,402 @@
+
+
 @media (prefers-color-scheme: dark) {
-    :root {
-      --background: #0a0a0a;
-      --foreground: #ededed;
-    }
-    body {
-      background-color: var(--background);
-      color: var(--foreground);
-    }
-    .select-place-container {
-      background-color: #1c1c1c;
-    }
-    .category-nav button {
-      background-color: #333333;
-      color: var(--foreground);
-    }
-    .category-nav button.active {
-      background-color: #555555;
-      color: #ffffff;
-    }
-    .venue-card {
-      background-color: #333333;
-      color: #ffffff;
-    }
-    .venue-name, .venue-address {
-      color: #ffffff;
-    }
-    .timeslot-btn.available {
-      background-color: #4BCC58;
-      border-color: #3AA647;
-    }
-    .timeslot-btn.unavailable {
-      background-color: #C02222;
-      border-color: #A01B1B;
-    }
-    .timeslot-btn.selected {
-      background-color: #6D6D6D;
-      color: white;
-    }
-    .confirm-button {
-      background-color: #2196F3;
-    }
-    .confirm-button:hover {
-      background-color: darkgreen;
-    }
-    .modal-overlay {
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-    .modal-container {
-      background-color: #222222;
-      color: #ffffff;
-    }
-    .edit-button {
-      background-color: #D9D9D9;
-      color: #000000;
-    }
-    .edit-button:hover {
-      background-color: darkorange;
-    }
-    .Finalconfirm-button {
-      background-color: #4CAF50;
-      color: white;
-    }
-    .Finalconfirm-button:hover {
-      background-color: #72d572;
-    }
-  }
   
-  @media (max-width: 768px) {
-    .container, .container2, .container3 {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .category-nav button {
-      flex: 1 1 48%;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .container, .container2, .container3 {
-      grid-template-columns: repeat(1, 1fr);
-    }
-    .category-nav {
-      flex-direction: column;
-      align-items: center;
-    }
-    .category-nav button {
-      width: 100%;
-    }
-  }
-  
+
   body {
+    background-color: var(--background);
     color: var(--foreground);
-    background-color: rgb(207, 206, 206);
-    font-family: Arial, Helvetica, sans-serif;
-    height: 100vh;
-    margin: 0;
-    overflow-y: scroll;
-  }
-  
-  .select-place-container {
-    padding: 0px;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-  }
-  
-  .banner {
-    height: 250px;
-    background: url('/picturemild/Avocado.svg') center/cover no-repeat;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 20px;
-    color: rgb(0, 0, 0);
-  }
-  
-  .Calender {
-    margin-left: 50px;
-    margin-top: 10px;
-  }
-  
-  .date-picker {
-    width: 130px;
-    padding: 3px;
-    font-size: 14px;
-    margin-left: 20px;
-    text-align: center;
-    border-radius: 5px;
-  }
-  
-  .venue-name {
-    border-radius: 5px;
-    margin-left: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffffff;
-  }
-  
-  .venue-address {
-    margin-left: 20px;
-    position: relative;
-    font-size: 16px;
-    color: #ffffff;
-    stroke-width: 1%;
-    stroke: #000000;
-  }
-  
-  .category-nav {
-    display: flex;
-    justify-content: center;
-    flex-wrap: nowrap;
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  
-  .category-nav button {
-    color: #ffffff;
-    flex: 1 1 auto;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 2px;
-    cursor: pointer;
-    background-color: rgb(0, 0, 0);
-    font-size: 14px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    text-align: center;
-    width: 100%;
-  }
-  
-  .category-nav button.active {
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    border: 1px solid rgb(0, 0, 0);
-  }
-  
-  .category-nav button:hover {
-    background-color: rgb(149, 149, 149);
   }
 
-  .popular-venues{
-    margin-top: 3%;
+  .select-place-container {
+    background-color: #1c1c1c;
   }
-  
-  .venue-list {
-    margin-left: 30px;
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+
+  .category-nav button {
+    background-color: #333333;
+    color: #ffffff;
   }
-  
+
+  .category-nav button.active {
+    background-color: #555555;
+    color: #ffffff;
+  }
+
   .venue-card {
-    margin-left: 50px;
-    margin-bottom: 20px;
-    width: 90%;
-    gap: 10px;
-    display: flex;
-    align-items: center;
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
+    background-color: #333333;
+    color: var(--foreground);
   }
-  
-  .venue-card:hover {
-    transform: scale(1.02);
+
+  .venue-name,
+  .venue-address {
+    color: var(--foreground);
   }
-  
-  .venue-image {
-    width: 300px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-right: 20px;
+
+  .confirm-button {
+    background-color: #2196f3;
   }
-  
-  .venue-info {
-    flex: 1;
+
+  .confirm-button:hover {
+    background-color: darkgreen;
   }
-  
-  .venue-info h3 {
-    color: #000000;
-    font-size: 18px;
-    margin-bottom: 5px;
+
+  .slot-container {
+    background-color: #444444;
   }
-  
-  .venue-info p {
-    font-size: 14px;
-    color: #000000;
-    margin-bottom: 10px;
+
+  .slot-container h5 {
+    color: var(--foreground);
   }
-  
-  .timeslot-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
+
+  .slot.available {
+    background-color: #e6ffe6; /* เขียวอ่อนสำหรับว่าง */
   }
-  
-  .timeslot-btn {
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 0px;
-    text-align: center;
-    border: 2px solid transparent;
-    width: 130px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
-  }
-  
-  .timeslot-btn.available {
-    background-color: #4BCC58;
-    color: rgb(0, 0, 0);
-    border-color: #3AA647;
-  }
-  
-  .timeslot-btn.available:hover {
-    background-color: #3AA647;
-    border-color: #2E8B43;
-  }
-  
-  .timeslot-btn.unavailable {
-    background-color: #C02222;
-    color: rgb(0, 0, 0);
-    border-color: #A01B1B;
+
+  .slot.booked { /* เปลี่ยนจาก unavailable เป็น booked */
+    background-color: #ff4444; /* สีแดงสำหรับจองแล้ว */
+    color: white;
     cursor: not-allowed;
   }
-  
-  .timeslot-btn.unavailable:hover {
-    background-color: #C02222;
-    border-color: #A01B1B;
+
+  .slot.past { /* เพิ่มสำหรับเวลาที่ผ่านไป */
+    background-color: #ccc; /* สีเทาสำหรับอดีต */
+    color: #666;
+    cursor: not-allowed;
   }
-  
-  .legend-container {
-    display: flex;
-    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .category-nav button {
+    flex: 1 1 48%;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-nav {
+    flex-direction: column;
     align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
-  .legend-item {
-    margin: 20px 30px;
-    color: #000000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .legend-color {
-    width: 15px;
-    height: 15px;
-    border-radius: 10%;
-    display: inline-block;
-    border: 2px solid transparent;
-  }
-  
-  .legend-color.available {
-    background-color: #4BCC58;
-    border-color: #3AA647;
-  }
-  
-  .legend-color.unavailable {
-    background-color: #C02222;
-    border-color: #A01B1B;
-  }
-  
-  .timeslot-btn.selected {
-    background-color: #6D6D6D;
-    color: white;
-    font-weight: bold;
-  }
-  
-  .venue-card.selected {
-    border: 2px solid #007bff;
-    background-color: #f0f8ff;
-  }
-  
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* ตั้งพื้นหลังมืด */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-container {
-    color: #000000;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: auto;
-    text-align: center;
-  }
-  
-  .modal-container h2 {
-    color: #000000;
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .modal-actions {
-    height: auto;
-    width: auto;
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  .modal-actions button {
-    padding: 10px;
-    background-color: #D9D9D9; /* Neutral gray color for buttons */
-    color: #000000;
-    border: none;
-    cursor: pointer;
-    width: 45%; /* Ensure both buttons have the same width */
-    border-radius: 10px;
-    margin: 0 5px; /* Add margin to separate the buttons */
-  }
-  
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
   }
 
-  .modal-content {
-    color:#000000;
-    text-align: center;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    position: relative;
-    width: 80%;
-    max-width: 400px;
+  .category-nav button {
+    width: 100%;
   }
-  
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .login-btn {
-    border-radius: 10px;
-    padding: 10px 20px;
-    background-color: #D9D9D9;
-    color: rgb(0, 0, 0);
-    border: none;
-    cursor: pointer;
-    width: 100px;
-  }
- 
+}
+
+.select-place-container {
+  padding: 20px;
+  width: 100%;
+}
+
+.banner {
+  margin-top: 2%;
+  height: 300px;
+  background-size: cover;
+  padding: 20px;
+  color: white;
+}
+
+.date-picker-container {
+  color: #000000;
+  width: 130px;
+  padding: 3px;
+  font-size: 14px;
+  margin-left: 20px;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.Headdetail {
+  margin-left: 5px;
+  margin-top: 160px;
+}
+
+.category-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.category-nav button {
+  color: #ffffff;
+  flex: 1 1 auto;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: var(--background);
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-align: center;
+}
+
+.category-nav button.active {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgb(0, 0, 0);
+}
+
+.category-nav button:hover {
+  background-color: rgb(149, 149, 149);
+}
+
+.venue-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.venue-card {
+  width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.venue-card:hover {
+  transform: scale(1.02);
+}
+
+.court-header {
+  padding: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.venue-image {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.court-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.venue-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--foreground);
+}
+
+.venue-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--foreground);
+}
+
+.venue-card.selected {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+}
+
+.timeslot-container {
+  padding: 15px;
+  pointer-events: none;
+}
+
+.slot-container {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fafafa;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.slot-container:hover {
+  transform: scale(1.02);
+}
+
+.slot-container.selected-slot {
+  border: 2px solid #007bff;
+  background-color: #e6f3ff;
+}
+
+.slot-container h5 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: var(--foreground);
+}
+
+.time-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.time-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.slot {
+  width: 120px;
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--foreground);
+}
+
+.slot.available {
+  background-color: #a1f7a1; /* เขียวอ่อนสำหรับว่าง */
+}
+
+.slot.available:hover {
+  background-color: #ccffcc; /* เขียวอ่อนขึ้นเมื่อ hover */
+}
+
+.slot.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.slot.booked {
+  background-color: #ff4444; /* สีแดงสำหรับจองแล้ว */
+  color: white;
+  cursor: not-allowed;
+}
+
+.slot.past {
+  background-color: #ccc; /* สีเทาสำหรับเวลาที่ผ่านไป */
+  color: #666;
+  cursor: not-allowed;
+}
+
+.confirm-button {
+  background-color: #2196f3;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.confirm-button:hover {
+  background-color: darkgreen;
+}
+
+.booking-footer {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup-title {
+  margin: 0;
+  color: #000000;
+  font-size: 20px;
+}
+
+.popup-details {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.popup-details p {
+  margin: 5px 0;
+  color: var(--foreground);
+}
+
+.popup-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.edit-button {
+  background-color: #f0f0f0;
+  color: black;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.login-btn {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
