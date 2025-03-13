@@ -1,19 +1,47 @@
 "use client";
-
+ 
 import { useState, useEffect, useRef } from "react";
 import "./Headfunction.css";
 import Link from "next/link";
-
-
+import axios from "axios";
+ 
 export default function Headfunction() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const dropdownRef = useRef(null); // ใช้ ref เพื่อตรวจจับการคลิกข้างนอก
-
-
-  const categories = ["ฟุตบอล", "บาสเกตบอล", "เทนนิส", "แบดมินตัน", "ว่ายน้ำ"];
-
-  // ปิด dropdown เมื่อคลิกข้างนอก
+  const [categories, setCategories] = useState([]);
+  const dropdownRef = useRef(null);
+ 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/booking/sports-categories", {
+          timeout: 10000,
+        });
+        console.log("Response from /booking/sports-categories:", response.data);
+        
+        if (Array.isArray(response.data)) {
+          // กรองข้อมูลให้ไม่ซ้ำกันโดยใช้ Set
+          const uniqueCategories = [...new Set(response.data)];
+          setCategories(uniqueCategories);
+        } else {
+          throw new Error("Invalid data format from /booking/sports-categories");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error.message);
+        if (error.response) {
+          console.log("Response Data:", error.response.data);
+          console.log("Response Status:", error.response.status);
+        } else if (error.request) {
+          console.log("No Response Received:", error.request);
+        }
+        // Fallback: กรองค่าซ้ำออกจาก array ค่าเริ่มต้นด้วย
+        const fallbackCategories = ["ฟุตบอล", "บาสเกตบอล", "เทนนิส", "แบดมินตัน", "ว่ายน้ำ"];
+        setCategories([...new Set(fallbackCategories)]);
+      }
+    };
+    fetchCategories();
+  }, []);
+ 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -23,16 +51,14 @@ export default function Headfunction() {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
-
+ 
   return (
     <nav className="nav-container">
-      {/* Filter + ประเภทกีฬา */}
       <div className="filter-dropdown-group" ref={dropdownRef}>
-        <img src="/picturemild/Filter.png" alt="Filter" className="filter" />
         <button
           className="nav-button"
           onClick={(e) => {
-            e.stopPropagation(); // ป้องกัน dropdown ปิดเองเมื่อกดปุ่ม
+            e.stopPropagation();
             setIsDropdownOpen(!isDropdownOpen);
           }}
         >
@@ -40,16 +66,27 @@ export default function Headfunction() {
         </button>
         {isDropdownOpen && (
           <ul className="dropdown-menu">
-            {categories.map((category, index) => (
-              <li key={index} className="dropdown-item">
-                {category}
-              </li>
-            ))}
+            {categories.length > 0 ? (
+              categories.map((category, index) => (
+                <li key={index} className="dropdown-item">
+                  <Link
+                    href={{
+                      pathname: "/Homepage/Search",
+                      query: { category: encodeURIComponent(category) },
+                    }}
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    {category}
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <li className="dropdown-item">ไม่มีประเภทกีฬา</li>
+            )}
           </ul>
         )}
       </div>
-
-      {/* แถบค้นหา */}
+ 
       <div className="search-bar">
         <input
           type="text"

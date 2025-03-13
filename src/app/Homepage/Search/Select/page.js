@@ -161,7 +161,8 @@ const SelectPlace = () => {
     };
  
     try {
-      const response = await axios.post("http://localhost:5000/api/booking/stadiums", bookingPayload, {
+      const response = await axios.post
+      ("http://localhost:5000/api/booking/stadiums", bookingPayload, {
         headers: { "Content-Type": "application/json" },
       });
       router.push(
