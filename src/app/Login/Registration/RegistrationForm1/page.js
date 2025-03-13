@@ -31,6 +31,17 @@ const RegistrationForm1 = () => {
 
   const API_URL = "http://localhost:5000/api/kong";
 
+  // Updated function to check if filename contains English characters, numbers, and allowed symbols including brackets
+  const isEnglishFilename = (filename) => {
+    // Updated regular expression to include brackets (), [], and {}
+    const englishFilenameRegex = /^[a-zA-Z0-9 ._\-(){}\[\]]+$/;
+    
+    // Get filename without extension to check
+    const nameWithoutExtension = filename.substring(0, filename.lastIndexOf('.'));
+    
+    return englishFilenameRegex.test(nameWithoutExtension);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -44,13 +55,33 @@ const RegistrationForm1 = () => {
     const selectedFile = files[0];
     
     if (name === "idCardImage" && selectedFile) {
-      setIdCardImage(selectedFile);
-      setIdCardFileName(selectedFile.name);
-      setIsIdCardUploaded(true);
+      // Validate filename is in English with allowed characters
+      if (!isEnglishFilename(selectedFile.name)) {
+        alert("กรุณาใช้ชื่อไฟล์ภาษาอังกฤษเท่านั้น (ใช้ตัวอักษร a-z, A-Z, 0-9, เว้นวรรค, -, _, (), [], {} หรือ .)");
+        setIdCardImage(null);
+        setIdCardFileName('');
+        setIsIdCardUploaded(false);
+        // Reset the file input
+        e.target.value = '';
+      } else {
+        setIdCardImage(selectedFile);
+        setIdCardFileName(selectedFile.name);
+        setIsIdCardUploaded(true);
+      }
     } else if (name === "bankBookImage" && selectedFile) {
-      setBankBookImage(selectedFile);
-      setBankBookFileName(selectedFile.name);
-      setIsBankBookUploaded(true);
+      // Validate filename is in English with allowed characters
+      if (!isEnglishFilename(selectedFile.name)) {
+        alert("กรุณาใช้ชื่อไฟล์ภาษาอังกฤษเท่านั้น (ใช้ตัวอักษร a-z, A-Z, 0-9, เว้นวรรค, -, _, (), [], {} หรือ .)");
+        setBankBookImage(null);
+        setBankBookFileName('');
+        setIsBankBookUploaded(false);
+        // Reset the file input
+        e.target.value = '';
+      } else {
+        setBankBookImage(selectedFile);
+        setBankBookFileName(selectedFile.name);
+        setIsBankBookUploaded(true);
+      }
     }
   };
 
