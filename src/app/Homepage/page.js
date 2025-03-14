@@ -1,6 +1,5 @@
 "use client";
  
- 
 import { useState, useEffect } from "react";
 import Headfunction from "../Headfunction/page";
 import Tabbar from "../Tab/tab.js";
@@ -8,15 +7,10 @@ import Link from "next/link";
 import "./Homepage.css";
 import axios from "axios";
  
- 
 export default function Home() {
   const [promotedStadiums, setPromotedStadiums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = [
-    "/picturemild/GuideToBooking.png"
-  ];
  
   useEffect(() => {
     async function fetchPromotedStadiums() {
@@ -47,12 +41,6 @@ export default function Home() {
       }
     }
     fetchPromotedStadiums();
- 
-    // Auto-slide carousel
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000); // เปลี่ยนรูปทุก 5 วินาที
-    return () => clearInterval(interval);
   }, []);
  
   return (
@@ -63,17 +51,9 @@ export default function Home() {
       <main className="content">
         {/* Carousel */}
         <div className="carousel">
-          <div className="carousel-inner" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-            {slides.map((slide, index) => (
-              <Link key={index} href="/HowtoBooking">
-                <img src={slide} alt={`Slide ${index + 1}`} className="Howto" />
-              </Link>
-            ))}
-          </div>
-          <div className="carousel-controls">
-            <button className="carousel-btn" onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}>❮</button>
-            <button className="carousel-btn" onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}>❯</button>
-          </div>
+          <Link href="/HowtoBooking">
+            <img src="/picturemild/GuideToBooking.png" alt="Guide to Booking" className="Howto" />
+          </Link>
         </div>
  
         {/* Promotion Section */}
@@ -117,4 +97,3 @@ export default function Home() {
     </>
   );
 }
- 

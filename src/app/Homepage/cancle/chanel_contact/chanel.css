@@ -1,128 +1,116 @@
-
-
 body {
-  font-family: Arial, Helvetica, sans-serif; /* คงไว้เฉพาะ font */
-  margin: 0;
-  height: 100vh;
-}
-/* ปรับให้ปุ่มอยู่บรรทัดเดียวกันเมื่อจอใหญ่ขึ้น */
-@media (min-width: 640px) { 
-  .cancel-btn, .confirm-btn {
-    width: 40%; /* ปรับขนาดปุ่มบนจอใหญ่ */
-  }
-}
-
-/* Responsive styles */
-@media (max-width: 600px) {
-  .Box {
-    padding: 20px;
-  }
-}
-
-@media (min-width: 640px) {
-  .button-group {
-    flex-direction: row;
-  }
-  .cancel-btn, .confirm-btn {
-    width: 40%;
-  }
-}
-
-@media (max-width: 600px) {
-  .container {
-    width: 90vw;
-    height: auto;
-    padding: 15px;
-  }
-}
-
-.container {
-  background-image: url('/picturepalm/background.jpg'); /* ย้าย background มาไว้ที่นี่ */
+  margin: 0; /* เพิ่มเพื่อให้แน่ใจว่าไม่มี margin ที่ไม่ต้องการ */
+  min-height: 100vh; /* เปลี่ยนจาก 140vh เป็น 100vh เพื่อให้ครอบคลุมหน้าจอ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/pictureowner/bg.png');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Container */
+.container {
+  margin-top: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box; /* ป้องกันการเกินขอบจาก padding */
+  max-width: 100vw; /* จำกัดความกว้างให้ไม่เกินหน้าจอ */
+  overflow-x: hidden; /* ป้องกันการเลื่อนแนวนอน */
+}
+
+/* Form Box */
+.form-box {
+  background-color: rgba(255, 255, 255, 0.95);
+  margin-top: 0; /* ลบ margin-top เพื่อให้จัดกึ่งกลางได้ดีขึ้น */
+  width: 100%;
+  max-width: 500px; /* คงขนาดเดิม */
+  height: auto; /* เปลี่ยนจาก 800px เป็น auto เพื่อให้ยืดหยุ่น */
+  min-height: 600px; /* กำหนดความสูงขั้นต่ำ */
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin: 50px auto 0;
-  padding: 20px;
-  width: 90vw;
-  max-width: 600px;
-  height: auto;
-  border-radius: 20px;
-  margin-top: 100px;
+  justify-content: space-between; /* กระจายเนื้อหาให้สมดุล */
 }
 
-.form-box {
-  background-color: white;
-  width: 400px;
-  padding: 20px;
-  border-radius: 15px;
-  text-align: center;
-}
-
+/* Heading */
 .chanel {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
-  text-align: center;
-  margin-top: 20px;
+  color: #333;
   margin-bottom: 30px;
 }
 
+/* Input Group */
 .input-group {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
   width: 100%;
-  margin-bottom: 15px;
-  padding: 10px 0;
+  margin-bottom: 20px;
 }
 
 .input-group label {
   font-size: 16px;
-  min-width: 120px; /* เพิ่มขนาดเพื่อให้ label มีระยะพอดี */
-  text-align: left;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 8px;
 }
 
 .input-group input {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 25px;
   font-size: 16px;
-  transition: 0.3s ease-in-out;
+  background-color: #f0f0f0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-group input:focus {
-  border-color: black; /* สีเขียวเมื่อโฟกัส */
-  
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+  outline: none;
 }
 
-.book {
-  margin-top: 20px;
-  text-align: center;
+/* Error Message */
+.input-group p {
+  color: #e34848;
+  font-size: 12px;
+  margin-top: 5px;
+  text-align: left;
 }
 
+/* Upload Box */
 .upload-box {
-  border: 1px solid #ddd; 
-  border-radius: 4px;
+  border: 2px dashed #ddd;
+  border-radius: 10px;
   width: 100%;
-  max-width: 100%;
-  height: 150px;
+  height: 200px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
-  background: #F5F5F5;
-  box-sizing: border-box;
+  background: #f0f0f0;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
 }
 
 .upload-box:hover {
-  border-color: #333;
+  border-color: #4CAF50;
 }
 
 .upload-label {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -130,49 +118,52 @@ body {
   cursor: pointer;
 }
 
-.plus-icon {
-  font-size: 40px;
-  color: #aaa;
+.upload-icon {
+  font-size: 50px;
+  color: #bbb;
+}
+
+.upload-text {
+  font-size: 16px;
+  color: #666;
+  margin-top: 10px;
 }
 
 .preview-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 10px;
 }
 
-
+/* Button Group */
 .button-group {
   display: flex;
-  flex-wrap: wrap; /* ให้ปุ่มเรียงกันบนจอเล็ก */
   justify-content: center;
-  gap: 15px; /* ระยะห่างระหว่างปุ่ม */
-  width: 100%;
-  margin-top: 20px;
+  gap: 20px;
+  margin-top: 30px;
 }
 
-.cancel-btn, .confirm-btn {
-  padding: 12px 25px;
+/* Buttons */
+.cancel-btn,
+.confirm-btn {
+  padding: 12px 30px;
   font-size: 16px;
-  border-radius: 8px;
+  font-weight: 500;
+  border-radius: 25px;
   border: none;
   cursor: pointer;
-  text-align: center;
-  min-width: 120px; /* ป้องกันปุ่มเล็กเกินไป */
-  width: 100%; /* ให้เต็มความกว้างบนจอเล็ก */
-  max-width: 150px; /* จำกัดขนาดปุ่มบนจอใหญ่ */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 150px;
 }
 
-
-/* สีและเอฟเฟกต์ของปุ่ม */
 .cancel-btn {
   background-color: #ccc;
-  color: black;
+  color: #333;
 }
 
 .cancel-btn:hover {
-  background-color: #e34848;
+  background-color: #b0b0b0;
   transform: scale(1.05);
 }
 
@@ -182,6 +173,48 @@ body {
 }
 
 .confirm-btn:hover {
-  background-color: #72d572;
+  background-color: #45a049;
   transform: scale(1.05);
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  body {
+    min-height: 100vh; /* ปรับให้เหมาะกับจอเล็ก */
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .form-box {
+    padding: 20px;
+    max-width: 100%;
+    min-height: 500px; /* ลดความสูงขั้นต่ำ */
+    margin: 10px 0; /* ปรับ margin ให้เหมาะกับจอเล็ก */
+  }
+
+  .input-group input {
+    padding: 10px 15px;
+  }
+
+  .button-group {
+    flex-direction: row;
+    gap: 15px;
+  }
+
+  .cancel-btn,
+  .confirm-btn {
+    width: 120px;
+  }
+
+  .upload-box {
+    height: 150px;
+  }
+}
+
+@media (min-width: 640px) {
+  .button-group {
+    flex-direction: row;
+  }
 }
