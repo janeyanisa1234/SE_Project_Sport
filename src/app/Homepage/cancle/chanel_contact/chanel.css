@@ -1,220 +1,492 @@
-body {
-  margin: 0; /* เพิ่มเพื่อให้แน่ใจว่าไม่มี margin ที่ไม่ต้องการ */
-  min-height: 100vh; /* เปลี่ยนจาก 140vh เป็น 100vh เพื่อให้ครอบคลุมหน้าจอ */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url('/pictureowner/bg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
+/* Theme Styles */
 
-/* Container */
-.container {
-  margin-top: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  width: 100%;
-  box-sizing: border-box; /* ป้องกันการเกินขอบจาก padding */
-  max-width: 100vw; /* จำกัดความกว้างให้ไม่เกินหน้าจอ */
-  overflow-x: hidden; /* ป้องกันการเลื่อนแนวนอน */
-}
+@media (prefers-color-scheme: dark) {
 
-/* Form Box */
-.form-box {
-  background-color: rgba(255, 255, 255, 0.95);
-  margin-top: 0; /* ลบ margin-top เพื่อให้จัดกึ่งกลางได้ดีขึ้น */
-  width: 100%;
-  max-width: 500px; /* คงขนาดเดิม */
-  height: auto; /* เปลี่ยนจาก 800px เป็น auto เพื่อให้ยืดหยุ่น */
-  min-height: 600px; /* กำหนดความสูงขั้นต่ำ */
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* กระจายเนื้อหาให้สมดุล */
-}
+  :root {
 
-/* Heading */
-.chanel {
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 30px;
-}
+    --background: #0a0a0a;
 
-/* Input Group */
-.input-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  margin-bottom: 20px;
-}
+    --foreground: #ededed;
 
-.input-group label {
-  font-size: 16px;
-  font-weight: 500;
-  color: #444;
-  margin-bottom: 8px;
-}
+    --primary: #3498db;
 
-.input-group input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 25px;
-  font-size: 16px;
-  background-color: #f0f0f0;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
+    --secondary: #2ecc71;
 
-.input-group input:focus {
-  border-color: #4CAF50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-  outline: none;
-}
+    --accent: #e74c3c; /* สีสำหรับข้อผิดพลาด */
 
-/* Error Message */
-.input-group p {
-  color: #e34848;
-  font-size: 12px;
-  margin-top: 5px;
-  text-align: left;
-}
-
-/* Upload Box */
-.upload-box {
-  border: 2px dashed #ddd;
-  border-radius: 10px;
-  width: 100%;
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f0f0f0;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-.upload-box:hover {
-  border-color: #4CAF50;
-}
-
-.upload-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-
-.upload-icon {
-  font-size: 50px;
-  color: #bbb;
-}
-
-.upload-text {
-  font-size: 16px;
-  color: #666;
-  margin-top: 10px;
-}
-
-.preview-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 10px;
-}
-
-/* Button Group */
-.button-group {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
-}
-
-/* Buttons */
-.cancel-btn,
-.confirm-btn {
-  padding: 12px 30px;
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 25px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  width: 150px;
-}
-
-.cancel-btn {
-  background-color: #ccc;
-  color: #333;
-}
-
-.cancel-btn:hover {
-  background-color: #b0b0b0;
-  transform: scale(1.05);
-}
-
-.confirm-btn {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.confirm-btn:hover {
-  background-color: #45a049;
-  transform: scale(1.05);
-}
-
-/* Responsive Styles */
-@media (max-width: 600px) {
-  body {
-    min-height: 100vh; /* ปรับให้เหมาะกับจอเล็ก */
   }
+
+}
+ 
+@media (prefers-color-scheme: light) {
+
+  :root {
+
+    --background: #ffffff;
+
+    --foreground: #2c3e50;
+
+    --primary: #3498db;
+
+    --secondary: #2ecc71;
+
+    --accent: #e74c3c;
+
+  }
+
+}
+ 
+/* General Reset */
+
+body,
+
+h1,
+
+h2,
+
+h3,
+
+p,
+
+button,
+
+ul,
+
+li,
+
+input,
+
+label {
+
+  margin: 0;
+
+  padding: 0;
+
+  box-sizing: border-box;
+
+  list-style: none;
+
+}
+ 
+body {
+
+  margin: 0;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  background-image: url('/pictureowner/bg.png');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+  overflow: hidden;
+
+}
+ 
+/* Container */
+
+.container {
+
+  margin-top: 50px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  min-height: 100vh;
+
+  padding: 20px; /* เพิ่ม padding เพื่อให้ดูมีขอบ */
+
+  width: 100%;
+
+  max-width: 1000px; /* เพิ่มความกว้างของ container */
+
+  box-sizing: border-box;
+
+  overflow-x: hidden;
+
+}
+ 
+/* Form Box */
+
+.form-box {
+
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 240, 0.95));
+
+  width: 90%;
+
+  max-width: 900px; /* เพิ่มความกว้างจาก 700px เป็น 900px */
+
+  padding: 40px; /* เพิ่ม padding เพื่อให้ดูสมดุลกับขนาด */
+
+  border-radius: 20px;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  min-height: 650px; /* เพิ่มความสูงเล็กน้อยเพื่อรองรับการจัดวางใหม่ */
+
+}
+ 
+/* Header */
+
+.chanel {
+
+  font-size: 1.8rem;
+
+  font-weight: 600;
+
+  color: var(--primary);
+
+  text-align: center;
+
+  margin-bottom: 20px;
+
+  position: relative;
+
+}
+ 
+.chanel::after {
+
+  content: '';
+
+  width: 50px;
+
+  height: 3px;
+
+  background: var(--primary);
+
+  position: absolute;
+
+  bottom: -5px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+}
+ 
+/* Input Group */
+
+.input-group {
+
+  display: flex;
+
+  flex-direction: row;
+
+  align-items: center;
+
+  gap: 15px;
+
+  margin-bottom: 15px;
+
+}
+ 
+.input-group label {
+
+  font-size: 1rem;
+
+  color: var(--foreground);
+
+  font-weight: 500;
+
+  flex-shrink: 0;
+
+  width: 120px;
+
+}
+ 
+.input-group input {
+
+  padding: 10px;
+
+  font-size: 1rem;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  flex-grow: 1;
+
+}
+ 
+.input-group input:focus {
+
+  outline: none;
+
+  border-color: var(--primary);
+
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+
+}
+ 
+/* Error Message */
+
+.error-message {
+
+  color: var(--accent);
+
+  font-size: 12px;
+
+  text-align: left;
+
+  margin-top: -5px;
+
+  margin-bottom: 10px;
+
+  width: 100%;
+
+}
+ 
+/* Upload Section */
+
+.form-group {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-bottom: 20px;
+
+}
+ 
+.upload-label {
+
+  font-size: 1rem;
+
+  color: var(--foreground);
+
+  font-weight: 500;
+
+}
+ 
+.upload-box {
+
+  border: 2px dashed #ccc;
+
+  border-radius: 10px;
+
+  height: 150px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  background-color: #fafafa;
+
+  position: relative;
+
+  overflow: hidden;
+
+}
+ 
+.upload-box input {
+
+  position: absolute;
+
+  top: 0;
+
+  left: 0;
+
+  width: 100%;
+
+  height: 100%;
+
+  opacity: 0;
+
+  cursor: pointer;
+
+}
+ 
+.upload-box img {
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: contain;
+
+}
+ 
+.upload-icon {
+
+  font-size: 2rem;
+
+  color: #ccc;
+
+}
+ 
+.upload-text {
+
+  font-size: 0.9rem;
+
+  color: #ccc;
+
+  text-align: center;
+
+}
+ 
+/* Button Group */
+
+.button-group {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 15px;
+
+  margin-top: 20px;
+
+}
+ 
+.cancel-btn,
+
+.confirm-btn {
+
+  padding: 12px 25px;
+
+  font-size: 14px;
+
+  border-radius: 25px;
+
+  width: 140px;
+
+  border: none;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+}
+ 
+.cancel-btn {
+
+  background-color: #ccc;
+
+  color: var(--foreground);
+
+}
+ 
+.cancel-btn:hover {
+
+  background-color: #bbb;
+
+  transform: translateY(-2px);
+
+}
+ 
+.confirm-btn {
+
+  background-color: var(--primary);
+
+  color: white;
+
+}
+ 
+.confirm-btn:hover {
+
+  background-color: #2980b9;
+
+  transform: translateY(-2px);
+
+}
+ 
+/* Responsive Styles */
+
+@media (max-width: 600px) {
 
   .container {
-    padding: 10px;
-  }
 
+    margin-top: 30px;
+
+    max-width: 90%; /* ปรับ container ให้ยืดตามจอเล็ก */
+
+  }
+ 
   .form-box {
+
     padding: 20px;
-    max-width: 100%;
-    min-height: 500px; /* ลดความสูงขั้นต่ำ */
-    margin: 10px 0; /* ปรับ margin ให้เหมาะกับจอเล็ก */
-  }
 
+    max-width: 90%;
+
+    min-height: 600px; /* ปรับให้เหมาะกับจอเล็ก */
+
+  }
+ 
+  .chanel {
+
+    font-size: 1.5rem;
+
+  }
+ 
+  .input-group {
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 5px;
+
+  }
+ 
+  .input-group label {
+
+    width: auto;
+
+  }
+ 
   .input-group input {
-    padding: 10px 15px;
-  }
 
+    width: 100%;
+
+  }
+ 
   .button-group {
-    flex-direction: row;
-    gap: 15px;
-  }
 
+    flex-direction: column;
+
+    gap: 10px;
+
+  }
+ 
   .cancel-btn,
+
   .confirm-btn {
-    width: 120px;
-  }
 
+    width: 100%;
+
+  }
+ 
   .upload-box {
-    height: 150px;
-  }
-}
 
-@media (min-width: 640px) {
-  .button-group {
-    flex-direction: row;
+    height: 120px;
+
   }
+
 }
+ 

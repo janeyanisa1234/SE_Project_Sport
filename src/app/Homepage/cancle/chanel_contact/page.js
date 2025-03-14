@@ -93,85 +93,126 @@ export default function ChanelContact() {
 
   return (
     <>
-      <Tabbar />
-      <div className="background">
-        <div className="container">
-          <div className="form-box">
-            <h2 className="chanel">ช่องทางการคืนเงิน</h2>
-            <form>
-              <div className="input-group">
-                <label>ชื่อ - สกุล</label>
-                <input
-                  type="text"
-                  placeholder="ชื่อ - สกุล"
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
+    <Tabbar />
+    <div className="container">
+    <div className="form-box">
+    <h2 className="chanel">ช่องทางการคืนเงิน</h2>
+    <div className="input-group">
+    <label>ชื่อ - สกุล</label>
+    <input
+    
+                type="text"
+    
+                placeholder="กรุณากรอกชื่อ-สกุล"
+    
+                value={nameInput}
+    
+                onChange={(e) => setNameInput(e.target.value)}
+    
+              />
+    
+              {errors.name && <p className="error-message">{errors.name}</p>}
+    </div>
+    <div className="input-group">
+    <label>ธนาคาร</label>
+    <input
+    
+                type="text"
+    
+                placeholder="กรุณากรอกชื่อธนาคาร"
+    
+                value={bankInput}
+    
+                onChange={(e) => setBankInput(e.target.value)}
+    
+              />
+    
+              {errors.bank && <p className="error-message">{errors.bank}</p>}
+    </div>
+    <div className="input-group">
+    <label>เลขที่บัญชี</label>
+    <input
+    
+                type="text"
+    
+                placeholder="กรุณากรอกเลขที่บัญชี"
+    
+                value={accountInput}
+    
+                onChange={(e) => setAccountInput(e.target.value)}
+    
+              />
+    
+              {errors.account && <p className="error-message">{errors.account}</p>}
+    </div>
+    <div className="input-group">
+    <label>เหตุผลการยกเลิก</label>
+    <input
+    
+                type="text"
+    
+                placeholder="กรุณากรอกเหตุผลการยกเลิก"
+    
+                value={reasonInput}
+    
+                onChange={(e) => setReasonInput(e.target.value)}
+    
+              />
+    
+              {errors.reason && <p className="error-message">{errors.reason}</p>}
+    </div>
+    <div className="form-group">
+    <label className="upload-label">หน้าสมุดบัญชี</label>
+    <div className="upload-box relative overflow-hidden">
+    <input
+    
+                  id="fileInput"
+    
+                  type="file"
+    
+                  accept="image/*"
+    
+                  onChange={handleFileChange}
+    
+                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+    
                 />
-                {errors.name && <p>{errors.name}</p>}
-              </div>
-              <div className="input-group">
-                <label>ธนาคาร</label>
-                <input
-                  type="text"
-                  placeholder="ธนาคาร"
-                  value={bankInput}
-                  onChange={(e) => setBankInput(e.target.value)}
-                />
-                {errors.bank && <p>{errors.bank}</p>}
-              </div>
-              <div className="input-group">
-                <label>เลขที่บัญชี</label>
-                <input
-                  type="text"
-                  placeholder="เลขที่บัญชี"
-                  value={accountInput}
-                  onChange={(e) => setAccountInput(e.target.value)}
-                />
-                {errors.account && <p>{errors.account}</p>}
-              </div>
-              <div className="input-group">
-                <label>เหตุผลการยกเลิก</label>
-                <input
-                  type="text"
-                  placeholder="เหตุผลการยกเลิก"
-                  value={reasonInput}
-                  onChange={(e) => setReasonInput(e.target.value)}
-                />
-                {errors.reason && <p>{errors.reason}</p>}
-              </div>
-              <div className="input-group">
-                <label>หน้าสมุดบัญชี</label>
-                <div className="upload-box">
-                  <input
-                    id="fileInput"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
+    
+                {preview ? (
+    <img
+    
+                    src={preview}
+    
+                    alt="Bookbank Preview"
+    
+                    className="w-full h-full object-contain"
+    
                   />
-                  {preview ? (
-                    <img src={preview} alt="Bookbank Preview" className="preview-image" />
-                  ) : (
-                    <label htmlFor="fileInput" className="upload-label">
-                      <span className="upload-icon">+</span>
-                      <p className="upload-text">เพิ่มไฟล์หน้าสมุดบัญชี</p>
-                    </label>
-                  )}
-                </div>
-                {errors.file && <p>{errors.file}</p>}
-              </div>
-              <div className="button-group">
-                <Link href="/cancle">
-                  <button type="button" className="cancel-btn">ยกเลิก</button>
-                </Link>
-                <button type="submit" className="confirm-btn" onClick={handleConfirmClick}>
-                  ยืนยัน
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+    
+                ) : (
+    <div className="flex flex-col items-center justify-center h-full">
+    <span className="upload-icon">+</span>
+    <p className="upload-text">เพิ่มไฟล์หน้าสมุดบัญชี</p>
+    </div>
+    
+                )}
+    </div>
+    
+              {errors.file && <p className="error-message">{errors.file}</p>}
+    </div>
+    <div className="button-group">
+    <Link href="/cancle" passHref>
+    <button className="cancel-btn">ยกเลิก</button>
+    </Link>
+    <button className="confirm-btn" onClick={handleConfirmClick}>
+    
+                ยืนยัน
+    </button>
+    </div>
+    </div>
+    </div>
     </>
-  );
+    
+    );
+     
 }
