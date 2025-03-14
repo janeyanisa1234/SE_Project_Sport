@@ -1,39 +1,63 @@
 "use client";
- 
+
 import React, { useState, useEffect } from 'react';
 import { Calendar, Filter, Download, Search } from 'lucide-react';
 import axios from 'axios';
 import Tabbar from "../components/tab";
+import * as XLSX from 'xlsx';
 import "./dash.css";
- 
+
 const BookingReport = () => {
-    const [bookingData, setBookingData] = useState([]); // Initialize as an empty array
+    const [bookingData, setBookingData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [sportTypeFilter, setSportTypeFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
- 
+    const [isExporting, setIsExporting] = useState(false);
+
+    const getUserId = () => {
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+            try {
+                if (typeof storedUserId === 'string' && (storedUserId.startsWith('{') || storedUserId.startsWith('['))) {
+                    const parsedUser = JSON.parse(storedUserId);
+                    return parsedUser.id || parsedUser.userId || parsedUser.user_id || storedUserId;
+                }
+            } catch (e) {
+                console.error("Error parsing stored userId:", e);
+            }
+            return storedUserId;
+        }
+        return null;
+    };
+
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/reportbooking/api/reportbooking');
+                const userId = getUserId();
+                if (!userId) {
+                    throw new Error('User ID not found in localStorage');
+                }
+
+                const response = await axios.get('http://localhost:5000/reportbooking/api/reportbooking', {
+                    params: { userId }
+                });
                 console.log('Backend Response:', response.data);
- 
-                // Ensure response.data is an array
+
                 const data = Array.isArray(response.data) ? response.data : [];
                 setBookingData(data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching bookings:', error);
                 setError('Failed to load booking data. Please try again later.');
-                setBookingData([]); // Ensure bookingData is an array even on error
+                setBookingData([]);
                 setLoading(false);
             }
         };
         fetchBookings();
     }, []);
- 
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'ยืนยัน':
@@ -46,15 +70,13 @@ const BookingReport = () => {
                 return 'text-gray-600 bg-gray-100';
         }
     };
- 
-    // Ensure filteredBookings is only computed if bookingData is an array
+
     const filteredBookings = Array.isArray(bookingData) ? bookingData.filter(booking =>
         booking.sportType?.toLowerCase().includes(sportTypeFilter.toLowerCase()) &&
         booking.date?.includes(dateFilter) &&
         (statusFilter === '' || booking.status === statusFilter)
     ) : [];
- 
-    // Summary data for the small cards
+
     const summaryData = {
         totalBookings: filteredBookings.length,
         totalRevenue: filteredBookings.reduce((sum, booking) => {
@@ -63,15 +85,54 @@ const BookingReport = () => {
         }, 0),
         confirmedBookings: filteredBookings.filter(b => b.status === 'ยืนยัน').length
     };
- 
+
+    const exportToExcel = async () => {
+        try {
+            setIsExporting(true);
+            
+            // Prepare the data for Excel
+            const exportData = filteredBookings.map(booking => ({
+                'วันที่': booking.date,
+                'เวลา': booking.time,
+                'ประเภทกีฬา': booking.sportType,
+                'สนาม': booking.stadiumName,
+                'ราคา': booking.price,
+                'สถานะ': booking.status
+            }));
+
+            // Create a new workbook and worksheet
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Booking Report");
+
+            // Customize column widths
+            const wscols = [
+                { wch: 15 }, // Date
+                { wch: 15 }, // Time
+                { wch: 20 }, // Sport Type
+                { wch: 25 }, // Stadium
+                { wch: 15 }, // Price
+                { wch: 20 }  // Status
+            ];
+            ws['!cols'] = wscols;
+
+            // Generate Excel file and trigger download
+            XLSX.writeFile(wb, `Booking_Report_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsx`);
+        } catch (error) {
+            console.error('Error exporting to Excel:', error);
+            alert('เกิดข้อผิดพลาดในการส่งออกรายงาน');
+        } finally {
+            setIsExporting(false);
+        }
+    };
+
     if (loading) return <div className="text-center p-4">Loading...</div>;
     if (error) return <div className="text-red-600 p-4">{error}</div>;
- 
+
     return (
         <div className="min-h-screen bg-[rgb(207,206,206)]">
             <div className="transition-all duration-300">
                 <Tabbar />
- 
                 <br /><br />
                 <div className="p-6">
                     {/* Summary Cards */}
@@ -87,7 +148,7 @@ const BookingReport = () => {
                                 </div>
                             </div>
                         </div>
- 
+
                         <div className="bg-white rounded-lg shadow-md p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -99,7 +160,7 @@ const BookingReport = () => {
                                 </div>
                             </div>
                         </div>
- 
+
                         <div className="bg-white rounded-lg shadow-md p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -112,7 +173,7 @@ const BookingReport = () => {
                             </div>
                         </div>
                     </div>
- 
+
                     {/* Filters */}
                     <div className="bg-white rounded-lg shadow-md p-6 mb-8">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -142,13 +203,23 @@ const BookingReport = () => {
                                 <option value="รอดำเนินการยกเลิก">รอดำเนินการยกเลิก</option>
                                 <option value="ยกเลิกแล้ว">ยกเลิกแล้ว</option>
                             </select>
-                            <button className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700">
-                                ส่งออกรายงาน
+                            <button 
+                                onClick={exportToExcel}
+                                disabled={isExporting}
+                                className={`bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 flex items-center justify-center gap-2 ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {isExporting ? (
+                                    'กำลังส่งออก...'
+                                ) : (
+                                    <>
+                                        <Download className="w-5 h-5" />
+                                        ส่งออกรายงาน
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
- 
-               
+
                     <div className="bg-white rounded-lg shadow-md overflow-hidden">
                         <table className="w-full">
                             <thead>
@@ -156,7 +227,7 @@ const BookingReport = () => {
                                     <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase">วันที่</th>
                                     <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase">เวลา</th>
                                     <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase">ประเภทกีฬา</th>
-                                    <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase">สนาม</th>
+                                    <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase">สนาม</th> 
                                     <th className="p-4 text-right text-xs font-medium text-gray-500 uppercase">ราคา</th>
                                     <th className="p-4 text-center text-xs font-medium text-gray-500 uppercase">สถานะ</th>
                                 </tr>
@@ -184,5 +255,5 @@ const BookingReport = () => {
         </div>
     );
 };
- 
+
 export default BookingReport;

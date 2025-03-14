@@ -1,11 +1,11 @@
 "use client";
- 
+
 import React, { useState, useEffect } from "react";
 import { FaBars, FaPlus, FaTrash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Tabbar from "../../components/tab";
 import axios from "axios";
- 
+
 const AddSportField = () => {
   const router = useRouter();
   const [imageFile, setImageFile] = useState(null);
@@ -21,10 +21,10 @@ const AddSportField = () => {
   const [stadiumId, setStadiumId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
- 
+
   const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, "0"));
   const minutes = ["00", "15", "30", "45"];
- 
+
   useEffect(() => {
     const storedStadiumId = localStorage.getItem("stadium_id");
     console.log("Retrieved Stadium ID from localStorage:", storedStadiumId);
@@ -40,30 +40,44 @@ const AddSportField = () => {
       }
     }
   }, []);
- 
+
   const addTimeSlot = () => {
     setTimeSlots([...timeSlots, { startHour: "00", startMinute: "00", endHour: "00", endMinute: "00" }]);
   };
- 
+
   const removeTimeSlot = (index) => {
     setTimeSlots(timeSlots.filter((_, i) => i !== index));
   };
- 
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+      // Check if the file is an image
+      if (!file.type.startsWith("image/")) {
+        setErrorMessage("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น (เช่น JPG, PNG, GIF)");
+        return;
+      }
+
+      // Check if file name is in English (ASCII characters only)
+      const englishFileNameRegex = /^[a-zA-Z0-9._-]+$/;
+      if (!englishFileNameRegex.test(file.name.split('.').slice(0, -1).join('.'))) {
+        setErrorMessage("ชื่อไฟล์ต้องเป็นภาษาอังกฤษเท่านั้น (a-z, A-Z, 0-9, ._-)");
+        return;
+      }
+
       const imageUrl = URL.createObjectURL(file);
       setImage(imageUrl);
       setImageFile(file);
       setFileName(file.name);
       setIsFileUploaded(true);
+      setErrorMessage("");
     }
   };
- 
+
   const handleImageClick = () => {
     document.getElementById("imageUpload").click();
   };
- 
+
   const handleSubmit = async () => {
     const sportType = selectedSport === "อื่นๆ" ? customSport : selectedSport;
     if (!sportType || !fieldCount || !price || timeSlots.length === 0 || !imageFile) {
@@ -74,7 +88,7 @@ const AddSportField = () => {
       setErrorMessage("ไม่พบรหัสสนาม กรุณาเข้าสู่ระบบใหม่");
       return;
     }
- 
+
     for (const slot of timeSlots) {
       const startTime = `${slot.startHour}:${slot.startMinute}`;
       const endTime = `${slot.endHour}:${slot.endMinute}`;
@@ -83,10 +97,10 @@ const AddSportField = () => {
         return;
       }
     }
- 
+
     setIsSubmitting(true);
     setErrorMessage("");
- 
+
     try {
       const token = localStorage.getItem("token");
       const formattedTimeSlots = timeSlots.map((slot) => ({
@@ -102,11 +116,11 @@ const AddSportField = () => {
       if (imageFile) {
         formData.append("fieldImage", imageFile);
       }
- 
+
       for (let pair of formData.entries()) {
         console.log(pair[0] + ":", pair[1]);
       }
- 
+
       console.log("Sending request to: http://localhost:5000/api/field/add_field");
       const response = await axios.post("http://localhost:5000/api/field/add_field", formData, {
         headers: {
@@ -114,7 +128,7 @@ const AddSportField = () => {
           Authorization: `Bearer ${token}`,
         },
       });
- 
+
       console.log("Response received:", response.data);
       alert("เพิ่มสนามกีฬาสำเร็จ");
       router.push("/my-stadium");
@@ -125,7 +139,7 @@ const AddSportField = () => {
       setIsSubmitting(false);
     }
   };
- 
+
   return (
     <div
       className="relative w-full min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col"
@@ -150,11 +164,11 @@ const AddSportField = () => {
                 <span className="font-medium">{errorMessage}</span>
               </div>
             )}
- 
+
             <div className="space-y-2">
               <label className="block text-gray-800 font-semibold">ประเภทกีฬา</label>
               <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm text-black disabled:text-black"
                 value={selectedSport}
                 onChange={(e) => setSelectedSport(e.target.value)}
                 disabled={isSubmitting}
@@ -165,7 +179,7 @@ const AddSportField = () => {
                 ))}
               </select>
             </div>
- 
+
             {selectedSport === "อื่นๆ" && (
               <div className="space-y-2">
                 <label className="block text-gray-800 font-semibold">เพิ่มกีฬา</label>
@@ -174,12 +188,12 @@ const AddSportField = () => {
                   value={customSport}
                   onChange={(e) => setCustomSport(e.target.value)}
                   placeholder="พิมพ์ชื่อกีฬา..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm text-black disabled:text-black"
                   disabled={isSubmitting}
                 />
               </div>
             )}
- 
+
             <div className="space-y-2">
               <label className="block text-gray-800 font-semibold">จำนวนสนาม</label>
               <input
@@ -187,11 +201,11 @@ const AddSportField = () => {
                 value={fieldCount}
                 onChange={(e) => setFieldCount(e.target.value)}
                 placeholder="ใส่จำนวนสนาม"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm text-black disabled:text-black"
                 disabled={isSubmitting}
               />
             </div>
- 
+
             <div className="space-y-2">
               <label className="block text-gray-800 font-semibold">ราคา</label>
               <input
@@ -199,11 +213,11 @@ const AddSportField = () => {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="ใส่ราคา"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm text-black disabled:text-black"
                 disabled={isSubmitting}
               />
             </div>
- 
+
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <label className="block text-gray-800 font-semibold">ช่วงเวลา</label>
@@ -218,7 +232,7 @@ const AddSportField = () => {
               {timeSlots.map((slot, index) => (
                 <div key={index} className="flex items-center space-x-2 animate-fade-in">
                   <select
-                    className="w-20 px-2 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
+                    className="w-20 px-2 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black shadow-sm text-black disabled:text-black"
                     value={slot.startHour}
                     onChange={(e) => {
                       const updatedSlots = [...timeSlots];
@@ -233,7 +247,7 @@ const AddSportField = () => {
                   </select>
                   <span className="text-lg font-semibold">:</span>
                   <select
-                    className="w-20 px-2 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
+                    className="w-20 px-2 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black shadow-sm text-black disabled:text-black"
                     value={slot.startMinute}
                     onChange={(e) => {
                       const updatedSlots = [...timeSlots];
@@ -248,7 +262,7 @@ const AddSportField = () => {
                   </select>
                   <span className="mx-2 text-gray-500">ถึง</span>
                   <select
-                    className="w-20 px-2 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
+                    className="w-20 px-2 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black shadow-sm text-black disabled:text-black"
                     value={slot.endHour}
                     onChange={(e) => {
                       const updatedSlots = [...timeSlots];
@@ -263,7 +277,7 @@ const AddSportField = () => {
                   </select>
                   <span className="text-lg font-semibold">:</span>
                   <select
-                    className="w-20 px-2 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
+                    className="w-20 px-2 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black shadow-sm text-black disabled:text-black"
                     value={slot.endMinute}
                     onChange={(e) => {
                       const updatedSlots = [...timeSlots];
@@ -286,7 +300,7 @@ const AddSportField = () => {
                 </div>
               ))}
             </div>
- 
+
             <div className="space-y-2">
               <label className="block text-gray-800 font-semibold">รูปสนาม</label>
               <div
@@ -320,7 +334,7 @@ const AddSportField = () => {
                 </p>
               )}
             </div>
- 
+
             <div className="flex justify-end space-x-4 mt-8">
               <button
                 className="bg-gray-200 px-6 py-2 rounded-lg text-gray-700 font-semibold hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 transition-all duration-200 shadow-md"
@@ -330,11 +344,10 @@ const AddSportField = () => {
                 ยกเลิก
               </button>
               <button
-                className={`${
-                  isSubmitting
-                    ? "bg-green-300"
-                    : "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
-                } px-6 py-2 rounded-lg text-white font-semibold disabled:bg-green-300 transition-all duration-200 shadow-md`}
+                className={`${isSubmitting
+                  ? "bg-green-300"
+                  : "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
+                  } px-6 py-2 rounded-lg text-white font-semibold disabled:bg-green-300 transition-all duration-200 shadow-md`}
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
@@ -344,10 +357,9 @@ const AddSportField = () => {
           </div>
         </div>
       </div>
-      {/* เพิ่ม div ว่างเพื่อสร้างระยะห่างด้านล่าง */}
       <div className="h-16"></div>
     </div>
   );
 };
- 
+
 export default AddSportField;
