@@ -3,7 +3,7 @@
 import "./home.css";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Tabbar from "../../Tab/tab";
+import Tabbar from "../../components/tab";
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 

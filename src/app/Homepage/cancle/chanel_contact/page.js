@@ -2,7 +2,7 @@
 
 import "./chanel.css";
 import { useState, useEffect } from "react";
-import Tabbar from "../../../Tab/tab";
+import Tabbar from "../../../components/tab";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";

@@ -186,7 +186,7 @@
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  max-width: 650px;
+  max-width: 660px;
   width: 90%;
   animation: fadeIn 0.3s ease-in-out;
 }

@@ -2,7 +2,7 @@
  
 import { useState, useEffect } from "react";
 import Headfunction from "../Headfunction/page";
-import Tabbar from "../Tab/tab.js";
+import Tabbar from "../components/tab.js";
 import Link from "next/link";
 import "./Homepage.css";
 import axios from "axios";

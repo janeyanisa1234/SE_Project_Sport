@@ -1,4 +1,3 @@
-// components/AuthLayout.js
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -15,13 +14,13 @@ const authPaths = ['/Login', '/Login/Registration'];
 const adminPaths = ['/Homeadmin'];
 
 // Paths that require owner role
-const ownerPaths = ['/ownerProfile', '/owner-reportbooking', '/owner-stats', '/my-stadium', '/promotion', '/create-promotion', '/detail', '/add', '/edit', '/money'];
+const ownerPaths = ['/my-stadium', '/ownerProfile', '/owner-reportbooking', '/owner-stats', '/promotion', '/create-promotion', '/detail', '/add', '/edit', '/money'];
 
 // Paths that require normal user role
 const userPaths = ['/Info', '/cancle'];
 
 // Paths that are accessible to everyone (public paths)
-const publicPaths = ['/about', '/HitPlace-mo-login', '/PromotionPlace-no-login', '/Search-nologin'];
+const publicPaths = ['/about', '/HitPlace-no-login', '/PromotionPlace-no-login', '/Search-nologin', '/reset-password'];
 
 export default function AuthLayout({ children }) {
   const router = useRouter();
@@ -69,8 +68,14 @@ export default function AuthLayout({ children }) {
       // Redirect to login if trying to access protected path without auth
       router.push('/Login');
     } else if (isAuthPath && isAuthenticated) {
-      // Redirect to homepage if trying to access auth path while authenticated
-      router.push('/Homepage');
+      // Redirect to appropriate homepage based on user role when logged in
+      if (userRole === 'admin') {
+        router.push('/Homeadmin');
+      } else if (userRole === 'owner') {
+        router.push('/my-stadium');
+      } else {
+        router.push('/Homepage');
+      }
     } else if (isAdminPath && (!isAuthenticated || userRole !== 'admin')) {
       // Redirect non-admin users trying to access admin paths
       router.push('/Login');
