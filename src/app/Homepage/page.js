@@ -1,24 +1,27 @@
 "use client";
-
-
+ 
+ 
 import { useState, useEffect } from "react";
 import Headfunction from "../Headfunction/page";
 import Tabbar from "../Tab/tab.js";
 import Link from "next/link";
 import "./Homepage.css";
 import axios from "axios";
-import { useRouter } from "next/navigation";
-
-export default function Homepage() {
+ 
+ 
+export default function Home() {
   const [promotedStadiums, setPromotedStadiums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const router = useRouter();
-
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [
+    "/picturemild/GuideToBooking.png"
+  ];
+ 
   useEffect(() => {
     async function fetchPromotedStadiums() {
       try {
-        const response = await axios.get("http://localhost:5000/booking/promoted-stadiums", {
+        const response = await axios.get("http://localhost:5000/bookings/promoted-stadiums", {
           timeout: 10000,
         });
         console.log("Promoted stadiums data:", response.data);
@@ -44,30 +47,38 @@ export default function Homepage() {
       }
     }
     fetchPromotedStadiums();
+ 
+    // Auto-slide carousel
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000); // เปลี่ยนรูปทุก 5 วินาที
+    return () => clearInterval(interval);
   }, []);
-
-  const handleStadiumClick = (stadium) => {
-    router.push(
-      `/Homepage/Search/Select?stadium_name=${encodeURIComponent(stadium.stadium_name)}&stadium_address=${encodeURIComponent(stadium.stadium_address)}`
-    );
-  };
-
-
+ 
   return (
     <>
       <Tabbar />
       <Headfunction />
-
+ 
       <main className="content">
+        {/* Carousel */}
         <div className="carousel">
-          <Link href="/HowtoBooking">
-            <img src="/picturemild/GuideToBooking.png" alt="Howto" className="carousel-image" />
-          </Link>
+          <div className="carousel-inner" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+            {slides.map((slide, index) => (
+              <Link key={index} href="/HowtoBooking">
+                <img src={slide} alt={`Slide ${index + 1}`} className="Howto" />
+              </Link>
+            ))}
+          </div>
+          <div className="carousel-controls">
+            <button className="carousel-btn" onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}>❮</button>
+            <button className="carousel-btn" onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}>❯</button>
+          </div>
         </div>
-
-        {/* สนามที่เข้าร่วมโปรโมชั่น */}
+ 
+        {/* Promotion Section */}
         <section className="promotion-section">
-          <h3 className="section-title">สนามที่เข้าร่วมโปรโมชั่น</h3>
+          <h3>สนามที่เข้าร่วมโปรโมชัน</h3>
           <div className="grid-container">
             {loading ? (
               <p className="loading-text">กำลังโหลด...</p>
@@ -75,10 +86,11 @@ export default function Homepage() {
               <p className="error-text">{error}</p>
             ) : promotedStadiums.length > 0 ? (
               promotedStadiums.map((item, index) => (
-                <div key={item.id || index} className="grid-item" onClick={() => handleStadiumClick(item)}>
-                  <Link
-                    href={`/Homepage/Search/Select?stadium_name=${encodeURIComponent(item.stadium_name)}&stadium_address=${encodeURIComponent(item.stadium_address)}`}
-                  >
+                <Link
+                  key={item.id || index}
+                  href={`/Homepage/Search/Select?stadium_name=${encodeURIComponent(item.stadium_name)}&stadium_address=${encodeURIComponent(item.stadium_address)}`}
+                >
+                  <div className="grid-item">
                     <img
                       src={item.stadium_image || "/picturemild/default.svg"}
                       alt={item.stadium_name}
@@ -90,11 +102,11 @@ export default function Homepage() {
                         ส่วนลด: {item.promotion.discount_percentage}%
                       </p>
                     )}
-                  </Link>
-                </div>
+                  </div>
+                </Link>
               ))
             ) : (
-              <p className="no-data-text">ไม่มีสนามที่เข้าร่วมโปรโมชั่น</p>
+              <p className="no-data-text">ไม่มีสนามที่เข้าร่วมโปรโมชัน</p>
             )}
           </div>
           <Link href="/Homepage/PromotionPlace">
@@ -105,3 +117,4 @@ export default function Homepage() {
     </>
   );
 }
+ 

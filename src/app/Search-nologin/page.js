@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import { useState, useEffect } from "react";
 import "./Search.css"; // ใช้ CSS เดิม และจะปรับเพิ่มเติมตามที่ต้องการ
 import DatePicker from "react-datepicker";
@@ -9,7 +9,7 @@ import Headfunction from "../../Headfunction/page";
 import Link from "next/link";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-
+ 
 export default function SearchPlace() {
   const [placeData, setPlaceData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,17 +22,17 @@ export default function SearchPlace() {
   const [selectedSlot, setSelectedSlot] = useState({});
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+ 
   // กำหนดหมวดหมู่จากข้อมูล API
   const categories = ["ยอดนิยม", ...new Set(placeData.map(item => item.court_type || "อื่นๆ"))].filter(Boolean);
-
+ 
   useEffect(() => {
     async function fetchPlaceData() {
       try {
         const url = `http://localhost:5000/booking/stadiums?stadium_name=${encodeURIComponent(stadiumName)}`;
         const response = await axios.get(url, { timeout: 10000 });
         console.log("📌 Data from API:", response.data);
-
+ 
         if (response.data && Array.isArray(response.data)) {
           setPlaceData(response.data);
         } else {
@@ -55,7 +55,7 @@ export default function SearchPlace() {
     }
     fetchPlaceData();
   }, [stadiumName]);
-
+ 
   const handleVenueSelect = (venue) => {
     const isLoggedIn = false; // จำลองสถานะไม่ล็อกอิน
     if (!isLoggedIn) {
@@ -70,7 +70,7 @@ export default function SearchPlace() {
       setSelectedSlot({});
     }
   };
-
+ 
   const handleTimeslotSelect = (venue, slot) => {
     setSelectedSlot(prev => ({
       ...prev,
@@ -79,11 +79,11 @@ export default function SearchPlace() {
         : [...(prev[venue.stadium_name] || []), slot]
     }));
   };
-
+ 
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
+ 
   // จำลองข้อมูลตารางเวลา (สามารถดึงจาก API เพิ่มเติมได้)
   const getTimeslots = (venue) => {
     // สมมติว่า venue มีข้อมูล timeslots จาก API (เช่น venue.courts[0].times)
@@ -95,7 +95,7 @@ export default function SearchPlace() {
     const unavailableSlots = ["15:00 - 16:00", "16:00 - 17:00"]; // จำลอง slot ที่จองแล้ว
     return { available: times.filter(t => !unavailableSlots.includes(t)), unavailable: unavailableSlots };
   };
-
+ 
   return (
     <>
       <Tabbar />
@@ -116,7 +116,7 @@ export default function SearchPlace() {
               />
             </div>
           </div>
-
+ 
           <nav className="category-nav">
             {categories.map((category) => (
               <button
@@ -128,7 +128,7 @@ export default function SearchPlace() {
               </button>
             ))}
           </nav>
-
+ 
           {activeCategory !== "ยอดนิยม" && (
             <div className="legend-container">
               <div className="legend-item">
@@ -139,7 +139,7 @@ export default function SearchPlace() {
               </div>
             </div>
           )}
-
+ 
           {activeCategory === "ยอดนิยม" && placeData.length > 0 && (
             <div className="popular-venues">
               {placeData.map((venue, index) => (
@@ -164,7 +164,7 @@ export default function SearchPlace() {
               ))}
             </div>
           )}
-
+ 
           {activeCategory !== "ยอดนิยม" && placeData.length > 0 && (
             <div className="venue-list">
               {placeData
@@ -206,7 +206,7 @@ export default function SearchPlace() {
                 ))}
             </div>
           )}
-
+ 
           {showModal && (
             <div className="modal">
               <div className="modal-content">

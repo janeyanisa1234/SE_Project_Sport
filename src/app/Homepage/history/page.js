@@ -26,6 +26,7 @@ const Page = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         let data = response.data;
+        // เรียงจากล่าสุดไปเก่าสุด (ใช้ date หรือ date_play)
         data = data.sort((a, b) => new Date(b.date || b.date_play) - new Date(a.date || a.date_play));
         if (bookingId && data.length > 0) {
           const latestBooking = data.find((b) => b.id_booking === bookingId);
@@ -57,10 +58,8 @@ const Page = () => {
       <Tabbar />
       <header className="page-header">
         <div className="header-content">
-          
           <h1>ประวัติการจอง</h1>
         </div>
-       
       </header>
       <div className="bookings-container">
         {bookings.length > 0 ? (
@@ -95,6 +94,8 @@ const Page = () => {
                         <p className="details-value">{booking.date || "ไม่ระบุ"}</p>
                         <p className="details-label">เวลาเข้าใช้สนาม</p>
                         <p className="details-value">{booking.time_slot || booking.Time || "ไม่ระบุ"}</p>
+                        <p className="details-label">สถานะการจอง</p>
+                        <p className="details-value">{booking.status_booking || "ไม่ระบุ"}</p>
                       </div>
                     </div>
                   )}

@@ -255,13 +255,11 @@ const SelectPlace = () => {
     };
 
     try {
-
       const response = await axios.post("http://localhost:5000/booking/stadiums", bookingPayload, {
-
         headers: { "Content-Type": "application/json" },
       });
       router.push(
-        `/Homepage/Search/Select/payment-qr/payment-confirm?bookingId=${response.data.bookingId}&price=${totalPrice}&userId=${userId}&stadiumName=${encodeURIComponent(response.data.stadiumName)}&sportType=${encodeURIComponent(response.data.sportType)}&courtNumber=${bookingPayload.courtNumber}&date=${bookingPayload.date}&timeSlots=${encodeURIComponent(JSON.stringify(bookingPayload.timeSlots))}&id_stadium=${bookingPayload.stadiumId}&id_court=${bookingPayload.courtId}&stadiumAddress=${encodeURIComponent(stadiumAddress)}`
+        `/Homepage/Search/Select/payment-qr?bookingId=${response.data.bookingId}&price=${totalPrice}&userId=${userId}&stadiumName=${encodeURIComponent(response.data.stadiumName)}&sportType=${encodeURIComponent(response.data.sportType)}&courtNumber=${bookingPayload.courtNumber}&date=${bookingPayload.date}&timeSlots=${encodeURIComponent(JSON.stringify(bookingPayload.timeSlots))}&id_stadium=${bookingPayload.stadiumId}&id_court=${bookingPayload.courtId}&stadiumAddress=${encodeURIComponent(stadiumAddress)}`
       );
     } catch (error) {
       console.error("Error submitting booking:", error.response?.data || error.message);
@@ -494,6 +492,18 @@ const SelectPlace = () => {
             <p>กำลังโหลดข้อมูล...</p>
           )}
         </nav>
+
+        {/* ย้าย Legend ไปชิดขวา */}
+        <div className="legend-container" style={{ textAlign: "right" }}>
+          <div className="legend-item">
+            <span className="legend-color available"></span>
+            <span>ว่าง</span>
+            <span className="legend-color booked"></span>
+            <span>ไม่ว่าง</span>
+            <span className="legend-color past"></span>
+            <span>หมดเวลาในการจอง</span>
+          </div>
+        </div>
 
         <div className="venue-list">{loading ? <p>กำลังโหลดข้อมูล...</p> : renderVenueList()}</div>
 
