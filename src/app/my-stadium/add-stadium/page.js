@@ -39,21 +39,18 @@ const AddSportsField = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Check if the file is an image
       if (!file.type.startsWith("image/")) {
         setErrorMessage("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น (เช่น JPG, PNG, GIF)");
         return;
       }
 
-      // Check file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         setErrorMessage("ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB");
         return;
       }
 
-      // Check if file name is in English (ASCII characters only)
       const englishFileNameRegex = /^[a-zA-Z0-9._-]+$/;
-      if (!englishFileNameRegex.test(file.name.split('.').slice(0, -1).join('.'))) {
+      if (!englishFileNameRegex.test(file.name.split(".").slice(0, -1).join("."))) {
         setErrorMessage("ชื่อไฟล์ต้องเป็นภาษาอังกฤษเท่านั้น (a-z, A-Z, 0-9, ._-)");
         return;
       }
@@ -116,26 +113,29 @@ const AddSportsField = () => {
 
   return (
     <div
-      className="relative w-full h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col"
-      style={{ backgroundImage: "url('/pictureowner/bg.png'), linear-gradient(to bottom right,rgb(255, 255, 255),rgb(160, 159, 159),rgb(128, 128, 128))", backgroundSize: "cover", backgroundPosition: "center" }}
+      className="relative w-full min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col pt-16 pb-16"
+      style={{
+        backgroundImage:
+          "url('/pictureowner/bg.png'), linear-gradient(to bottom right, rgb(255, 255, 255), rgb(160, 159, 159), rgb(128, 128, 128))",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
     >
       <Tabbar />
-      <br></br><br></br>
       <div className="flex flex-col items-center justify-center flex-grow px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full transform transition-all duration-300 hover:shadow-2xl">
-          {/* Header */}
           <div className="bg-gradient-to-r from-black to-gray-900 text-white text-xl font-bold px-6 py-4 text-center rounded-t-2xl relative z-10">
             เพิ่มสนามกีฬา
           </div>
           <div className="p-6 sm:p-8">
-            {/* Error Message */}
             {errorMessage && (
               <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg shadow-md animate-slide-in">
                 <span className="font-medium">{errorMessage}</span>
               </div>
             )}
 
-            {/* Sports Field Name */}
             <label className="block text-gray-800 font-semibold mb-2">ชื่อสนาม</label>
             <input
               type="text"
@@ -146,7 +146,6 @@ const AddSportsField = () => {
               disabled={isSubmitting}
             />
 
-            {/* Address */}
             <label className="block text-gray-800 font-semibold mt-6 mb-2">ที่ตั้ง</label>
             <textarea
               value={address}
@@ -156,7 +155,6 @@ const AddSportsField = () => {
               disabled={isSubmitting}
             />
 
-            {/* Image Upload */}
             <label className="block text-gray-800 font-semibold mt-6 mb-2">
               รูปสนามกีฬา
             </label>
@@ -206,8 +204,7 @@ const AddSportsField = () => {
               )}
             </div>
 
-            {/* Buttons */}
-            <div className="flex justify-between mt-8 gap-4">
+            <div className="flex justify-between mt-8 mb-6 gap-4">
               <button
                 className="bg-gray-200 px-6 py-2.5 rounded-lg text-gray-700 font-semibold hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 transition-all duration-200 shadow-md"
                 onClick={() => router.push("/my-stadium")}

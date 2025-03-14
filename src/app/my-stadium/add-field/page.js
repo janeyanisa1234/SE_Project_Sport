@@ -52,13 +52,11 @@ const AddSportField = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      // Check if the file is an image
       if (!file.type.startsWith("image/")) {
         setErrorMessage("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น (เช่น JPG, PNG, GIF)");
         return;
       }
 
-      // Check if file name is in English (ASCII characters only)
       const englishFileNameRegex = /^[a-zA-Z0-9._-]+$/;
       if (!englishFileNameRegex.test(file.name.split('.').slice(0, -1).join('.'))) {
         setErrorMessage("ชื่อไฟล์ต้องเป็นภาษาอังกฤษเท่านั้น (a-z, A-Z, 0-9, ._-)");
@@ -89,12 +87,33 @@ const AddSportField = () => {
       return;
     }
 
+    // Check for identical start and end times
     for (const slot of timeSlots) {
       const startTime = `${slot.startHour}:${slot.startMinute}`;
       const endTime = `${slot.endHour}:${slot.endMinute}`;
       if (startTime === endTime) {
         setErrorMessage("เวลาเริ่มต้นและสิ้นสุดของช่วงเวลาต้องไม่เท่ากัน");
         return;
+      }
+    }
+
+    // Check for overlapping time slots
+    const timeInMinutes = timeSlots.map(slot => {
+      const start = parseInt(slot.startHour) * 60 + parseInt(slot.startMinute);
+      const end = parseInt(slot.endHour) * 60 + parseInt(slot.endMinute);
+      // Handle case where end time crosses midnight (e.g., 23:00 - 01:00)
+      return { start, end: end < start ? end + 24 * 60 : end };
+    });
+
+    for (let i = 0; i < timeInMinutes.length; i++) {
+      for (let j = i + 1; j < timeInMinutes.length; j++) {
+        const slot1 = timeInMinutes[i];
+        const slot2 = timeInMinutes[j];
+        // Check if one slot starts before another ends and ends after another starts
+        if (slot1.start < slot2.end && slot1.end > slot2.start) {
+          setErrorMessage("พบช่วงเวลาที่ทับซ้อนกัน กรุณาตรวจสอบช่วงเวลา");
+          return;
+        }
       }
     }
 
