@@ -7,7 +7,7 @@
 
 body {
   color: #000000; /* Darker, modern slate color */
-  background: linear-gradient(135deg, #F5F5F5, #DCE4E8); /* Softer gradient to match header */
+  background-color:  #DCE4E8; /* Softer gradient to match header */
   font-family: 'Inter', Arial, Helvetica, sans-serif; /* Modern font */
   min-height: 100vh;
   margin: 0;
