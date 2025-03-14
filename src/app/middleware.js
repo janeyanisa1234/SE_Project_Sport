@@ -2,10 +2,10 @@
 import { NextResponse } from 'next/server';
 
 // Define paths that should be protected (require authentication)
-const protectedPaths = ['/Homepage', '/Profile', '/Admin', '/Info', '/cancle', '/about'];
+const protectedPaths = ['/Homepage', '/Profile', '/Homeadmin', '/Info', '/cancle', '/ownerProfile', '/owner-reportbooking', '/owner-stats', 'my-stadium', '/promotion', '/create-promotion', '/detail', '/add', '/edit', '/money'];
 
 // Define paths that should be accessible only to non-authenticated users
-const authPaths = ['/Login', '/Login/Registration'];
+const authPaths = ['/Login', '/Login/Registration', '/about'];
 
 export function middleware(request) {
   const { pathname } = request.nextUrl;
