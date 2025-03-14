@@ -1,59 +1,321 @@
+/* PromotionPlace.css */
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Theme Styles */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a1a1a;
+    --foreground: #e0e0e0;
+    --primary: #3498db;
+    --secondary: #2ecc71;
+    --card-bg: #2c2c2c;
+    --shadow: rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #ffffff;
+    --foreground: #2c3e50;
+    --primary: #3498db;
+    --secondary: #2ecc71;
+    --card-bg: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Body Background */
+body {
+  background: linear-gradient(135deg, #f5f7fa, #e0eafc); /* Gradient สวยงาม */
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  color: var(--foreground);
+}
+
+/* Main Container */
 .places-list {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.section-title::after {
+  content: '';
+  width: 60px;
+  height: 4px;
+  background: var(--primary);
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+/* Place Card */
+.place-card {
+  display: flex;
+  align-items: center;
+  background: var(--card-bg);
+  border: none;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.place-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px var(--shadow);
+}
+
+/* Place Image */
+.place-image {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-right: 20px;
+  transition: transform 0.3s ease;
+}
+
+.place-card:hover .place-image {
+  transform: scale(1.05);
+}
+
+/* Place Info */
+.place-info {
+  flex: 1;
+}
+
+.place-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.place-card:hover .place-name {
+  color: var(--secondary);
+}
+
+.place-address {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.place-address a {
+  color: #4b5563;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.place-address a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.grid-promo {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #e91e63;
+  margin-top: 5px;
+}
+
+/* Grid Container (ใช้ในหน้า Home) */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  max-width: 1200px;
+  margin: 0 auto 30px;
+}
+
+/* Grid Item */
+.grid-item {
+  background: var(--card-bg);
+  border: none;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px var(--shadow);
+}
+
+.grid-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.grid-item:hover .grid-image {
+  transform: scale(1.05);
+}
+
+.grid-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 10px 0;
+  transition: color 0.3s ease;
+}
+
+.grid-item:hover .grid-title {
+  color: var(--secondary);
+}
+
+.grid-address {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 5px 0;
+}
+
+.grid-address a {
+  color: #4b5563;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.grid-address a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* Text Styles */
+.loading-text,
+.error-text,
+.no-data-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  padding: 20px;
+}
+
+.error-text {
+  color: #e74c3c;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .places-list {
     width: 95%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding-top: 70px;
-    margin-left: 30px;
+    padding: 60px 0 20px;
   }
-  
+
   .place-card {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 100%;
+    padding: 15px;
   }
-  
+
   .place-image {
     width: 150px;
     height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-right: 16px;
   }
-  
-  .place-info {
-    flex: 1;
+
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
   }
-  
-  .place-name {
-    color: black;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 8px;
+
+  .grid-image {
+    height: 160px;
   }
-  
-  .place-address {
-    font-size: 14px;
-    color: #6B6767;
+}
+
+@media (max-width: 768px) {
+  .place-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
   }
-  
-  /* Responsive: ปรับ Layout เมื่อหน้าจอเล็กลง */
-  @media (max-width: 600px) {
-    .place-card {
-      flex-direction: column;
-      align-items: flex-start;
-      text-align: left;
-    }
-  
-    .place-image {
-      width: 100%;
-      height: auto;
-      margin-bottom: 10px;
-    }
+
+  .place-image {
+    width: 100%;
+    height: 200px;
+    margin-right: 0;
+    margin-bottom: 15px;
   }
-  
+
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .place-name,
+  .grid-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .places-list {
+    width: 100%;
+    padding: 50px 10px 20px;
+  }
+
+  .place-card {
+    padding: 12px;
+  }
+
+  .place-image {
+    height: 180px;
+  }
+
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-image {
+    height: 200px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .place-name,
+  .grid-title {
+    font-size: 1.1rem;
+  }
+
+  .place-address,
+  .grid-address {
+    font-size: 0.9rem;
+  }
+}

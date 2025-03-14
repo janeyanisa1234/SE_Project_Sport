@@ -7,7 +7,7 @@ import Tabbar from "../Tab/tab.js";
 import Link from "next/link";
 import "./Homepage.css";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+
 
 export default function Home() {
   const [promotedStadiums, setPromotedStadiums] = useState([]);
@@ -88,7 +88,7 @@ export default function Home() {
               promotedStadiums.map((item, index) => (
                 <Link
                   key={item.id || index}
-                  href={`/Search-nologin/Select-nologin?stadium_name=${encodeURIComponent(item.stadium_name)}&stadium_address=${encodeURIComponent(item.stadium_address)}`}
+                  href={`/Homepage/Search/Select?stadium_name=${encodeURIComponent(item.stadium_name)}&stadium_address=${encodeURIComponent(item.stadium_address)}`}
                 >
                   <div className="grid-item">
                     <img
@@ -109,7 +109,7 @@ export default function Home() {
               <p className="no-data-text">ไม่มีสนามที่เข้าร่วมโปรโมชัน</p>
             )}
           </div>
-          <Link href="/PromotionPlace-no-login">
+          <Link href="/Homepage/PromotionPlace">
             <button className="view-more-button">ดูเพิ่มเติม</button>
           </Link>
         </section>

@@ -1,8 +1,12 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-
+/* Theme Styles */
 @media (prefers-color-scheme: dark) {
-  
-
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -162,16 +166,11 @@
   background-color: white;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-}
-
-.venue-card:hover {
-  transform: scale(1.02);
+  /* ลบ transition และ cursor pointer */
 }
 
 .court-header {
   padding: 15px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -210,7 +209,7 @@
 
 .timeslot-container {
   padding: 15px;
-  pointer-events: none;
+  pointer-events: none; /* ไม่ตอบสนองกับเมาส์ */
 }
 
 .slot-container {
@@ -219,7 +218,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fafafa;
-  pointer-events: auto;
+  pointer-events: auto; /* ตอบสนองกับเมาส์ */
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -239,6 +238,9 @@
   color: var(--foreground);
 }
 
+/* ... (ส่วนอื่นๆ ของ CSS ยังคงเหมือนเดิม) ... */
+
+/* Time Rows and Slots */
 .time-rows {
   display: flex;
   flex-direction: column;
@@ -247,9 +249,9 @@
 
 .time-row {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: flex-start; /* เรียงชิดซ้าย */
   gap: 10px;
-  justify-content: flex-start;
+  flex-wrap: wrap; /* ขึ้นแถวใหม่เมื่อเต็ม */
 }
 
 .slot {
@@ -276,6 +278,7 @@
   background-color: #007bff;
   color: white;
 }
+
 
 .slot.booked {
   background-color: #ff4444; /* สีแดงสำหรับจองแล้ว */
@@ -357,45 +360,6 @@
   background-color: #f0f0f0;
   color: black;
   padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  text-align: center;
-  position: relative;
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border: none;
-  background: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.login-btn {
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;

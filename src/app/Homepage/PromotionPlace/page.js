@@ -5,6 +5,7 @@ import Headfunction from "../../Headfunction/page";
 import Tabbar from "../../Tab/tab";
 import "./Promotion.css";
 import axios from "axios";
+import Link from "next/link";
 
 export default function PromotionPlace() {
   const [displayCount, setDisplayCount] = useState("");
@@ -53,7 +54,7 @@ export default function PromotionPlace() {
       <Tabbar />
       <Headfunction />
       <main className="places-list">
-        <h3 className="section-title">สนามที่เข้าร่วมโปรโมชั่น</h3>
+        <h3 className="section-title">สนามที่เข้าร่วมโปรโมชัน</h3>
 
         {/* แสดงรายการสนามจาก API */}
         {loading ? (
@@ -65,13 +66,23 @@ export default function PromotionPlace() {
             .slice(0, parseInt(displayCount) || promotedStadiums.length)
             .map((place, index) => (
               <div key={place.id || index} className="place-card">
-                <img
-                  src={place.stadium_image || "/picturemild/default.svg"}
-                  alt={place.stadium_name}
-                  className="place-image"
-                />
+                {/* ลิงก์รูปภาพไปหน้า Select */}
+                <Link
+                  href={`/Homepage/Search/Select?stadium_name=${encodeURIComponent(place.stadium_name)}&stadium_address=${encodeURIComponent(place.stadium_address)}`}
+                >
+                  <img
+                    src={place.stadium_image || "/picturemild/default.svg"}
+                    alt={place.stadium_name}
+                    className="place-image"
+                  />
+                </Link>
                 <div className="place-info">
-                  <h3 className="place-name">{place.stadium_name}</h3>
+                  {/* ลิงก์ชื่อสนามไปหน้า Select */}
+                  <Link
+                    href={`/Homepage/Search/Select?stadium_name=${encodeURIComponent(place.stadium_name)}&stadium_address=${encodeURIComponent(place.stadium_address)}`}
+                  >
+                    <h3 className="place-name">{place.stadium_name}</h3>
+                  </Link>
                   <p className="place-address">
                     <a
                       href={generateGoogleMapsLink(place.stadium_address)}
@@ -89,7 +100,7 @@ export default function PromotionPlace() {
               </div>
             ))
         ) : (
-          <p className="no-data-text">ไม่มีสนามที่เข้าร่วมโปรโมชั่น</p>
+          <p className="no-data-text">ไม่มีสนามที่เข้าร่วมโปรโมชัน</p>
         )}
       </main>
     </>
