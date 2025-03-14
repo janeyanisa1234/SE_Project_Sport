@@ -9,8 +9,8 @@ import axios from "axios";
 
 // ฟังก์ชันแปลงวันที่ภาษาไทยเป็น Date object
 const monthNames = {
-  "มกราคม": 0, "กุมภาพันธ์": 1, "มีนาคม": 2, "เมษายน": 3, "พฤษภาคม": 4, "มิถุนายน": 5,
-  "กรกฎาคม": 6, "สิงหาคม": 7, "กันยายน": 8, "ตุลาคม": 9, "พฤศจิกายน": 10, "ธันวาคม": 11
+  "มกราคม": 1, "กุมภาพันธ์": 2, "มีนาคม": 3, "เมษายน": 4, "พฤษภาคม": 5, "มิถุนายน": 6,
+  "กรกฎาคม": 7, "สิงหาคม": 8, "กันยายน": 9, "ตุลาคม": 10, "พฤศจิกายน": 11, "ธันวาคม": 12
 };
 
 const parseThaiDate = (dateString) => {
@@ -48,7 +48,7 @@ export default function Manage_Cash() {
 
   const filteredOwners = owners.filter((owner) => {
     const date = parseThaiDate(owner.date);
-    const ownerMonth = (date.getMonth() + 1).toString().padStart(2, "0");
+    const ownerMonth = (date.getMonth() ).toString().padStart(2, "0");
     const ownerYear = (date.getFullYear() + 543).toString();
 
     const matchesStatus = statusFilter === "all" || owner.status === statusFilter;
