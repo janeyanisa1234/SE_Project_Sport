@@ -1,8 +1,12 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-
+/* Theme Styles */
 @media (prefers-color-scheme: dark) {
-  
-
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -52,13 +56,13 @@
     background-color: #e6ffe6; /* เขียวอ่อนสำหรับว่าง */
   }
 
-  .slot.booked { /* เปลี่ยนจาก unavailable เป็น booked */
+  .slot.booked {
     background-color: #ff4444; /* สีแดงสำหรับจองแล้ว */
     color: white;
     cursor: not-allowed;
   }
 
-  .slot.past { /* เพิ่มสำหรับเวลาที่ผ่านไป */
+  .slot.past {
     background-color: #ccc; /* สีเทาสำหรับอดีต */
     color: #666;
     cursor: not-allowed;
@@ -91,23 +95,70 @@
   margin-top: 2%;
   height: 300px;
   background-size: cover;
+  background-position: center;
   padding: 20px;
   color: white;
+  text-align: left; /* ชิดซ้าย */
+  position: relative;
+  display: flex;
+  align-items: flex-end; /* จัดให้ส่วน Headdetail อยู่ด้านล่าง */
+}
+
+.Headdetail {
+  margin-left: 0; /* ชิดซ้าย */
+  margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+  text-align: left;
+  /* ลบพื้นหลังและเอฟเฟกต์กล่อง */
+  /* background: rgba(0, 0, 0, 0.5); */
+  /* padding: 15px 20px; */
+  /* border-radius: 8px; */
+  /* backdrop-filter: blur(5px); */
+}
+
+.venue-name {
+  font-size: 2.5rem; /* เพิ่มขนาดให้ใหญ่ขึ้น */
+  margin-bottom: 10px; /* ระยะห่างจากที่อยู่ */
+  color: white; /* สีขาวเพื่อตัดกับพื้นหลัง */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* เพิ่มเงาให้ชัดเจน */
+  font-weight: bold; /* ทำให้ตัวหนักเพื่อเด่น */
+}
+
+.venue-address {
+  font-size: 1.2rem; /* เพิ่มขนาดให้ใหญ่ขึ้น */
+  margin-bottom: 15px; /* ระยะห่างจาก date picker */
+  color: #ddd; /* สีเทาอ่อนเพื่อให้ตัดกับพื้นหลัง */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* เพิ่มเงาให้ชัดเจน */
 }
 
 .date-picker-container {
   color: #000000;
-  width: 130px;
-  padding: 3px;
-  font-size: 14px;
-  margin-left: 20px;
+  width: 180px; /* เพิ่มความกว้างให้ใหญ่ขึ้น */
+  padding: 8px; /* เพิ่ม padding */
+  font-size: 16px; /* เพิ่มขนาดตัวอักษร */
   text-align: center;
-  border-radius: 20px;
+  border-radius: 25px; /* มุมโค้งมากขึ้น */
+  background: white; /* พื้นหลังสีขาว */
+  display: inline-block;
 }
 
-.Headdetail {
-  margin-left: 5px;
-  margin-top: 160px;
+.date-picker-container input[type="date"] {
+  width: 100%;
+  padding: 5px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px; /* ขนาดตัวอักษรใน input */
+  cursor: pointer;
+}
+
+/* ปรับแต่งสีของ date picker ใน dark mode */
+@media (prefers-color-scheme: dark) {
+  .date-picker-container {
+    background: #ffffff; /* ยังคงสีขาวใน dark mode */
+  }
+
+  .date-picker-container input[type="date"] {
+    color: #000000; /* สีตัวอักษรเป็นสีดำ */
+  }
 }
 
 .category-nav {
@@ -162,16 +213,10 @@
   background-color: white;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-}
-
-.venue-card:hover {
-  transform: scale(1.02);
 }
 
 .court-header {
   padding: 15px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -239,6 +284,7 @@
   color: var(--foreground);
 }
 
+/* Time Rows and Slots */
 .time-rows {
   display: flex;
   flex-direction: column;
@@ -247,9 +293,9 @@
 
 .time-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .slot {
@@ -265,11 +311,11 @@
 }
 
 .slot.available {
-  background-color: #a1f7a1; /* เขียวอ่อนสำหรับว่าง */
+  background-color: #a1f7a1;
 }
 
 .slot.available:hover {
-  background-color: #ccffcc; /* เขียวอ่อนขึ้นเมื่อ hover */
+  background-color: #ccffcc;
 }
 
 .slot.selected {
@@ -278,13 +324,13 @@
 }
 
 .slot.booked {
-  background-color: #ff4444; /* สีแดงสำหรับจองแล้ว */
+  background-color: #ff4444;
   color: white;
   cursor: not-allowed;
 }
 
 .slot.past {
-  background-color: #ccc; /* สีเทาสำหรับเวลาที่ผ่านไป */
+  background-color: #ccc;
   color: #666;
   cursor: not-allowed;
 }
@@ -360,4 +406,35 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+/* Legend Styles */
+.legend-container {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.legend-color.available {
+  background-color: #a1f7a1;
+}
+
+.legend-color.booked {
+  background-color: #ff4444;
+}
+
+.legend-color.past {
+  background-color: #ccc;
 }

@@ -4,27 +4,27 @@ import { useState, useEffect, useRef } from "react";
 import "./Headfunction.css";
 import Link from "next/link";
 import axios from "axios";
-
+ 
 export default function Headfunction() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [categories, setCategories] = useState([]);
   const dropdownRef = useRef(null);
-
+ 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/booking/sports-categories", {
+        const response = await axios.get("http://localhost:5000/bookings/sports-categories", {
           timeout: 10000,
         });
-        console.log("Response from /booking/sports-categories:", response.data);
+        console.log("Response from /bookings/sports-categories:", response.data);
         
         if (Array.isArray(response.data)) {
           // กรองข้อมูลให้ไม่ซ้ำกันโดยใช้ Set
           const uniqueCategories = [...new Set(response.data)];
           setCategories(uniqueCategories);
         } else {
-          throw new Error("Invalid data format from /booking/sports-categories");
+          throw new Error("Invalid data format from /bookings/sports-categories");
         }
       } catch (error) {
         console.error("Error fetching categories:", error.message);
@@ -41,7 +41,7 @@ export default function Headfunction() {
     };
     fetchCategories();
   }, []);
-
+ 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -55,7 +55,7 @@ export default function Headfunction() {
   return (
     <nav className="nav-container">
       <div className="filter-dropdown-group" ref={dropdownRef}>
-
+ 
         <button
           className="nav-button"
           onClick={(e) => {
@@ -87,7 +87,7 @@ export default function Headfunction() {
           </ul>
         )}
       </div>
-
+ 
       <div className="search-bar">
         <input
           type="text"
@@ -103,3 +103,4 @@ export default function Headfunction() {
     </nav>
   );
 }
+ 

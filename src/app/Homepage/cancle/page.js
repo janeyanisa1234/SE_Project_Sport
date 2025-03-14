@@ -83,7 +83,7 @@ export default function Page() {
           const bookingDate = new Date(booking.date_play || booking.date);
           const isConfirmed = booking.status_booking === "ยืนยัน";
           const isNotPast = bookingDate >= today; // ไม่เลยวันเข้าใช้งาน
-          const isNotTomorrowOrToday = (bookingDate - today) / (1000 * 60 * 60 * 24) > 1; // มากกว่า 1 วันจากวันนี้
+          const isNotTomorrowOrToday = (bookingDate - today) / (1000 * 60 * 60 * 24) > 2; // มากกว่า 1 วันจากวันนี้
           return isConfirmed && isNotPast && isNotTomorrowOrToday;
         });
         console.log("ข้อมูลที่กรองแล้ว:", data);

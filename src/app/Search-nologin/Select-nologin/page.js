@@ -9,6 +9,7 @@ import Headfunction from "../../Headfunction/page";
 import Link from "next/link";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
+import ReactDOM from "react-dom"; // เพิ่มการ import ReactDOM สำหรับ React Portal
 
 const SelectPlacenologin = () => {
   const searchParams = useSearchParams();
@@ -39,7 +40,7 @@ const SelectPlacenologin = () => {
 
   // ตั้งค่าวันที่ปัจจุบันเมื่อเข้าหน้า
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0]; // ได้วันที่ในรูปแบบ "YYYY-MM-DD"
+    const today = new Date().toISOString().split("T")[0];
     setSelectedDate(today);
     setBookingData((prev) => ({ ...prev, date: today }));
   }, []);
@@ -114,7 +115,7 @@ const SelectPlacenologin = () => {
           request: error.request ? "Request made but no response" : "No request info",
           config: error.config || "No config",
         });
-        setBookedSlots({}); // Reset bookedSlots ถ้ามี error
+        setBookedSlots({});
       }
     }
 
@@ -207,11 +208,6 @@ const SelectPlacenologin = () => {
     if (!selectedCourt || !selectedSlot) return;
 
     const isLoggedIn = false; // จำลองสถานะไม่ล็อกอิน
-    if (!isLoggedIn) {
-      setShowModal(true);
-      return;
-    }
-
     const timeString = `${time.start}-${time.end}`.trim();
     const courtSlots = bookedSlots[selectedSlot] || [];
     const isBooked = courtSlots.includes(timeString);
@@ -226,6 +222,11 @@ const SelectPlacenologin = () => {
       setBookingData((prev) => ({ ...prev, timeSlots: newTimes }));
       return newTimes;
     });
+
+    if (!isLoggedIn) {
+      setShowModal(true);
+      return;
+    }
   };
 
   const handleBookingConfirmation = () => {
@@ -238,6 +239,19 @@ const SelectPlacenologin = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
+  // Modal Content
+  const ModalContent = () => (
+    <div className="modal-content">
+      <button className="close-btn" onClick={handleCloseModal}>×</button>
+      <h2>กรุณาเข้าสู่ระบบก่อนทำการจอง</h2>
+      <p>คุณต้องเข้าสู่ระบบเพื่อดำเนินการจองสนาม</p>
+      <Link href="/Login">
+        <button className="login-btn">เข้าสู่ระบบ</button>
+      </Link>
+      <button className="cancel-btn" onClick={handleCloseModal}>ยกเลิก</button>
+    </div>
+  );
 
   const renderVenueList = () => {
     if (error) return <p className="error-message">{error}</p>;
@@ -279,9 +293,6 @@ const SelectPlacenologin = () => {
                               const isBooked = courtSlots.includes(timeString);
                               const isPast = isPastTime(time.start);
                               const isSelected = selectedSlot === slotNumber && selectedTimes.includes(timeString);
-
-                              console.log(`Court ${slotNumber} bookedSlots:`, courtSlots);
-                              console.log(`Checking time: ${timeString}, isBooked: ${isBooked}`);
 
                               return (
                                 <div
@@ -352,9 +363,6 @@ const SelectPlacenologin = () => {
                           const isBooked = courtSlots.includes(timeString);
                           const isPast = isPastTime(time.start);
                           const isSelected = selectedSlot === slotNumber && selectedTimes.includes(timeString);
-
-                          console.log(`Court ${slotNumber} bookedSlots:`, courtSlots);
-                          console.log(`Checking time: ${timeString}, isBooked: ${isBooked}`);
 
                           return (
                             <div
@@ -433,6 +441,18 @@ const SelectPlacenologin = () => {
           )}
         </nav>
 
+        {/* เพิ่ม Legend สำหรับปุ่มสี */}
+        <div className="legend-container">
+          <div className="legend-item">
+            <span className="legend-color available"></span>
+            <span>ว่าง</span>
+            <span className="legend-color booked"></span>
+            <span>ไม่ว่าง</span>
+            <span className="legend-color past"></span>
+            <span>หมดเวลาในการจอง</span>
+          </div>
+        </div>
+
         <div className="venue-list">{loading ? <p>กำลังโหลดข้อมูล...</p> : renderVenueList()}</div>
 
         {selectedCourt && selectedSlot && selectedDate && selectedTimes.length > 0 && (
@@ -444,16 +464,11 @@ const SelectPlacenologin = () => {
         )}
       </div>
 
-      {showModal && (
+      {showModal && ReactDOM.createPortal(
         <div className="modal">
-          <div className="modal-content">
-            <button className="close-btn" onClick={handleCloseModal}>×</button>
-            <h2>กรุณาเข้าสู่ระบบก่อนทำการจอง</h2>
-            <Link href="/Login">
-              <button className="login-btn">เข้าสู่ระบบ</button>
-            </Link>
-          </div>
-        </div>
+          <ModalContent />
+        </div>,
+        document.body
       )}
     </>
   );
