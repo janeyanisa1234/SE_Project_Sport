@@ -34,7 +34,7 @@ input {
  
 body {
   color: var(--foreground);
-  background: linear-gradient(135deg, #f5f7fa, #e0eafc); /* Gradient ทันสมัย */
+  background: linear-gradient(135deg, #f5f7fa, #e0eafc);
   font-family: 'Poppins', sans-serif;
   height: 100vh;
   margin: 0;
@@ -45,52 +45,17 @@ body {
 .carousel {
   padding-top: 50px;
   position: relative;
-  width: 100%;
-  max-width: 1200px;
-  height: 400px; /* เพิ่มความสูงให้ดูเด่น */
-  margin: 0 auto;
+  width: 100vw; /* ขยายเต็มความกว้างหน้าจอ */
+  height: 400px; /* รักษาความสูงเดิม */
+  margin: 0;
   overflow: hidden;
-  border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
  
-.carousel-inner {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.5s ease-in-out;
-}
- 
 .Howto {
-  width: 100%;
+  width: 100vw;
   height: 100%;
   object-fit: cover;
-  flex-shrink: 0;
-}
- 
-.carousel-controls {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  padding: 0 20px;
-}
- 
-.carousel-btn {
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: background 0.3s ease;
-}
- 
-.carousel-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
 }
  
 /* Promotion Section */
@@ -192,12 +157,25 @@ body {
   box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
 }
  
-/* Error Text */
-.error-text {
-  color: #e74c3c;
+/* Error and Loading Text */
+.error-text,
+.loading-text,
+.no-data-text {
   font-size: 1.1rem;
   text-align: center;
   margin: 1rem 0;
+}
+ 
+.error-text {
+  color: #e74c3c;
+}
+ 
+.loading-text {
+  color: var(--foreground);
+}
+ 
+.no-data-text {
+  color: #7f8c8d;
 }
  
 /* Responsive Adjustments */
@@ -208,7 +186,7 @@ body {
   }
  
   .carousel {
-    height: 300px;
+    height: 350px;
   }
 }
  
@@ -218,7 +196,7 @@ body {
   }
  
   .carousel {
-    height: 250px;
+    height: 300px;
   }
  
   .promotion-section h3 {
@@ -232,7 +210,7 @@ body {
   }
  
   .carousel {
-    height: 200px;
+    height: 250px;
   }
  
   .promotion-section {
@@ -245,3 +223,4 @@ body {
     display: block;
   }
 }
+ 

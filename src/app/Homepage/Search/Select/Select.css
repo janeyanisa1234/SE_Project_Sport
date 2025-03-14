@@ -17,13 +17,19 @@
   }
 
   .category-nav button {
-    background-color: #333333;
-    color: #ffffff;
+    background-color: #4a4a4a; /* สีเทาเข้มสำหรับ dark mode */
+    color: #ffffff; /* สีขาวเพื่อตัดกับพื้นหลัง */
+    border: 1px solid #666; /* ขอบสีเทาเข้มขึ้น */
   }
 
   .category-nav button.active {
-    background-color: #555555;
+    background-color: #2196f3; /* สีน้ำเงินเมื่อ active ใน dark mode */
     color: #ffffff;
+    border: 1px solid #2196f3;
+  }
+
+  .category-nav button:hover {
+    background-color: #666666; /* สีเทาเข้มขึ้นเมื่อ hover */
   }
 
   .venue-card {
@@ -168,29 +174,33 @@
   width: 100%;
   overflow-x: auto;
   white-space: nowrap;
+  margin: 20px 0; /* เพิ่มระยะห่างด้านบนและล่าง */
 }
 
 .category-nav button {
-  color: #ffffff;
+  color: #333; /* สีเทาเข้มสำหรับ light mode */
   flex: 1 1 auto;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 2px;
+  padding: 12px 20px; /* เพิ่ม padding เพื่อให้ปุ่มใหญ่ขึ้น */
+  border: 1px solid #ccc; /* ขอบสีเทาอ่อน */
+  border-radius: 5px; /* มุมโค้งนุ่มนวล */
   cursor: pointer;
-  background-color: var(--background);
-  font-size: 14px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #f5f5f5; /* พื้นหลังสีเทาอ่อนสำหรับ light mode */
+  font-size: 16px; /* ขนาดตัวอักษรใหญ่ขึ้น */
+  font-weight: 500; /* ทำให้ตัวอักษรหนาขึ้นเล็กน้อย */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
   text-align: center;
 }
 
 .category-nav button.active {
-  background-color: rgb(255, 255, 255);
-  color: rgb(0, 0, 0);
-  border: 1px solid rgb(0, 0, 0);
+  background-color: #2196f3; /* สีน้ำเงินเมื่อ active */
+  color: #ffffff; /* สีขาวเพื่อตัดกับพื้นหลัง */
+  border: 1px solid #2196f3;
+  transform: scale(1.05); /* ขยายเล็กน้อยเมื่อ active */
 }
 
 .category-nav button:hover {
-  background-color: rgb(149, 149, 149);
+  background-color: #d1d1d1; /* สีเทาค่อนข้างเข้มเมื่อ hover */
+  color: #333;
 }
 
 .venue-list {

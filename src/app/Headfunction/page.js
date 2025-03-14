@@ -17,14 +17,14 @@ export default function Headfunction() {
         const response = await axios.get("http://localhost:5000/bookings/sports-categories", {
           timeout: 10000,
         });
-        console.log("Response from /bookings/sports-categories:", response.data);
+        console.log("Response from /booking/sports-categories:", response.data);
         
         if (Array.isArray(response.data)) {
           // กรองข้อมูลให้ไม่ซ้ำกันโดยใช้ Set
           const uniqueCategories = [...new Set(response.data)];
           setCategories(uniqueCategories);
         } else {
-          throw new Error("Invalid data format from /bookings/sports-categories");
+          throw new Error("Invalid data format from /booking/sports-categories");
         }
       } catch (error) {
         console.error("Error fetching categories:", error.message);
@@ -34,9 +34,7 @@ export default function Headfunction() {
         } else if (error.request) {
           console.log("No Response Received:", error.request);
         }
-        // Fallback: กรองค่าซ้ำออกจาก array ค่าเริ่มต้นด้วย
-        const fallbackCategories = ["ฟุตบอล", "บาสเกตบอล", "เทนนิส", "แบดมินตัน", "ว่ายน้ำ"];
-        setCategories([...new Set(fallbackCategories)]);
+        
       }
     };
     fetchCategories();
