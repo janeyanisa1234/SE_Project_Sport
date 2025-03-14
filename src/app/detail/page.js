@@ -10,13 +10,11 @@ import "./detail.css";
 export default function Detail() {
   // State การจัดการข้อมูล
   const [promotion, setPromotion] = useState(null); // เก็บข้อมูลโปรโมชัน
-
-  // Hooks การนำทางและพารามิเตอร์
-  const router = useRouter(); // อินสแตนซ์ของ router
-  const searchParams = useSearchParams(); // ดึง query parameters
+  const router = useRouter(); 
+  const searchParams = useSearchParams(); 
   const id = searchParams.get("id"); // ดึง ID จาก URL
 
-  // Effect hook สำหรับโหลดข้อมูลเมื่อเริ่มต้น
+  // โหลดข้อมูลเมื่อเริ่ม
   useEffect(() => {
     const token = localStorage.getItem("token"); // ดึง token
     if (!token) {
@@ -104,8 +102,8 @@ export default function Detail() {
     router.push("/promotion"); // นำทางไปหน้าโปรโมชัน
   };
 
-  // ส่วนแสดงผล UI
-  if (!promotion) return <div>กำลังโหลดข้อมูล...</div>; // แสดงขณะโหลด
+  // แสดงผล UI
+  if (!promotion) return <div>กำลังโหลดข้อมูล...</div>; 
   
   return (
     <div className="background">
