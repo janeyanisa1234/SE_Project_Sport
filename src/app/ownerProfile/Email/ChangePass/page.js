@@ -53,7 +53,7 @@ export default function ChangePassword() {
     try {
       setLoading(true);
       
-      // Make API request to reset-password endpoint instead
+      // Make API request to reset-password endpoint
       const response = await axios.post(
         `${API_URL}/reset-password`, 
         {
@@ -62,11 +62,33 @@ export default function ChangePassword() {
         }
       );
       
-      // Show success message
-      alert("บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว");
-      
-      // Redirect to login page after successful password reset
-      router.push("/Login");
+      // Check if the response includes user data
+      if (response.data.user) {
+        // Store user data and token
+        AuthService.setToken(response.data.token);
+        AuthService.setUser(response.data.user);
+        AuthService.setUserRole(response.data.user);
+        
+        // Determine redirect based on user role
+        const userRole = AuthService.getUserRole();
+        let redirectPath = '/my-stadium'; // Default for normal users
+        
+        if (userRole === 'admin') {
+          redirectPath = '/Homeadmin';
+        } else if (userRole === 'owner') {
+          redirectPath = '/my-stadium';
+        }
+        
+        // Show success message
+        alert("บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว");
+        
+        // Redirect to the appropriate page
+        router.push(redirectPath);
+      } else {
+        // If no user data, just redirect to login
+        alert("บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว");
+        router.push("/Login");
+      }
     } catch (err) {
       // Handle error
       if (err.response) {

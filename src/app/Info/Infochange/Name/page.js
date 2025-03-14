@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./Name.css"; 
 import Tab from "../../../Tab/tab"; 
 import { useRouter } from 'next/navigation';
+import { AuthService } from "../../../utils/auth";
 
 export default function Name() {
   const [currentName, setCurrentName] = useState('');
@@ -11,30 +12,42 @@ export default function Name() {
   const router = useRouter();
   const API_URL = "http://localhost:5000/api/ice";
 
-  const handleSave = async () => {
-    try {
-      const token = localStorage.getItem("token"); // ดึง JWT Token
-      const response = await fetch(`${API_URL}/update-name`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ newName })
-      });
-  
-      const data = await response.json();
-      if (response.ok) {
-        alert("อัปเดตชื่อสำเร็จ!");
-        router.push("/Info"); // ไปที่หน้า Info หลังจากบันทึกสำเร็จ
-      } else {
-        alert("เกิดข้อผิดพลาด: " + data.error);
-      }
-    } catch (error) {
-      console.error("Error updating name:", error);
-      alert("เกิดข้อผิดพลาด");
+// Inside your component:
+useEffect(() => {
+  // Fetch current name when component loads
+  const user = AuthService.getCurrentUser();
+  if (user && user.name) {
+    setCurrentName(user.name);
+  }
+}, []);
+
+const handleSave = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${API_URL}/update-name`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ newName })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      // Update the user data in localStorage after successful API call
+      AuthService.updateUserName(newName);
+      
+      alert("อัปเดตชื่อสำเร็จ!");
+      router.push("/Info");
+    } else {
+      alert("เกิดข้อผิดพลาด: " + data.error);
     }
-  };
+  } catch (error) {
+    console.error("Error updating name:", error);
+    alert("เกิดข้อผิดพลาด");
+  }
+};
   
   return (
         <>

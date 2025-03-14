@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import "./De.css";
-import Tabbar from "../../Tab/tab";
+import Tabbar from "../../components/tab";
 import Link from "next/link";
 
 export default function Detail() {

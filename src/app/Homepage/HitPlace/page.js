@@ -1,7 +1,7 @@
 "use client";
  
 import Headfunction from "../../Headfunction/page";
-import Tabbar from "../../Tab/tab";
+import Tabbar from "../../components/tab";
 import "./Hit.css";
 import { useState } from "react";
  

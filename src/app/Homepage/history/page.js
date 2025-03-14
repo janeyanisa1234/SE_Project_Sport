@@ -3,7 +3,7 @@
 import "./dash.css";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Tabbar from "../../Tab/tab";
+import Tabbar from "../../components/tab";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 

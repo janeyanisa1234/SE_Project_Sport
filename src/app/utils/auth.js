@@ -130,6 +130,22 @@ export const AuthService = {
     return null; // Return null for server-side rendering
   },
 
+  // Add this method to your AuthService object
+  updateUserName: (newName) => {
+    if (typeof window !== 'undefined') {
+      // Update the user object
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        user.name = newName;
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+      
+      // Also update the individual name field
+      localStorage.setItem('userName', newName);
+    }
+  },
+
   // Logout user
   logout: () => {
     if (typeof window !== 'undefined') {
