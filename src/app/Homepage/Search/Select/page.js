@@ -501,7 +501,7 @@ const SelectPlace = () => {
             <span className="legend-color booked"></span>
             <span>ไม่ว่าง</span>
             <span className="legend-color past"></span>
-            <span>หมดเวลาในการจอง</span>
+            <span>หมดเวลาจอง</span>
           </div>
         </div>
 

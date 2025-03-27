@@ -79,7 +79,7 @@ export default function Home() {
                     <p className="grid-title">{item.stadium_name}</p>
                     {item.promotion && (
                       <p className="grid-promo">
-                        ส่วนลด: {item.promotion.discount_percentage}%
+                        {item.promotion.promotion_name}
                       </p>
                     )}
                   </div>

@@ -34,27 +34,31 @@ const Page = () => {
     try {
       setLoading(true);
       const userId = localStorage.getItem("userId");
-     
+ 
       if (!userId) {
         console.error("User ID not found");
         setError("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบใหม่");
         return;
       }
-     
+ 
       // Fetch summary data
       const summaryResult = await axios.get(`${API_BASE_URL}/summary`, {
         params: { month, year, ownerId: userId }
       });
-     
+ 
       setSummaryData(summaryResult.data);
-     
+ 
       // Fetch payment status data
       const statusResult = await axios.get(`${API_BASE_URL}/payment-status`, {
         params: { month, year, ownerId: userId }
       });
-     
+ 
       const filteredData = statusResult.data.filter(item => item.id_owner === userId);
-      setPaymentStatus(filteredData);
+      // Filter out the row where totalBeforeFee and totalAfterFee are both 0
+      const filteredPaymentStatus = filteredData.filter(payment => {
+        return !(payment.totalBeforeFee === 0 && payment.totalAfterFee === 0);
+      });
+      setPaymentStatus(filteredPaymentStatus);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("เกิดข้อผิดพลาดในการดึงข้อมูล: " + (error.response?.data?.error || error.message));
@@ -73,7 +77,7 @@ const Page = () => {
  
   const getMonthName = (month) => {
     const months = [
-      "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+      "มกราคม", "กุมภาพันธ์", "เมษายน", "พฤษภาคม", "มิถุนายน",
       "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
     ];
     return months[parseInt(month) - 1];
@@ -109,7 +113,49 @@ const Page = () => {
           </div>
         ) : (
           <>
-            <table className="w-full border-collapse border border-gray-800">
+            <h2 className="text-xl font-bold mt-6">ติดตามสถานะการโอนเงิน</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-gray-800 mt-4">
+                <thead>
+                  <tr className="bg-gray-200">
+                    <th className="border border-gray-800 p-2">ลำดับที่</th>
+                    <th className="border border-gray-800 p-2">ระยะเวลา</th>
+                    <th className="border border-gray-800 p-2">ยอดเงินรวม</th>
+                    <th className="border border-gray-800 p-2">อัพเดท</th>
+                    <th className="border border-gray-800 p-2">สถานะ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paymentStatus && paymentStatus.length > 0 ? (
+                    paymentStatus.map((payment, index) => (
+                      <tr key={payment.id || index}>
+                        <td className="border border-gray-800 p-2">{index + 1}</td>
+                        <td className="border border-gray-800 p-2">{"1-15 ของทุกเดือน"}</td>
+                        <td className="border border-gray-800 p-2">{formatCurrency(payment.totalBeforeFee || 0)}</td>
+                        <td className="border border-gray-800 p-2">
+                          {displayDate(payment.updatedAt)}
+                        </td>
+                        <td className={`border border-gray-800 p-2 font-bold ${
+                          payment.status === "โอนแล้ว" ? "text-green-500" : "text-red-500"
+                        }`}>
+                          {payment.status || "ยังไม่จ่าย"}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td className="border border-gray-800 p-2">1</td>
+                      <td className="border border-gray-800 p-2">1-15 ของทุกเดือน</td>
+                      <td className="border border-gray-800 p-2">{formatCurrency(summaryData.totalAmount || 0)}</td>
+                      <td className="border border-gray-800 p-2">-</td>
+                      <td className="border border-gray-800 p-2 text-red-500 font-bold">ยังไม่จ่าย</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+ 
+            <table className="w-full border-collapse border border-gray-800 mt-6">
               <thead>
                 <tr className="bg-gray-200">
                   <th className="border border-gray-800 p-2">รายการ</th>
@@ -159,51 +205,6 @@ const Page = () => {
               หมายเหตุ: ระบบจะทำการโอนเงินหลังจากหักค่าบริการหลังการขาย ภายในวันที่ 1-15 ของทุกเดือน
               โดยระบบจะทำการโอนเงินเข้าบัญชีธนาคารของท่านที่ได้ลงทะเบียนไว้ในระบบเท่านั้น
             </p>
- 
-            <h2 className="text-xl font-bold mt-6">ติดตามสถานะการโอนเงิน</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-800 mt-4">
-                <thead>
-                  <tr className="bg-gray-200">
-                    <th className="border border-gray-800 p-2">ลำดับที่</th>
-                    <th className="border border-gray-800 p-2">ระยะเวลา</th>
-                    <th className="border border-gray-800 p-2">ยอดก่อนหัก %</th>
-                    <th className="border border-gray-800 p-2">ยอดหลังหัก %</th>
-                    <th className="border border-gray-800 p-2">อัพเดท</th>
-                    <th className="border border-gray-800 p-2">สถานะ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paymentStatus && paymentStatus.length > 0 ? (
-                    paymentStatus.map((payment, index) => (
-                      <tr key={payment.id || index}>
-                        <td className="border border-gray-800 p-2">{index + 1}</td>
-                        <td className="border border-gray-800 p-2">{"1-15 ของทุกเดือน"}</td>
-                        <td className="border border-gray-800 p-2">{formatCurrency(payment.totalBeforeFee || 0)}</td>
-                        <td className="border border-gray-800 p-2">{formatCurrency(payment.totalAfterFee || 0)}</td>
-                        <td className="border border-gray-800 p-2">
-                          {displayDate(payment.updatedAt)}
-                        </td>
-                        <td className={`border border-gray-800 p-2 font-bold ${
-                          payment.status === "โอนแล้ว" ? "text-green-500" : "text-red-500"
-                        }`}>
-                          {payment.status || "ยังไม่จ่าย"}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td className="border border-gray-800 p-2">1</td>
-                      <td className="border border-gray-800 p-2">1-15 ของทุกเดือน</td>
-                      <td className="border border-gray-800 p-2">{formatCurrency(summaryData.totalAmount || 0)}</td>
-                      <td className="border border-gray-800 p-2">{formatCurrency(summaryData.netAmount || 0)}</td>
-                      <td className="border border-gray-800 p-2">-</td>
-                      <td className="border border-gray-800 p-2 text-red-500 font-bold">ยังไม่จ่าย</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
           </>
         )}
       </main>

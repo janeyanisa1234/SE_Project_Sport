@@ -55,7 +55,7 @@ const handleSave = async () => {
           <div className="name-container">
             <div className="overlay">
               <div className="name-box">
-                <h2 className="title">เปลี่ยนชื่อ-นามสกุล</h2>
+                <h2 className="title">เปลี่ยนชื่อผู้ใช้</h2>
 
                 <div className="input-group">
                   <label>ชื่อเดิม</label>
