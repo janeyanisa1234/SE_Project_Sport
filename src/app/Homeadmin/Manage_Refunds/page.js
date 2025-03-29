@@ -119,22 +119,23 @@ export default function Manage_Refunds() {
                   </button>
                 </td>
                 <td className="status-cell">
-                  {owner.status_booking === "รอดำเนินการยกเลิก" ? (
-                    <Link href={`/Homeadmin/Manage_Refunds/Pending?id=${owner.id_booking}`}>
-                      <span className="status-link">{owner.status_booking}</span>
-                    </Link>
-                  ) : (
-                    <div>
-                      <span
-                        className="status-cancelled"
-                        onClick={owner.slipcancle ? () => handleRefundClick(owner) : null}
-                        style={{ cursor: owner.slipcancle ? 'pointer' : 'default' }}
-                      >
-                        {owner.status_booking}
-                      </span>
-                    </div>
-                  )}
-                </td>
+  {owner.status_booking === "รอดำเนินการยกเลิก" ? (
+    <div className="status-pending">
+      <Link href={`/Homeadmin/Manage_Refunds/Pending?id=${owner.id_booking}`}>
+        <span style={{ color: 'black', textDecoration: 'underline' }}>{owner.status_booking}</span>
+      </Link>
+    </div>
+  ) : (
+    <div className="status-cancelled">
+      <span
+        onClick={owner.slipcancle ? () => handleRefundClick(owner) : null}
+        style={{ cursor: owner.slipcancle ? 'pointer' : 'default' }}
+      >
+        {owner.status_booking}
+      </span>
+    </div>
+  )}
+</td>
               </tr>
             ))}
           </tbody>

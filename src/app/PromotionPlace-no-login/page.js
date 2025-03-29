@@ -16,7 +16,7 @@ export default function PromotionPlacenologin() {
   useEffect(() => {
     async function fetchPromotedStadiums() {
       try {
-        const response = await axios.get("http://localhost:5000/api/booking/promoted-stadiums", {
+        const response = await axios.get("http://localhost:5000/api/bookings/promoted-stadiums", {
           timeout: 10000,
         });
         console.log("Promoted stadiums data:", response.data);

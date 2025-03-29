@@ -111,39 +111,112 @@ tr:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.75); /* เพิ่มความเข้มของพื้นหลังเล็กน้อย */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out; /* เพิ่ม animation เข้ามา */
 }
 
 .modal-content {
   background-color: white;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 12px; /* ปรับขอบให้โค้งมนขึ้น */
   position: relative;
-  max-width: 80%;
-  max-height: 80%;
+  max-width: 90vw; /* ปรับให้กว้างสูงสุดตาม viewport */
+  max-height: 90vh; /* ปรับให้สูงสูงสุดตาม viewport */
+  width: auto; /* ให้กว้างตามเนื้อหา */
+  height: auto; /* ให้สูงตามเนื้อหา */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* เพิ่มเงาให้ดูมีมิติ */
+  overflow: hidden; /* ป้องกันเนื้อหาล้น */
+  display: flex;
+  flex-direction: column; /* จัดเรียงแนวตั้ง */
+  animation: scaleIn 0.3s ease-in-out; /* เพิ่ม animation เข้ามา */
 }
 
 .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 20px;
+  font-size: 24px; /* ขยายปุ่มปิด */
   background: none;
   border: none;
   cursor: pointer;
-  color: red;
+  color: #ff4d4d; /* สีแดงที่ดูทันสมัย */
+  font-weight: bold;
+  transition: color 0.3s ease, transform 0.3s ease; /* เพิ่ม transition */
+}
+
+.close-btn:hover {
+  color: #ff1a1a; /* สีแดงเข้มขึ้นเมื่อ hover */
+  transform: scale(1.2); /* ขยายเล็กน้อยเมื่อ hover */
 }
 
 .modal-image {
-  max-width: 100%;
-  max-height: 80vh;
-  border-radius: 10px;
+  max-width: 100%; /* รูปภาพไม่เกินขอบ modal */
+  max-height: 70vh; /* จำกัดความสูงของรูปภาพให้สมดุลกับ modal */
+  width: auto; /* ให้ความกว้างปรับตามสัดส่วน */
+  height: auto; /* ให้ความสูงปรับตามสัดส่วน */
+  border-radius: 8px; /* ขอบมนเล็กน้อย */
+  object-fit: contain; /* รักษาสัดส่วนรูปภาพ */
   display: block;
   margin: 0 auto;
+  transition: transform 0.3s ease; /* เพิ่มเอฟเฟกต์เมื่อโหลด */
+}
+
+/* เพิ่มส่วนของ transfer-details ให้ดูดีขึ้น */
+.transfer-details {
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #333; /* สีตัวอักษรเข้มขึ้น */
+  border-radius: 0 0 12px 12px; /* ขอบล่างโค้งมน */
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .modal-content {
+    max-width: 95vw; /* ปรับให้กว้างขึ้นในหน้าจอเล็ก */
+    max-height: 95vh; /* ปรับให้สูงขึ้นในหน้าจอเล็ก */
+    padding: 15px; /* ลด padding ในหน้าจอเล็ก */
+  }
+
+  .modal-image {
+    max-height: 65vh; /* ปรับความสูงรูปภาพในหน้าจอเล็ก */
+  }
+
+  .close-btn {
+    font-size: 20px; /* ลดขนาดปุ่มปิดในหน้าจอเล็ก */
+  }
+
+  .transfer-details {
+    padding: 10px; /* ลด padding ในหน้าจอเล็ก */
+    font-size: 12px; /* ลดขนาดตัวอักษร */
+  }
 }
 .header-titlecash {
   position: relative;

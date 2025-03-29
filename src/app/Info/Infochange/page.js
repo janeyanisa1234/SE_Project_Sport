@@ -23,7 +23,7 @@ const Infochange = () => {
             <div className="button-group">
 
               <Link href={"/Info/Infochange/Name"}>
-                <button className="change-btn">เปลี่ยนชื่อ-นามสกุล</button>
+                <button className="change-btn">เปลี่ยนชื่อผู้ใช้</button>
               </Link>
              
 
